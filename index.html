@@ -884,7 +884,198 @@
       font-weight: 700;
     }
 
+/* ==================================
+   VOCABULARY CHALLENGE
+================================== */
 
+.vocab-overlay {
+
+  display: none;
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  background:
+    rgba(10, 35, 25, 0.72);
+
+  padding: 20px;
+
+  align-items: center;
+  justify-content: center;
+
+}
+
+
+.vocab-overlay.active {
+
+  display: flex;
+
+}
+
+
+.vocab-card {
+
+  width: 100%;
+  max-width: 440px;
+
+  background: white;
+
+  border-radius: 26px;
+
+  padding: 25px;
+
+  box-shadow:
+    0 20px 60px
+    rgba(0,0,0,0.25);
+
+}
+
+
+.vocab-small-title {
+
+  color: #137548;
+
+  font-size: 0.78rem;
+
+  font-weight: 800;
+
+  letter-spacing: 0.7px;
+
+  margin-bottom: 15px;
+
+}
+
+
+.vocab-word {
+
+  color: #12613e;
+
+  font-size: 2rem;
+
+  font-weight: 900;
+
+  margin-bottom: 12px;
+
+  text-transform: capitalize;
+
+}
+
+
+.vocab-question {
+
+  color: #344b42;
+
+  line-height: 1.5;
+
+  font-weight: 700;
+
+  margin-bottom: 20px;
+
+}
+
+
+.vocab-options {
+
+  display: grid;
+
+  gap: 10px;
+
+}
+
+
+.vocab-option {
+
+  width: 100%;
+
+  border:
+    2px solid #dce8e1;
+
+  background: #f8fbf9;
+
+  color: #213b31;
+
+  padding: 14px;
+
+  border-radius: 14px;
+
+  text-align: left;
+
+  font-size: 0.95rem;
+
+  cursor: pointer;
+
+}
+
+
+.vocab-option:hover {
+
+  border-color: #137548;
+
+}
+
+
+.vocab-option.correct {
+
+  background: #e2f6e8;
+
+  border-color: #168548;
+
+}
+
+
+.vocab-option.wrong {
+
+  background: #fde8e6;
+
+  border-color: #c84b42;
+
+}
+
+
+.vocab-option:disabled {
+
+  cursor: default;
+
+}
+
+
+.vocab-feedback {
+
+  min-height: 20px;
+
+  margin-top: 16px;
+
+  padding: 0;
+
+  line-height: 1.5;
+
+  font-size: 0.9rem;
+
+}
+
+
+.vocab-feedback.correct-feedback {
+
+  color: #12613e;
+
+}
+
+
+.vocab-feedback.wrong-feedback {
+
+  color: #7d332d;
+
+}
+
+
+.hidden {
+
+  display: none;
+
+}
     /* ==================================
        COMPLETION SCREEN
     ================================== */
@@ -1594,7 +1785,57 @@
 </section>
 
 
+<!-- =====================================
+     VOCABULARY CHALLENGE
+===================================== -->
 
+<div
+  id="vocabOverlay"
+  class="vocab-overlay"
+>
+
+  <div class="vocab-card">
+
+    <div class="vocab-small-title">
+      🧠 VOCABULARY CHALLENGE
+    </div>
+
+    <div
+      id="vocabWord"
+      class="vocab-word"
+    >
+      WORD
+    </div>
+
+    <div
+      id="vocabQuestion"
+      class="vocab-question"
+    >
+      Question appears here.
+    </div>
+
+    <div
+      id="vocabOptions"
+      class="vocab-options"
+    >
+    </div>
+
+    <div
+      id="vocabFeedback"
+      class="vocab-feedback"
+    >
+    </div>
+
+    <button
+      id="continueAfterAnswer"
+      class="primary-button hidden"
+    >
+      CONTINUE
+    </button>
+
+  </div>
+
+</div>
 <!-- =====================================
      SCREEN 5: COMPLETION
 ===================================== -->
