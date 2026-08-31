@@ -3432,6 +3432,8 @@ progressButton.addEventListener(
 );
 
 <script src="vocabulary.js"></script>
+
+
 /* =========================================
    VOCABULARY ENGINE
 ========================================= */
@@ -3534,8 +3536,6 @@ function showVocabularyChallenge() {
 
 }
 
-
-
 /* =========================================
    CHECK ANSWER
 ========================================= */
@@ -3557,19 +3557,16 @@ function checkVocabularyAnswer(
   optionButtons.forEach(
     function (button) {
 
-      button.disabled =
-        true;
+      button.disabled = true;
 
     }
   );
-
 
 
   const isCorrect =
 
     selectedAnswer ===
     currentVocabulary.answer;
-
 
 
   if (isCorrect) {
@@ -3596,11 +3593,10 @@ function checkVocabularyAnswer(
       "<strong>" +
       currentVocabulary.word +
       "</strong> means " +
-
       currentVocabulary.meaning +
       ".<br><br>" +
 
-      "Example: " +
+      "<strong>Example:</strong> " +
       currentVocabulary.example +
       "<br><br>" +
 
@@ -3653,27 +3649,25 @@ function checkVocabularyAnswer(
 
     vocabFeedback.innerHTML =
 
-      "Not quite.<br><br>" +
+      "❌ <strong>Not quite.</strong><br><br>" +
 
       "<strong>" +
       currentVocabulary.word +
       "</strong> means " +
-
       currentVocabulary.meaning +
       ".<br><br>" +
 
-      "BM support: " +
+      "<strong>BM support:</strong> " +
       currentVocabulary.bm +
       "<br><br>" +
 
-      "Example: " +
+      "<strong>Example:</strong> " +
       currentVocabulary.example +
       "<br><br>" +
 
       "You still earn 1 step. Keep learning!";
 
   }
-
 
 
   continueAfterAnswer.classList.remove(
@@ -3725,12 +3719,10 @@ async function movePlayerByEarnedSteps() {
   }
 
 
-  isMoving =
-    true;
+  isMoving = true;
 
 
-  rollButton.disabled =
-    true;
+  rollButton.disabled = true;
 
 
   let targetPosition =
@@ -3743,8 +3735,7 @@ async function movePlayerByEarnedSteps() {
     targetPosition > 30
   ) {
 
-    targetPosition =
-      30;
+    targetPosition = 30;
 
   }
 
@@ -3782,7 +3773,6 @@ async function movePlayerByEarnedSteps() {
   );
 
 
-
   if (
     profile.currentPosition === 30
   ) {
@@ -3808,7 +3798,6 @@ async function movePlayerByEarnedSteps() {
   }
 
 
-
   gameMessage.textContent =
 
     "You are now on Square " +
@@ -3828,12 +3817,10 @@ async function movePlayerByEarnedSteps() {
   currentVocabulary = null;
 
 
-  isMoving =
-    false;
+  isMoving = false;
 
 
-  rollButton.disabled =
-    false;
+  rollButton.disabled = false;
 
 }
 
@@ -3936,8 +3923,8 @@ function shuffleArray(array) {
   return array;
 
 }
-</script>
 
+</script>
 
 </body>
 
