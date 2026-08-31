@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -11,6 +12,7 @@
 
   <title>LexiTrek</title>
 
+
   <style>
 
     * {
@@ -18,6 +20,7 @@
       margin: 0;
       padding: 0;
     }
+
 
     body {
       font-family: Arial, Helvetica, sans-serif;
@@ -36,14 +39,21 @@
     }
 
 
+    button,
+    input {
+      font-family: inherit;
+    }
+
+
     .app {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
 
       min-height: 100vh;
 
       margin: auto;
-      padding: 24px;
+
+      padding: 20px;
 
       display: flex;
       flex-direction: column;
@@ -67,14 +77,15 @@
       justify-content: space-between;
       align-items: center;
 
-      margin-bottom: 30px;
+      margin-bottom: 24px;
     }
 
 
     .brand {
+      color: #12613e;
+
       font-weight: 800;
       letter-spacing: 1px;
-      color: #12613e;
     }
 
 
@@ -85,14 +96,102 @@
 
       border-radius: 20px;
 
-      font-size: 0.75rem;
+      font-size: 0.72rem;
 
       box-shadow:
-        0 4px 15px rgba(0,0,0,0.07);
+        0 4px 15px
+        rgba(0,0,0,0.07);
     }
 
 
-    /* SPLASH SCREEN */
+    /* ==================================
+       BUTTONS
+    ================================== */
+
+
+    .primary-button {
+      width: 100%;
+
+      border: none;
+
+      background: #137548;
+
+      color: white;
+
+      padding: 17px;
+
+      border-radius: 17px;
+
+      font-size: 1rem;
+      font-weight: 800;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 10px 22px
+        rgba(19,117,72,0.23);
+
+      margin-top: 12px;
+    }
+
+
+    .primary-button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+
+    .primary-button:active {
+      transform: scale(0.98);
+    }
+
+
+    .secondary-button {
+      width: 100%;
+
+      border: 2px solid #137548;
+
+      background: white;
+
+      color: #137548;
+
+      padding: 14px;
+
+      border-radius: 17px;
+
+      font-size: 0.95rem;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      margin-top: 12px;
+    }
+
+
+    .danger-button {
+      width: 100%;
+
+      border: none;
+
+      background: transparent;
+
+      color: #8b3a32;
+
+      padding: 13px;
+
+      font-size: 0.85rem;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      margin-top: 5px;
+    }
+
+
+    /* ==================================
+       SPLASH SCREEN
+    ================================== */
+
 
     .hero {
       flex: 1;
@@ -107,23 +206,22 @@
 
 
     .logo-circle {
-      width: 110px;
-      height: 110px;
+      width: 105px;
+      height: 105px;
 
       margin:
         0 auto
-        22px;
+        20px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       border-radius: 50%;
 
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
       background: white;
 
-      font-size: 3.3rem;
+      font-size: 3rem;
 
       box-shadow:
         0 12px 30px
@@ -142,7 +240,6 @@
 
     .tagline {
       font-size: 1.15rem;
-
       font-weight: 700;
 
       margin-bottom: 10px;
@@ -150,15 +247,15 @@
 
 
     .description {
-      color: #52675f;
-
-      line-height: 1.55;
-
-      max-width: 330px;
+      max-width: 340px;
 
       margin:
         0 auto
         30px;
+
+      color: #52675f;
+
+      line-height: 1.55;
     }
 
 
@@ -170,7 +267,7 @@
 
       gap: 10px;
 
-      margin-bottom: 34px;
+      margin-bottom: 32px;
     }
 
 
@@ -197,72 +294,19 @@
 
     .feature-title {
       font-size: 0.8rem;
-
       font-weight: 700;
     }
 
 
-    /* BUTTONS */
+    /* ==================================
+       PROFILE SCREEN
+    ================================== */
 
-    .primary-button {
-      width: 100%;
-
-      border: none;
-
-      background: #137548;
-
-      color: white;
-
-      padding: 17px 20px;
-
-      border-radius: 17px;
-
-      font-size: 1rem;
-
-      font-weight: 800;
-
-      cursor: pointer;
-
-      box-shadow:
-        0 10px 22px
-        rgba(19,117,72,0.23);
-
-      margin-top: 12px;
-    }
-
-
-    .primary-button:active {
-      transform: scale(0.98);
-    }
-
-
-    .secondary-button {
-      width: 100%;
-
-      border: 2px solid #137548;
-
-      background: white;
-
-      color: #137548;
-
-      padding: 15px 20px;
-
-      border-radius: 17px;
-
-      font-weight: 700;
-
-      cursor: pointer;
-
-      margin-top: 12px;
-    }
-
-
-    /* PROFILE */
 
     .section-title {
-      font-size: 1.8rem;
-
       color: #12613e;
+
+      font-size: 1.8rem;
 
       margin-bottom: 8px;
     }
@@ -273,16 +317,16 @@
 
       line-height: 1.5;
 
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
 
     .profile-card {
       background: white;
 
-      border-radius: 24px;
-
       padding: 24px;
+
+      border-radius: 24px;
 
       box-shadow:
         0 10px 30px
@@ -304,16 +348,16 @@
 
       padding: 15px;
 
-      border-radius: 14px;
-
       border:
         2px solid #d9e5df;
+
+      border-radius: 14px;
 
       font-size: 1rem;
 
       outline: none;
 
-      margin-bottom: 25px;
+      margin-bottom: 24px;
     }
 
 
@@ -337,7 +381,7 @@
 
       gap: 10px;
 
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
 
 
@@ -372,18 +416,19 @@
       color: #b3261e;
 
       font-size: 0.85rem;
-
       font-weight: 700;
 
       margin-top: 8px;
     }
 
 
-    /* HOME */
+    /* ==================================
+       HOME SCREEN
+    ================================== */
+
 
     .student-header {
       display: flex;
-
       align-items: center;
 
       gap: 15px;
@@ -394,7 +439,7 @@
 
       border-radius: 22px;
 
-      margin-bottom: 20px;
+      margin-bottom: 18px;
 
       box-shadow:
         0 8px 24px
@@ -406,35 +451,32 @@
       width: 64px;
       height: 64px;
 
-      border-radius: 50%;
-
       display: flex;
-
       align-items: center;
-
       justify-content: center;
 
-      font-size: 2rem;
+      border-radius: 50%;
 
       background: #e4f6ea;
+
+      font-size: 2rem;
     }
 
 
     .hello {
-      font-size: 0.8rem;
-
       color: #667970;
+
+      font-size: 0.8rem;
 
       margin-bottom: 3px;
     }
 
 
     .student-name {
-      font-size: 1.35rem;
-
-      font-weight: 800;
-
       color: #12613e;
+
+      font-size: 1.35rem;
+      font-weight: 800;
     }
 
 
@@ -446,16 +488,16 @@
 
       gap: 10px;
 
-      margin-bottom: 22px;
+      margin-bottom: 20px;
     }
 
 
     .stat {
       background: white;
 
-      padding: 15px 7px;
-
       text-align: center;
+
+      padding: 14px 6px;
 
       border-radius: 18px;
 
@@ -466,20 +508,19 @@
 
 
     .stat-number {
-      font-size: 1.15rem;
-
-      font-weight: 800;
-
       color: #137548;
+
+      font-size: 1.15rem;
+      font-weight: 800;
 
       margin-bottom: 4px;
     }
 
 
     .stat-label {
-      font-size: 0.72rem;
-
       color: #667970;
+
+      font-size: 0.72rem;
     }
 
 
@@ -493,11 +534,11 @@
 
       color: white;
 
-      border-radius: 24px;
-
       padding: 24px;
 
-      margin-bottom: 20px;
+      border-radius: 24px;
+
+      margin-bottom: 18px;
 
       box-shadow:
         0 12px 30px
@@ -513,9 +554,18 @@
     .adventure-card p {
       line-height: 1.5;
 
-      opacity: 0.9;
+      opacity: 0.92;
 
-      margin-bottom: 18px;
+      margin-bottom: 10px;
+    }
+
+
+    .position-text {
+      font-size: 0.85rem;
+
+      font-weight: 700;
+
+      margin-bottom: 16px;
     }
 
 
@@ -546,7 +596,7 @@
 
       gap: 12px;
 
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
 
@@ -575,49 +625,363 @@
 
 
     .menu-title {
-      font-weight: 700;
-
       color: #17352a;
+
+      font-weight: 700;
     }
 
 
     .coming-soon {
-      margin-top: 12px;
+      min-height: 24px;
 
       text-align: center;
-
-      min-height: 24px;
 
       color: #137548;
 
       font-size: 0.85rem;
-
       font-weight: 700;
+    }
+
+
+    /* ==================================
+       GAME SCREEN
+    ================================== */
+
+
+    .game-player-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      background: white;
+
+      border-radius: 18px;
+
+      padding: 12px 15px;
+
+      margin-bottom: 14px;
+
+      box-shadow:
+        0 5px 18px
+        rgba(0,0,0,0.06);
+    }
+
+
+    .game-player {
+      display: flex;
+      align-items: center;
+
+      gap: 10px;
+    }
+
+
+    .game-avatar {
+      width: 42px;
+      height: 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #e4f6ea;
+
+      font-size: 1.5rem;
+    }
+
+
+    .game-player-name {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+
+    .game-position {
+      color: #137548;
+
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+
+    .board-wrapper {
+      background: white;
+
+      padding: 9px;
+
+      border-radius: 22px;
+
+      box-shadow:
+        0 9px 28px
+        rgba(0,0,0,0.08);
+
+      margin-bottom: 16px;
+    }
+
+
+    .board {
+      display: grid;
+
+      grid-template-columns:
+        repeat(6, 1fr);
+
+      gap: 4px;
+
+      width: 100%;
+    }
+
+
+    .board-cell {
+      aspect-ratio: 1 / 1;
+
+      position: relative;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+
+      background: #eef7f1;
+
+      border:
+        1px solid
+        #d9e9df;
+
+      font-size: 0.75rem;
+      font-weight: 800;
+
+      color: #426257;
+    }
+
+
+    .board-cell:nth-child(odd) {
+      background: #e5f3ea;
+    }
+
+
+    .board-cell.start-cell {
+      background: #d8f5df;
+
+      color: #0c6438;
+    }
+
+
+    .board-cell.finish-cell {
+      background: #fff0b8;
+
+      color: #7a5b00;
+    }
+
+
+    .cell-number {
+      position: absolute;
+
+      top: 5px;
+      left: 6px;
+
+      font-size: 0.65rem;
+
+      opacity: 0.8;
+    }
+
+
+    .cell-label {
+      position: absolute;
+
+      bottom: 4px;
+
+      font-size: 0.48rem;
+
+      letter-spacing: 0.3px;
+    }
+
+
+    .player-token {
+      position: relative;
+
+      z-index: 3;
+
+      font-size: 1.65rem;
+
+      animation:
+        tokenPop
+        0.2s ease;
+    }
+
+
+    @keyframes tokenPop {
+
+      from {
+        transform: scale(0.6);
+      }
+
+      to {
+        transform: scale(1);
+      }
+
+    }
+
+
+    .dice-area {
+      background: white;
+
+      padding: 16px;
+
+      border-radius: 22px;
+
+      text-align: center;
+
+      box-shadow:
+        0 7px 22px
+        rgba(0,0,0,0.06);
+
+      margin-bottom: 12px;
+    }
+
+
+    .dice-face {
+      font-size: 4rem;
+
+      line-height: 1;
+
+      color: #17352a;
+
+      margin-bottom: 6px;
+    }
+
+
+    .dice-result {
+      min-height: 24px;
+
+      color: #52675f;
+
+      font-size: 0.9rem;
+      font-weight: 700;
+
+      margin-bottom: 5px;
+    }
+
+
+    .game-message {
+      min-height: 42px;
+
+      margin-top: 12px;
+
+      padding: 10px;
+
+      border-radius: 12px;
+
+      background: #eff8f2;
+
+      color: #12613e;
+
+      line-height: 1.4;
+
+      font-size: 0.87rem;
+      font-weight: 700;
+    }
+
+
+    /* ==================================
+       COMPLETION SCREEN
+    ================================== */
+
+
+    .completion-box {
+      flex: 1;
+
+      display: flex;
+      flex-direction: column;
+
+      justify-content: center;
+
+      text-align: center;
+    }
+
+
+    .completion-icon {
+      font-size: 5rem;
+
+      margin-bottom: 18px;
+    }
+
+
+    .completion-title {
+      color: #12613e;
+
+      font-size: 2rem;
+
+      margin-bottom: 10px;
+    }
+
+
+    .completion-text {
+      color: #566d63;
+
+      line-height: 1.55;
+
+      margin-bottom: 20px;
     }
 
 
     footer {
       text-align: center;
 
-      padding-top: 24px;
+      padding-top: 22px;
 
       color: #75877f;
 
       font-size: 0.72rem;
     }
 
+
+    /* ==================================
+       SMALLER PHONES
+    ================================== */
+
+
+    @media
+    (max-width: 380px) {
+
+      .app {
+        padding: 14px;
+      }
+
+
+      .board-cell {
+        border-radius: 7px;
+      }
+
+
+      .player-token {
+        font-size: 1.35rem;
+      }
+
+
+      .cell-number {
+        font-size: 0.55rem;
+      }
+
+    }
+
   </style>
+
 </head>
 
 
 <body>
 
+
 <main class="app">
 
 
-<!-- ============================= -->
-<!-- SCREEN 1: SPLASH -->
-<!-- ============================= -->
+<!-- =====================================
+     SCREEN 1: SPLASH
+===================================== -->
+
 
 <section
   id="splashScreen"
@@ -631,7 +995,7 @@
     </div>
 
     <div class="version">
-      Prototype 0.1
+      Prototype 0.1C
     </div>
 
   </div>
@@ -643,13 +1007,16 @@
       🗺️
     </div>
 
+
     <h1>
       LexiTrek
     </h1>
 
+
     <p class="tagline">
       Vocabulary Adventure
     </p>
+
 
     <p class="description">
 
@@ -661,6 +1028,7 @@
 
 
     <div class="feature-row">
+
 
       <div class="feature">
 
@@ -700,6 +1068,7 @@
 
       </div>
 
+
     </div>
 
 
@@ -710,6 +1079,7 @@
       START ADVENTURE
     </button>
 
+
   </div>
 
 
@@ -717,18 +1087,21 @@
     Form One English Vocabulary Learning
   </footer>
 
+
 </section>
 
 
 
-<!-- ============================= -->
-<!-- SCREEN 2: CREATE PLAYER -->
-<!-- ============================= -->
+<!-- =====================================
+     SCREEN 2: PROFILE
+===================================== -->
+
 
 <section
   id="profileScreen"
   class="screen"
 >
+
 
   <div class="top-bar">
 
@@ -780,12 +1153,14 @@
 
     <div class="avatar-grid">
 
+
       <button
         class="avatar selected"
         data-avatar="🧑"
       >
         🧑
       </button>
+
 
       <button
         class="avatar"
@@ -794,12 +1169,14 @@
         👧
       </button>
 
+
       <button
         class="avatar"
         data-avatar="🥷"
       >
         🥷
       </button>
+
 
       <button
         class="avatar"
@@ -808,12 +1185,14 @@
         🧙
       </button>
 
+
       <button
         class="avatar"
         data-avatar="🐯"
       >
         🐯
       </button>
+
 
       <button
         class="avatar"
@@ -822,12 +1201,14 @@
         🦊
       </button>
 
+
       <button
         class="avatar"
         data-avatar="🐼"
       >
         🐼
       </button>
+
 
       <button
         class="avatar"
@@ -836,6 +1217,7 @@
         🦁
       </button>
 
+
     </div>
 
 
@@ -843,7 +1225,7 @@
       id="saveProfileButton"
       class="primary-button"
     >
-      CREATE EXPLORER
+      SAVE EXPLORER
     </button>
 
 
@@ -863,18 +1245,21 @@
 
   </div>
 
+
 </section>
 
 
 
-<!-- ============================= -->
-<!-- SCREEN 3: HOME -->
-<!-- ============================= -->
+<!-- =====================================
+     SCREEN 3: HOME
+===================================== -->
+
 
 <section
   id="homeScreen"
   class="screen"
 >
+
 
   <div class="top-bar">
 
@@ -890,6 +1275,7 @@
 
 
   <div class="student-header">
+
 
     <div
       id="homeAvatar"
@@ -914,15 +1300,20 @@
 
     </div>
 
+
   </div>
 
 
 
   <div class="stats">
 
+
     <div class="stat">
 
-      <div class="stat-number">
+      <div
+        id="homeXP"
+        class="stat-number"
+      >
         0
       </div>
 
@@ -935,7 +1326,10 @@
 
     <div class="stat">
 
-      <div class="stat-number">
+      <div
+        id="homeWords"
+        class="stat-number"
+      >
         0
       </div>
 
@@ -948,7 +1342,10 @@
 
     <div class="stat">
 
-      <div class="stat-number">
+      <div
+        id="homeLevel"
+        class="stat-number"
+      >
         1
       </div>
 
@@ -958,20 +1355,30 @@
 
     </div>
 
+
   </div>
 
 
 
   <div class="adventure-card">
 
+
     <h2>
       🌿 Adventure 1
     </h2>
 
+
     <p>
-      Your first LexiTrek vocabulary
-      journey is ready to begin.
+      Journey from Square 1 to Square 30.
     </p>
+
+
+    <div
+      id="homePosition"
+      class="position-text"
+    >
+      Current position: Square 1
+    </div>
 
 
     <button
@@ -980,6 +1387,7 @@
     >
       PLAY ADVENTURE
     </button>
+
 
   </div>
 
@@ -1004,7 +1412,6 @@
     </button>
 
 
-
     <button
       id="progressButton"
       class="menu-card"
@@ -1024,12 +1431,11 @@
   </div>
 
 
-
   <button
     id="changeProfileButton"
     class="secondary-button"
   >
-    CHANGE EXPLORER
+    EDIT EXPLORER
   </button>
 
 
@@ -1047,6 +1453,203 @@
 </section>
 
 
+
+<!-- =====================================
+     SCREEN 4: GAME BOARD
+===================================== -->
+
+
+<section
+  id="gameScreen"
+  class="screen"
+>
+
+
+  <div class="top-bar">
+
+    <div class="brand">
+      ADVENTURE 1
+    </div>
+
+    <div class="version">
+      Board 1–30
+    </div>
+
+  </div>
+
+
+
+  <div class="game-player-bar">
+
+
+    <div class="game-player">
+
+
+      <div
+        id="gameAvatar"
+        class="game-avatar"
+      >
+        🧑
+      </div>
+
+
+      <div>
+
+        <div
+          id="gameNickname"
+          class="game-player-name"
+        >
+          Explorer
+        </div>
+
+        <div class="hello">
+          Vocabulary Explorer
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <div
+      id="gamePosition"
+      class="game-position"
+    >
+      Square 1
+    </div>
+
+
+  </div>
+
+
+
+  <div class="board-wrapper">
+
+    <div
+      id="gameBoard"
+      class="board"
+    >
+    </div>
+
+  </div>
+
+
+
+  <div class="dice-area">
+
+
+    <div
+      id="diceFace"
+      class="dice-face"
+    >
+      ⚀
+    </div>
+
+
+    <div
+      id="diceResult"
+      class="dice-result"
+    >
+      Tap the button to roll.
+    </div>
+
+
+    <button
+      id="rollButton"
+      class="primary-button"
+    >
+      🎲 ROLL DICE
+    </button>
+
+
+    <div
+      id="gameMessage"
+      class="game-message"
+    >
+      Reach Square 30 to complete your first adventure.
+    </div>
+
+
+  </div>
+
+
+
+  <button
+    id="homeButton"
+    class="secondary-button"
+  >
+    ← BACK TO HOME
+  </button>
+
+
+  <button
+    id="resetBoardButton"
+    class="danger-button"
+  >
+    Reset board position
+  </button>
+
+
+</section>
+
+
+
+<!-- =====================================
+     SCREEN 5: COMPLETION
+===================================== -->
+
+
+<section
+  id="completionScreen"
+  class="screen"
+>
+
+
+  <div class="completion-box">
+
+
+    <div class="completion-icon">
+      🏆
+    </div>
+
+
+    <h2 class="completion-title">
+      Adventure Complete!
+    </h2>
+
+
+    <p
+      id="completionText"
+      class="completion-text"
+    >
+      You reached Square 30.
+    </p>
+
+
+    <button
+      id="playAgainButton"
+      class="primary-button"
+    >
+      PLAY AGAIN
+    </button>
+
+
+    <button
+      id="completionHomeButton"
+      class="secondary-button"
+    >
+      RETURN HOME
+    </button>
+
+
+  </div>
+
+
+</section>
+
+
+
 </main>
 
 
@@ -1055,7 +1658,7 @@
 
 
 /* =========================================
-   GET IMPORTANT SCREEN ELEMENTS
+   SCREEN ELEMENTS
 ========================================= */
 
 
@@ -1077,9 +1680,33 @@ const homeScreen =
   );
 
 
+const gameScreen =
+  document.getElementById(
+    "gameScreen"
+  );
+
+
+const completionScreen =
+  document.getElementById(
+    "completionScreen"
+  );
+
+
+
+const allScreens = [
+
+  splashScreen,
+  profileScreen,
+  homeScreen,
+  gameScreen,
+  completionScreen
+
+];
+
+
 
 /* =========================================
-   GET BUTTONS
+   BUTTONS
 ========================================= */
 
 
@@ -1125,9 +1752,39 @@ const changeProfileButton =
   );
 
 
+const rollButton =
+  document.getElementById(
+    "rollButton"
+  );
+
+
+const homeButton =
+  document.getElementById(
+    "homeButton"
+  );
+
+
+const resetBoardButton =
+  document.getElementById(
+    "resetBoardButton"
+  );
+
+
+const playAgainButton =
+  document.getElementById(
+    "playAgainButton"
+  );
+
+
+const completionHomeButton =
+  document.getElementById(
+    "completionHomeButton"
+  );
+
+
 
 /* =========================================
-   PROFILE VARIABLES
+   PROFILE ELEMENTS
 ========================================= */
 
 
@@ -1155,6 +1812,30 @@ const homeAvatar =
   );
 
 
+const homeXP =
+  document.getElementById(
+    "homeXP"
+  );
+
+
+const homeWords =
+  document.getElementById(
+    "homeWords"
+  );
+
+
+const homeLevel =
+  document.getElementById(
+    "homeLevel"
+  );
+
+
+const homePosition =
+  document.getElementById(
+    "homePosition"
+  );
+
+
 const comingSoon =
   document.getElementById(
     "comingSoon"
@@ -1162,7 +1843,133 @@ const comingSoon =
 
 
 
+/* =========================================
+   GAME ELEMENTS
+========================================= */
+
+
+const gameBoard =
+  document.getElementById(
+    "gameBoard"
+  );
+
+
+const gameAvatar =
+  document.getElementById(
+    "gameAvatar"
+  );
+
+
+const gameNickname =
+  document.getElementById(
+    "gameNickname"
+  );
+
+
+const gamePosition =
+  document.getElementById(
+    "gamePosition"
+  );
+
+
+const diceFace =
+  document.getElementById(
+    "diceFace"
+  );
+
+
+const diceResult =
+  document.getElementById(
+    "diceResult"
+  );
+
+
+const gameMessage =
+  document.getElementById(
+    "gameMessage"
+  );
+
+
+const completionText =
+  document.getElementById(
+    "completionText"
+  );
+
+
+
+/* =========================================
+   APP VARIABLES
+========================================= */
+
+
 let selectedAvatar = "🧑";
+
+
+let isMoving = false;
+
+
+const diceFaces = {
+
+  1: "⚀",
+  2: "⚁",
+  3: "⚂",
+  4: "⚃",
+  5: "⚄",
+  6: "⚅"
+
+};
+
+
+
+/* =========================================
+   LOCAL STORAGE
+========================================= */
+
+
+function getProfile() {
+
+
+  const saved =
+    localStorage.getItem(
+      "lexitrekProfile"
+    );
+
+
+  if (!saved) {
+
+    return null;
+
+  }
+
+
+  try {
+
+    return JSON.parse(saved);
+
+  }
+
+  catch (error) {
+
+    return null;
+
+  }
+
+}
+
+
+
+function saveProfile(profile) {
+
+
+  localStorage.setItem(
+
+    "lexitrekProfile",
+
+    JSON.stringify(profile)
+
+  );
+
+}
 
 
 
@@ -1173,16 +1980,15 @@ let selectedAvatar = "🧑";
 
 function showScreen(screen) {
 
-  splashScreen.classList.remove(
-    "active"
-  );
 
-  profileScreen.classList.remove(
-    "active"
-  );
+  allScreens.forEach(
+    function (item) {
 
-  homeScreen.classList.remove(
-    "active"
+      item.classList.remove(
+        "active"
+      );
+
+    }
   );
 
 
@@ -1190,12 +1996,18 @@ function showScreen(screen) {
     "active"
   );
 
+
+  window.scrollTo(
+    0,
+    0
+  );
+
 }
 
 
 
 /* =========================================
-   START BUTTON
+   START APP
 ========================================= */
 
 
@@ -1203,17 +2015,12 @@ startButton.addEventListener(
   "click",
   function () {
 
-    const savedProfile =
-      localStorage.getItem(
-        "lexitrekProfile"
-      );
+
+    const profile =
+      getProfile();
 
 
-    if (savedProfile) {
-
-      const profile =
-        JSON.parse(savedProfile);
-
+    if (profile) {
 
       loadHome(profile);
 
@@ -1245,6 +2052,7 @@ const avatars =
 
 avatars.forEach(
   function (avatarButton) {
+
 
     avatarButton.addEventListener(
       "click",
@@ -1279,7 +2087,7 @@ avatars.forEach(
 
 
 /* =========================================
-   CREATE PROFILE
+   SAVE / UPDATE PROFILE
 ========================================= */
 
 
@@ -1305,28 +2113,45 @@ saveProfileButton.addEventListener(
     profileError.textContent = "";
 
 
+    const existingProfile =
+      getProfile() || {};
+
+
     const profile = {
 
-      nickname: nickname,
 
-      avatar: selectedAvatar,
+      nickname:
+        nickname,
 
-      xp: 0,
 
-      wordsLearned: 0,
+      avatar:
+        selectedAvatar,
 
-      level: 1
+
+      xp:
+        existingProfile.xp || 0,
+
+
+      wordsLearned:
+        existingProfile.wordsLearned || 0,
+
+
+      level:
+        existingProfile.level || 1,
+
+
+      currentPosition:
+        existingProfile.currentPosition || 1,
+
+
+      completedGames:
+        existingProfile.completedGames || 0
+
 
     };
 
 
-    localStorage.setItem(
-
-      "lexitrekProfile",
-
-      JSON.stringify(profile)
-
-    );
+    saveProfile(profile);
 
 
     loadHome(profile);
@@ -1344,12 +2169,66 @@ saveProfileButton.addEventListener(
 function loadHome(profile) {
 
 
+  if (!profile.currentPosition) {
+
+    profile.currentPosition = 1;
+
+  }
+
+
   homeNickname.textContent =
     profile.nickname;
 
 
   homeAvatar.textContent =
     profile.avatar;
+
+
+  homeXP.textContent =
+    profile.xp || 0;
+
+
+  homeWords.textContent =
+    profile.wordsLearned || 0;
+
+
+  homeLevel.textContent =
+    profile.level || 1;
+
+
+  homePosition.textContent =
+
+    "Current position: Square " +
+    profile.currentPosition;
+
+
+  if (
+    profile.currentPosition >= 30
+  ) {
+
+    playButton.textContent =
+      "VIEW COMPLETION";
+
+  }
+
+  else if (
+    profile.currentPosition > 1
+  ) {
+
+    playButton.textContent =
+      "CONTINUE ADVENTURE";
+
+  }
+
+  else {
+
+    playButton.textContent =
+      "PLAY ADVENTURE";
+
+  }
+
+
+  comingSoon.textContent = "";
 
 
   showScreen(
@@ -1361,7 +2240,7 @@ function loadHome(profile) {
 
 
 /* =========================================
-   BACK BUTTON
+   PROFILE NAVIGATION
 ========================================= */
 
 
@@ -1378,28 +2257,16 @@ backButton.addEventListener(
 
 
 
-/* =========================================
-   CHANGE PROFILE
-========================================= */
-
-
 changeProfileButton.addEventListener(
   "click",
   function () {
 
 
-    const savedProfile =
-      localStorage.getItem(
-        "lexitrekProfile"
-      );
+    const profile =
+      getProfile();
 
 
-    if (savedProfile) {
-
-      const profile =
-        JSON.parse(
-          savedProfile
-        );
+    if (profile) {
 
 
       nicknameInput.value =
@@ -1412,6 +2279,7 @@ changeProfileButton.addEventListener(
 
       avatars.forEach(
         function (button) {
+
 
           button.classList.remove(
             "selected"
@@ -1445,7 +2313,262 @@ changeProfileButton.addEventListener(
 
 
 /* =========================================
-   TEMPORARY BUTTONS
+   BUILD THE BOARD
+========================================= */
+
+
+function buildBoard() {
+
+
+  gameBoard.innerHTML = "";
+
+
+  /*
+     We have 5 rows and
+     6 squares per row.
+
+     Bottom row:
+     1 2 3 4 5 6
+
+     Next row:
+     12 11 10 9 8 7
+
+     This creates the traditional
+     Snake & Ladder zig-zag path.
+  */
+
+
+  for (
+    let row = 4;
+    row >= 0;
+    row--
+  ) {
+
+
+    const firstNumber =
+      row * 6 + 1;
+
+
+    let numbers = [];
+
+
+    for (
+      let i = 0;
+      i < 6;
+      i++
+    ) {
+
+      numbers.push(
+        firstNumber + i
+      );
+
+    }
+
+
+    if (
+      row % 2 === 1
+    ) {
+
+      numbers.reverse();
+
+    }
+
+
+    numbers.forEach(
+      function (number) {
+
+
+        const cell =
+          document.createElement(
+            "div"
+          );
+
+
+        cell.className =
+          "board-cell";
+
+
+        cell.dataset.square =
+          number;
+
+
+        if (
+          number === 1
+        ) {
+
+          cell.classList.add(
+            "start-cell"
+          );
+
+        }
+
+
+        if (
+          number === 30
+        ) {
+
+          cell.classList.add(
+            "finish-cell"
+          );
+
+        }
+
+
+        const numberLabel =
+          document.createElement(
+            "span"
+          );
+
+
+        numberLabel.className =
+          "cell-number";
+
+
+        numberLabel.textContent =
+          number;
+
+
+        cell.appendChild(
+          numberLabel
+        );
+
+
+        if (
+          number === 1
+        ) {
+
+
+          const startLabel =
+            document.createElement(
+              "span"
+            );
+
+
+          startLabel.className =
+            "cell-label";
+
+
+          startLabel.textContent =
+            "START";
+
+
+          cell.appendChild(
+            startLabel
+          );
+
+        }
+
+
+        if (
+          number === 30
+        ) {
+
+
+          const finishLabel =
+            document.createElement(
+              "span"
+            );
+
+
+          finishLabel.className =
+            "cell-label";
+
+
+          finishLabel.textContent =
+            "FINISH";
+
+
+          cell.appendChild(
+            finishLabel
+          );
+
+        }
+
+
+        gameBoard.appendChild(
+          cell
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+
+/* =========================================
+   PLACE PLAYER TOKEN
+========================================= */
+
+
+function placePlayerToken(
+  position,
+  avatar
+) {
+
+
+  const oldToken =
+    document.querySelector(
+      ".player-token"
+    );
+
+
+  if (oldToken) {
+
+    oldToken.remove();
+
+  }
+
+
+  const cell =
+    document.querySelector(
+
+      '[data-square="' +
+      position +
+      '"]'
+
+    );
+
+
+  if (!cell) {
+
+    return;
+
+  }
+
+
+  const token =
+    document.createElement(
+      "div"
+    );
+
+
+  token.className =
+    "player-token";
+
+
+  token.textContent =
+    avatar;
+
+
+  cell.appendChild(
+    token
+  );
+
+
+  gamePosition.textContent =
+
+    "Square " +
+    position;
+
+}
+
+
+
+/* =========================================
+   OPEN GAME
 ========================================= */
 
 
@@ -1453,30 +2576,557 @@ playButton.addEventListener(
   "click",
   function () {
 
-    comingSoon.textContent =
-      "🎲 Game board coming in Prototype 0.1 Part C.";
+
+    const profile =
+      getProfile();
+
+
+    if (!profile) {
+
+      showScreen(
+        profileScreen
+      );
+
+      return;
+
+    }
+
+
+    if (
+      profile.currentPosition >= 30
+    ) {
+
+      showCompletion(
+        profile
+      );
+
+      return;
+
+    }
+
+
+    openGame(
+      profile
+    );
 
   }
 );
+
+
+
+function openGame(profile) {
+
+
+  buildBoard();
+
+
+  gameAvatar.textContent =
+    profile.avatar;
+
+
+  gameNickname.textContent =
+    profile.nickname;
+
+
+  placePlayerToken(
+
+    profile.currentPosition || 1,
+
+    profile.avatar
+
+  );
+
+
+  diceFace.textContent =
+    "⚀";
+
+
+  diceResult.textContent =
+    "Tap the button to roll.";
+
+
+  gameMessage.textContent =
+    "Reach Square 30 to complete your first adventure.";
+
+
+  rollButton.disabled =
+    false;
+
+
+  showScreen(
+    gameScreen
+  );
+
+}
+
+
+
+/* =========================================
+   DICE ROLL
+========================================= */
+
+
+rollButton.addEventListener(
+  "click",
+  async function () {
+
+
+    if (isMoving) {
+
+      return;
+
+    }
+
+
+    const profile =
+      getProfile();
+
+
+    if (!profile) {
+
+      return;
+
+    }
+
+
+    if (
+      profile.currentPosition >= 30
+    ) {
+
+      showCompletion(
+        profile
+      );
+
+      return;
+
+    }
+
+
+    isMoving =
+      true;
+
+
+    rollButton.disabled =
+      true;
+
+
+    gameMessage.textContent =
+      "Rolling the dice...";
+
+
+    /*
+      Short dice animation.
+    */
+
+
+    for (
+      let i = 0;
+      i < 7;
+      i++
+    ) {
+
+
+      const temporaryRoll =
+
+        Math.floor(
+          Math.random() * 6
+        ) + 1;
+
+
+      diceFace.textContent =
+        diceFaces[
+          temporaryRoll
+        ];
+
+
+      await sleep(
+        80
+      );
+
+    }
+
+
+
+    const roll =
+
+      Math.floor(
+        Math.random() * 6
+      ) + 1;
+
+
+    diceFace.textContent =
+      diceFaces[
+        roll
+      ];
+
+
+    diceResult.textContent =
+
+      "You rolled " +
+      roll +
+      "!";
+
+
+    gameMessage.textContent =
+
+      "Move " +
+      roll +
+      " square" +
+      (
+        roll > 1
+          ? "s."
+          : "."
+      );
+
+
+
+    let targetPosition =
+
+      profile.currentPosition +
+      roll;
+
+
+    /*
+      Prototype rule:
+
+      If the roll goes beyond 30,
+      the player simply stops at 30.
+    */
+
+
+    if (
+      targetPosition > 30
+    ) {
+
+      targetPosition = 30;
+
+    }
+
+
+
+    while (
+
+      profile.currentPosition
+      <
+      targetPosition
+
+    ) {
+
+
+      profile.currentPosition++;
+
+
+      placePlayerToken(
+
+        profile.currentPosition,
+
+        profile.avatar
+
+      );
+
+
+      await sleep(
+        260
+      );
+
+    }
+
+
+
+    saveProfile(
+      profile
+    );
+
+
+
+    if (
+      profile.currentPosition === 30
+    ) {
+
+
+      gameMessage.textContent =
+        "🏆 You reached Square 30!";
+
+
+      await sleep(
+        700
+      );
+
+
+      completeAdventure(
+        profile
+      );
+
+
+      return;
+
+    }
+
+
+
+    gameMessage.textContent =
+
+      "You are now on Square " +
+      profile.currentPosition +
+      ".";
+
+
+    isMoving =
+      false;
+
+
+    rollButton.disabled =
+      false;
+
+  }
+);
+
+
+
+/* =========================================
+   SMALL DELAY HELPER
+========================================= */
+
+
+function sleep(milliseconds) {
+
+
+  return new Promise(
+
+    function (resolve) {
+
+      setTimeout(
+        resolve,
+        milliseconds
+      );
+
+    }
+
+  );
+
+}
+
+
+
+/* =========================================
+   COMPLETE ADVENTURE
+========================================= */
+
+
+function completeAdventure(profile) {
+
+
+  profile.currentPosition =
+    30;
+
+
+  profile.completedGames =
+    (profile.completedGames || 0) + 1;
+
+
+  saveProfile(
+    profile
+  );
+
+
+  isMoving =
+    false;
+
+
+  showCompletion(
+    profile
+  );
+
+}
+
+
+
+function showCompletion(profile) {
+
+
+  completionText.textContent =
+
+    profile.nickname +
+    ", you reached Square 30 and completed your first LexiTrek journey!";
+
+
+  showScreen(
+    completionScreen
+  );
+
+}
+
+
+
+/* =========================================
+   PLAY AGAIN
+========================================= */
+
+
+playAgainButton.addEventListener(
+  "click",
+  function () {
+
+
+    const profile =
+      getProfile();
+
+
+    if (!profile) {
+
+      return;
+
+    }
+
+
+    profile.currentPosition =
+      1;
+
+
+    saveProfile(
+      profile
+    );
+
+
+    openGame(
+      profile
+    );
+
+  }
+);
+
+
+
+/* =========================================
+   RETURN HOME
+========================================= */
+
+
+homeButton.addEventListener(
+  "click",
+  function () {
+
+
+    const profile =
+      getProfile();
+
+
+    if (profile) {
+
+      loadHome(
+        profile
+      );
+
+    }
+
+  }
+);
+
+
+
+completionHomeButton.addEventListener(
+  "click",
+  function () {
+
+
+    const profile =
+      getProfile();
+
+
+    if (profile) {
+
+      loadHome(
+        profile
+      );
+
+    }
+
+  }
+);
+
+
+
+/* =========================================
+   RESET BOARD
+========================================= */
+
+
+resetBoardButton.addEventListener(
+  "click",
+  function () {
+
+
+    const confirmed =
+      confirm(
+
+        "Reset your board position to Square 1?"
+
+      );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    const profile =
+      getProfile();
+
+
+    if (!profile) {
+
+      return;
+
+    }
+
+
+    profile.currentPosition =
+      1;
+
+
+    saveProfile(
+      profile
+    );
+
+
+    openGame(
+      profile
+    );
+
+  }
+);
+
+
+
+/* =========================================
+   TEMPORARY MENU BUTTONS
+========================================= */
 
 
 backpackButton.addEventListener(
   "click",
   function () {
 
+
     comingSoon.textContent =
-      "🎒 Word Backpack will be unlocked soon.";
+
+      "🎒 Word Backpack will be added after the vocabulary system.";
 
   }
 );
+
 
 
 progressButton.addEventListener(
   "click",
   function () {
 
+
     comingSoon.textContent =
-      "📊 Progress tracking will be added later.";
+
+      "📊 Learning progress will be added after vocabulary tracking.";
 
   }
 );
