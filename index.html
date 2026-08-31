@@ -1,4771 +1,805 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LexiTrek</title>
-
-
   <style>
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Arial, Helvetica, sans-serif;
-
-      background:
-        linear-gradient(
-          180deg,
-          #dff7e5 0%,
-          #f7fff9 50%,
-          #e7f3ff 100%
-        );
-
+      background: linear-gradient(180deg, #dff7e5 0%, #f7fff9 50%, #e7f3ff 100%);
       color: #17352a;
-
       min-height: 100vh;
     }
-
-
-    button,
-    input {
-      font-family: inherit;
-    }
-
-
+    button, input { font-family: inherit; }
     .app {
-      width: 100%;
-      max-width: 520px;
-
-      min-height: 100vh;
-
-      margin: auto;
-
-      padding: 20px;
-
-      display: flex;
-      flex-direction: column;
+      width: 100%; max-width: 520px; min-height: 100vh; margin: auto; padding: 20px;
+      display: flex; flex-direction: column;
     }
-
-
-    .screen {
-      display: none;
-      flex: 1;
-    }
-
-
-    .screen.active {
-      display: flex;
-      flex-direction: column;
-    }
-
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      margin-bottom: 24px;
-    }
-
-
-    .brand {
-      color: #12613e;
-
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-
+    .screen { display: none; flex: 1; }
+    .screen.active { display: flex; flex-direction: column; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .brand { color: #12613e; font-weight: 800; letter-spacing: 1px; }
     .version {
-      background: white;
-
-      padding: 7px 12px;
-
-      border-radius: 20px;
-
-      font-size: 0.72rem;
-
-      box-shadow:
-        0 4px 15px rgba(0,0,0,0.07);
+      background: white; padding: 7px 12px; border-radius: 20px; font-size: 0.72rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.07);
     }
-
-
-
-    /* =====================================
-       BUTTONS
-    ===================================== */
-
-
     .primary-button {
-      width: 100%;
-
-      border: none;
-
-      background: #137548;
-
-      color: white;
-
-      padding: 17px;
-
-      border-radius: 17px;
-
-      font-size: 1rem;
-      font-weight: 800;
-
-      cursor: pointer;
-
-      box-shadow:
-        0 10px 22px rgba(19,117,72,0.23);
-
-      margin-top: 12px;
+      width: 100%; border: none; background: #137548; color: white; padding: 17px;
+      border-radius: 17px; font-size: 1rem; font-weight: 800; cursor: pointer;
+      box-shadow: 0 10px 22px rgba(19,117,72,0.23); margin-top: 12px;
     }
-
-
-    .primary-button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-
-    .primary-button:active {
-      transform: scale(0.98);
-    }
-
-
+    .primary-button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .primary-button:active { transform: scale(0.98); }
     .secondary-button {
-      width: 100%;
-
-      border: 2px solid #137548;
-
-      background: white;
-
-      color: #137548;
-
-      padding: 14px;
-
-      border-radius: 17px;
-
-      font-size: 0.95rem;
-      font-weight: 700;
-
-      cursor: pointer;
-
-      margin-top: 12px;
+      width: 100%; border: 2px solid #137548; background: white; color: #137548; padding: 14px;
+      border-radius: 17px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 12px;
     }
-
-
     .danger-button {
-      width: 100%;
-
-      border: none;
-
-      background: transparent;
-
-      color: #8b3a32;
-
-      padding: 13px;
-
-      font-size: 0.85rem;
-      font-weight: 700;
-
-      cursor: pointer;
-
-      margin-top: 5px;
+      width: 100%; border: none; background: transparent; color: #8b3a32; padding: 13px;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 5px;
     }
-
-
-
-    /* =====================================
-       SPLASH
-    ===================================== */
-
-
-    .hero {
-      flex: 1;
-
-      display: flex;
-      flex-direction: column;
-
-      justify-content: center;
-
-      text-align: center;
-    }
-
-
+    .hero { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
     .logo-circle {
-      width: 105px;
-      height: 105px;
-
-      margin: 0 auto 20px;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      border-radius: 50%;
-
-      background: white;
-
-      font-size: 3rem;
-
-      box-shadow:
-        0 12px 30px rgba(22,90,60,0.16);
+      width: 105px; height: 105px; margin: 0 auto 20px; display: flex; justify-content: center;
+      align-items: center; border-radius: 50%; background: white; font-size: 3rem;
+      box-shadow: 0 12px 30px rgba(22,90,60,0.16);
     }
-
-
-    h1 {
-      font-size: 2.8rem;
-
-      color: #12613e;
-
-      margin-bottom: 8px;
-    }
-
-
-    .tagline {
-      font-size: 1.15rem;
-      font-weight: 700;
-
-      margin-bottom: 10px;
-    }
-
-
-    .description {
-      max-width: 340px;
-
-      margin: 0 auto 30px;
-
-      color: #52675f;
-
-      line-height: 1.55;
-    }
-
-
-    .feature-row {
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 10px;
-
-      margin-bottom: 32px;
-    }
-
-
+    h1 { font-size: 2.8rem; color: #12613e; margin-bottom: 8px; }
+    .tagline { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+    .description { max-width: 340px; margin: 0 auto 30px; color: #52675f; line-height: 1.55; }
+    .feature-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 32px; }
     .feature {
-      background: rgba(255,255,255,0.9);
-
-      padding: 15px 8px;
-
-      border-radius: 18px;
-
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.9); padding: 15px 8px; border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     }
-
-
-    .feature-icon {
-      font-size: 1.8rem;
-
-      margin-bottom: 6px;
-    }
-
-
-    .feature-title {
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-
-
-    /* =====================================
-       PROFILE
-    ===================================== */
-
-
-    .section-title {
-      color: #12613e;
-
-      font-size: 1.8rem;
-
-      margin-bottom: 8px;
-    }
-
-
-    .section-description {
-      color: #60736b;
-
-      line-height: 1.5;
-
-      margin-bottom: 24px;
-    }
-
-
+    .feature-icon { font-size: 1.8rem; margin-bottom: 6px; }
+    .feature-title { font-size: 0.8rem; font-weight: 700; }
+    .section-title { color: #12613e; font-size: 1.8rem; margin-bottom: 8px; }
+    .section-description { color: #60736b; line-height: 1.5; margin-bottom: 24px; }
     .profile-card {
-      background: white;
-
-      padding: 24px;
-
-      border-radius: 24px;
-
-      box-shadow:
-        0 10px 30px rgba(0,0,0,0.08);
+      background: white; padding: 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
-
-
-    label {
-      display: block;
-
-      font-weight: 700;
-
-      margin-bottom: 9px;
-    }
-
-
+    label { display: block; font-weight: 700; margin-bottom: 9px; }
     input {
-      width: 100%;
-
-      padding: 15px;
-
-      border: 2px solid #d9e5df;
-
-      border-radius: 14px;
-
-      font-size: 1rem;
-
-      outline: none;
-
-      margin-bottom: 24px;
+      width: 100%; padding: 15px; border: 2px solid #d9e5df; border-radius: 14px;
+      font-size: 1rem; outline: none; margin-bottom: 24px;
     }
-
-
-    input:focus {
-      border-color: #137548;
-    }
-
-
-    .avatar-title {
-      font-weight: 700;
-
-      margin-bottom: 12px;
-    }
-
-
-    .avatar-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(4, 1fr);
-
-      gap: 10px;
-
-      margin-bottom: 15px;
-    }
-
-
+    input:focus { border-color: #137548; }
+    .avatar-title { font-weight: 700; margin-bottom: 12px; }
+    .avatar-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 15px; }
     .avatar {
-      background: #f3f8f5;
-
-      border: 3px solid transparent;
-
-      border-radius: 18px;
-
-      padding: 12px 4px;
-
-      font-size: 2rem;
-
-      text-align: center;
-
-      cursor: pointer;
+      background: #f3f8f5; border: 3px solid transparent; border-radius: 18px; padding: 12px 4px;
+      font-size: 2rem; text-align: center; cursor: pointer;
     }
-
-
-    .avatar.selected {
-      background: #e3f5e9;
-
-      border-color: #137548;
-    }
-
-
-    .error-message {
-      min-height: 22px;
-
-      color: #b3261e;
-
-      font-size: 0.85rem;
-      font-weight: 700;
-
-      margin-top: 8px;
-    }
-
-
-
-    /* =====================================
-       HOME
-    ===================================== */
-
-
+    .avatar.selected { background: #e3f5e9; border-color: #137548; }
+    .error-message { min-height: 22px; color: #b3261e; font-size: 0.85rem; font-weight: 700; margin-top: 8px; }
     .student-header {
-      display: flex;
-      align-items: center;
-
-      gap: 15px;
-
-      background: white;
-
-      padding: 18px;
-
-      border-radius: 22px;
-
-      margin-bottom: 18px;
-
-      box-shadow:
-        0 8px 24px rgba(0,0,0,0.07);
+      display: flex; align-items: center; gap: 15px; background: white; padding: 18px; border-radius: 22px;
+      margin-bottom: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.07);
     }
-
-
     .student-avatar {
-      width: 64px;
-      height: 64px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-
-      background: #e4f6ea;
-
-      font-size: 2rem;
+      width: 64px; height: 64px; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: #e4f6ea; font-size: 2rem;
     }
-
-
-    .hello {
-      color: #667970;
-
-      font-size: 0.8rem;
-
-      margin-bottom: 3px;
-    }
-
-
-    .student-name {
-      color: #12613e;
-
-      font-size: 1.35rem;
-      font-weight: 800;
-    }
-
-
-    .stats {
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, 1fr);
-
-      gap: 10px;
-
-      margin-bottom: 20px;
-    }
-
-
-    .stat {
-      background: white;
-
-      text-align: center;
-
-      padding: 14px 6px;
-
-      border-radius: 18px;
-
-      box-shadow:
-        0 5px 16px rgba(0,0,0,0.05);
-    }
-
-
-    .stat-number {
-      color: #137548;
-
-      font-size: 1.15rem;
-      font-weight: 800;
-
-      margin-bottom: 4px;
-    }
-
-
-    .stat-label {
-      color: #667970;
-
-      font-size: 0.72rem;
-    }
-
-
+    .hello { color: #667970; font-size: 0.8rem; margin-bottom: 3px; }
+    .student-name { color: #12613e; font-size: 1.35rem; font-weight: 800; }
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+    .stat { background: white; text-align: center; padding: 14px 6px; border-radius: 18px; box-shadow: 0 5px 16px rgba(0,0,0,0.05); }
+    .stat-number { color: #137548; font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+    .stat-label { color: #667970; font-size: 0.72rem; }
     .adventure-card {
-      background:
-        linear-gradient(
-          135deg,
-          #137548,
-          #0c5635
-        );
-
-      color: white;
-
-      padding: 24px;
-
-      border-radius: 24px;
-
-      margin-bottom: 18px;
-
-      box-shadow:
-        0 12px 30px rgba(19,117,72,0.22);
+      background: linear-gradient(135deg,#137548,#0c5635); color: white; padding: 24px; border-radius: 24px;
+      margin-bottom: 18px; box-shadow: 0 12px 30px rgba(19,117,72,0.22);
     }
-
-
-    .adventure-card h2 {
-      margin-bottom: 8px;
-    }
-
-
-    .adventure-card p {
-      line-height: 1.5;
-
-      opacity: 0.92;
-
-      margin-bottom: 10px;
-    }
-
-
-    .position-text {
-      font-size: 0.85rem;
-      font-weight: 700;
-
-      margin-bottom: 16px;
-    }
-
-
-    .play-button {
-      width: 100%;
-
-      border: none;
-
-      background: white;
-
-      color: #12613e;
-
-      padding: 15px;
-
-      border-radius: 15px;
-
-      font-weight: 800;
-
-      cursor: pointer;
-    }
-
-
-    .menu-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 12px;
-
-      margin-bottom: 18px;
-    }
-
-
-    .menu-card {
-      background: white;
-
-      border: none;
-
-      border-radius: 20px;
-
-      padding: 20px 10px;
-
-      cursor: pointer;
-
-      box-shadow:
-        0 7px 20px rgba(0,0,0,0.06);
-    }
-
-
-    .menu-icon {
-      font-size: 2rem;
-
-      margin-bottom: 8px;
-    }
-
-
-    .menu-title {
-      color: #17352a;
-
-      font-weight: 700;
-    }
-
-
-    .coming-soon {
-      min-height: 24px;
-
-      text-align: center;
-
-      color: #137548;
-
-      font-size: 0.85rem;
-      font-weight: 700;
-    }
-
-
-
-    /* =====================================
-       GAME
-    ===================================== */
-
-
+    .adventure-card h2 { margin-bottom: 8px; }
+    .adventure-card p { line-height: 1.5; opacity: 0.92; margin-bottom: 10px; }
+    .position-text { font-size: 0.85rem; font-weight: 700; margin-bottom: 16px; }
+    .play-button { width: 100%; border: none; background: white; color: #12613e; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 18px; }
+    .menu-card { background: white; border: none; border-radius: 20px; padding: 20px 10px; cursor: pointer; box-shadow: 0 7px 20px rgba(0,0,0,0.06); }
+    .menu-icon { font-size: 2rem; margin-bottom: 8px; }
+    .menu-title { color: #17352a; font-weight: 700; }
+    .coming-soon { min-height: 24px; text-align: center; color: #137548; font-size: 0.85rem; font-weight: 700; }
     .game-player-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      background: white;
-
-      border-radius: 18px;
-
-      padding: 12px 15px;
-
-      margin-bottom: 14px;
-
-      box-shadow:
-        0 5px 18px rgba(0,0,0,0.06);
+      display: flex; align-items: center; justify-content: space-between; background: white; border-radius: 18px;
+      padding: 12px 15px; margin-bottom: 14px; box-shadow: 0 5px 18px rgba(0,0,0,0.06);
     }
-
-
-    .game-player {
-      display: flex;
-      align-items: center;
-
-      gap: 10px;
-    }
-
-
-    .game-avatar {
-      width: 42px;
-      height: 42px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-
-      background: #e4f6ea;
-
-      font-size: 1.5rem;
-    }
-
-
-    .game-player-name {
-      font-size: 0.95rem;
-      font-weight: 800;
-    }
-
-
-    .game-position {
-      color: #137548;
-
-      font-size: 0.8rem;
-      font-weight: 800;
-    }
-
-
-    .board-wrapper {
-      background: white;
-
-      padding: 9px;
-
-      border-radius: 22px;
-
-      box-shadow:
-        0 9px 28px rgba(0,0,0,0.08);
-
-      margin-bottom: 16px;
-    }
-
-
-    .board {
-      display: grid;
-
-      grid-template-columns:
-        repeat(6, 1fr);
-
-      gap: 4px;
-
-      width: 100%;
-    }
-
-
+    .game-player { display: flex; align-items: center; gap: 10px; }
+    .game-avatar { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #e4f6ea; font-size: 1.5rem; }
+    .game-player-name { font-size: 0.95rem; font-weight: 800; }
+    .game-position { color: #137548; font-size: 0.8rem; font-weight: 800; }
+    .board-wrapper { background: white; padding: 9px; border-radius: 22px; box-shadow: 0 9px 28px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    .board { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px; width: 100%; }
     .board-cell {
-      aspect-ratio: 1 / 1;
-
-      position: relative;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 10px;
-
-      background: #eef7f1;
-
-      border: 1px solid #d9e9df;
-
-      font-size: 0.75rem;
-      font-weight: 800;
-
-      color: #426257;
+      aspect-ratio: 1/1; position: relative; display: flex; align-items: center; justify-content: center;
+      border-radius: 10px; background: #eef7f1; border: 1px solid #d9e9df; font-size: 0.75rem;
+      font-weight: 800; color: #426257;
     }
-
-
-    .board-cell:nth-child(odd) {
-      background: #e5f3ea;
-    }
-
-
-    .board-cell.start-cell {
-      background: #d8f5df;
-
-      color: #0c6438;
-    }
-
-
-    .board-cell.finish-cell {
-      background: #fff0b8;
-
-      color: #7a5b00;
-    }
-
-
-    .cell-number {
-      position: absolute;
-
-      top: 5px;
-      left: 6px;
-
-      font-size: 0.65rem;
-
-      opacity: 0.8;
-    }
-
-
-    .cell-label {
-      position: absolute;
-
-      bottom: 4px;
-
-      font-size: 0.48rem;
-
-      letter-spacing: 0.3px;
-    }
-
-
-    .player-token {
-      position: relative;
-
-      z-index: 3;
-
-      font-size: 1.65rem;
-
-      animation: tokenPop 0.2s ease;
-    }
-
-
-    @keyframes tokenPop {
-
-      from {
-        transform: scale(0.6);
-      }
-
-      to {
-        transform: scale(1);
-      }
-
-    }
-
-
-    .dice-area {
-      background: white;
-
-      padding: 16px;
-
-      border-radius: 22px;
-
-      text-align: center;
-
-      box-shadow:
-        0 7px 22px rgba(0,0,0,0.06);
-
-      margin-bottom: 12px;
-    }
-
-
-    .dice-face {
-      font-size: 4rem;
-
-      line-height: 1;
-
-      color: #17352a;
-
-      margin-bottom: 6px;
-    }
-
-
-    .dice-result {
-      min-height: 24px;
-
-      color: #52675f;
-
-      font-size: 0.9rem;
-      font-weight: 700;
-
-      margin-bottom: 5px;
-    }
-
-
-    .game-message {
-      min-height: 42px;
-
-      margin-top: 12px;
-
-      padding: 10px;
-
-      border-radius: 12px;
-
-      background: #eff8f2;
-
-      color: #12613e;
-
-      line-height: 1.4;
-
-      font-size: 0.87rem;
-      font-weight: 700;
-    }
-
-
-
-    /* =====================================
-       VOCABULARY CHALLENGE
-    ===================================== */
-
-
+    .board-cell:nth-child(odd) { background: #e5f3ea; }
+    .board-cell.start-cell { background: #d8f5df; color: #0c6438; }
+    .board-cell.finish-cell { background: #fff0b8; color: #7a5b00; }
+    .cell-number { position: absolute; top: 5px; left: 6px; font-size: 0.65rem; opacity: 0.8; }
+    .cell-label { position: absolute; bottom: 4px; font-size: 0.48rem; letter-spacing: 0.3px; }
+    .player-token { position: relative; z-index: 3; font-size: 1.65rem; animation: tokenPop 0.2s ease; }
+    @keyframes tokenPop { from { transform: scale(0.6); } to { transform: scale(1); } }
+    .dice-area { background: white; padding: 16px; border-radius: 22px; text-align: center; box-shadow: 0 7px 22px rgba(0,0,0,0.06); margin-bottom: 12px; }
+    .dice-face { font-size: 4rem; line-height: 1; color: #17352a; margin-bottom: 6px; }
+    .dice-result { min-height: 24px; color: #52675f; font-size: 0.9rem; font-weight: 700; margin-bottom: 5px; }
+    .game-message { min-height: 42px; margin-top: 12px; padding: 10px; border-radius: 12px; background: #eff8f2; color: #12613e; line-height: 1.4; font-size: 0.87rem; font-weight: 700; }
     .vocab-overlay {
-      display: none;
-
-      position: fixed;
-
-      inset: 0;
-
-      z-index: 1000;
-
-      background: rgba(10,35,25,0.72);
-
-      padding: 20px;
-
-      align-items: center;
-      justify-content: center;
-
-      overflow-y: auto;
+      display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(10,35,25,0.72);
+      padding: 20px; align-items: center; justify-content: center; overflow-y: auto;
     }
-
-
-    .vocab-overlay.active {
-      display: flex;
-    }
-
-
-    .vocab-card {
-      width: 100%;
-      max-width: 440px;
-
-      background: white;
-
-      border-radius: 26px;
-
-      padding: 25px;
-
-      box-shadow:
-        0 20px 60px rgba(0,0,0,0.25);
-    }
-
-
-    .vocab-small-title {
-      color: #137548;
-
-      font-size: 0.78rem;
-
-      font-weight: 800;
-
-      letter-spacing: 0.7px;
-
-      margin-bottom: 15px;
-    }
-
-
-    .vocab-word {
-      color: #12613e;
-
-      font-size: 2rem;
-
-      font-weight: 900;
-
-      margin-bottom: 12px;
-
-      text-transform: capitalize;
-    }
-
-
-    .vocab-question {
-      color: #344b42;
-
-      line-height: 1.5;
-
-      font-weight: 700;
-
-      margin-bottom: 20px;
-    }
-
-
-    .vocab-options {
-      display: grid;
-
-      gap: 10px;
-    }
-
-
+    .vocab-overlay.active { display: flex; }
+    .vocab-card { width: 100%; max-width: 440px; background: white; border-radius: 26px; padding: 25px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+    .vocab-small-title { color: #137548; font-size: 0.78rem; font-weight: 800; letter-spacing: 0.7px; margin-bottom: 15px; }
+    .vocab-word { color: #12613e; font-size: 2rem; font-weight: 900; margin-bottom: 12px; text-transform: capitalize; }
+    .vocab-question { color: #344b42; line-height: 1.5; font-weight: 700; margin-bottom: 20px; }
+    .vocab-options { display: grid; gap: 10px; }
     .vocab-option {
-      width: 100%;
-
-      border: 2px solid #dce8e1;
-
-      background: #f8fbf9;
-
-      color: #213b31;
-
-      padding: 14px;
-
-      border-radius: 14px;
-
-      text-align: left;
-
-      font-size: 0.95rem;
-
-      cursor: pointer;
+      width: 100%; border: 2px solid #dce8e1; background: #f8fbf9; color: #213b31; padding: 14px;
+      border-radius: 14px; text-align: left; font-size: 0.95rem; cursor: pointer;
     }
-
-
-    .vocab-option:hover {
-      border-color: #137548;
-    }
-
-
-    .vocab-option.correct {
-      background: #e2f6e8;
-
-      border-color: #168548;
-    }
-
-
-    .vocab-option.wrong {
-      background: #fde8e6;
-
-      border-color: #c84b42;
-    }
-
-
-    .vocab-option:disabled {
-      cursor: default;
-    }
-
-
-    .vocab-feedback {
-      min-height: 20px;
-
-      margin-top: 16px;
-
-      line-height: 1.5;
-
-      font-size: 0.9rem;
-    }
-
-
-    .vocab-feedback.correct-feedback {
-      color: #12613e;
-    }
-
-
-    .vocab-feedback.wrong-feedback {
-      color: #7d332d;
-    }
-
-
-    .hidden {
-      display: none !important;
-    }
-
-
-
-    /* =====================================
-       COMPLETION
-    ===================================== */
-
-
-    .completion-box {
-      flex: 1;
-
-      display: flex;
-      flex-direction: column;
-
-      justify-content: center;
-
-      text-align: center;
-    }
-
-
-    .completion-icon {
-      font-size: 5rem;
-
-      margin-bottom: 18px;
-    }
-
-
-    .completion-title {
-      color: #12613e;
-
-      font-size: 2rem;
-
-      margin-bottom: 10px;
-    }
-
-
-    .completion-text {
-      color: #566d63;
-
-      line-height: 1.55;
-
-      margin-bottom: 20px;
-    }
-
-
-    footer {
-      text-align: center;
-
-      padding-top: 22px;
-
-      color: #75877f;
-
-      font-size: 0.72rem;
-    }
-
-
-
-    /* =====================================
-       SMALL PHONES
-    ===================================== */
-
-
+    .vocab-option:hover { border-color: #137548; }
+    .vocab-option.correct { background: #e2f6e8; border-color: #168548; }
+    .vocab-option.wrong { background: #fde8e6; border-color: #c84b42; }
+    .vocab-option:disabled { cursor: default; }
+    .vocab-feedback { min-height: 20px; margin-top: 16px; line-height: 1.5; font-size: 0.9rem; }
+    .vocab-feedback.correct-feedback { color: #12613e; }
+    .vocab-feedback.wrong-feedback { color: #7d332d; }
+    .hidden { display: none !important; }
+    .completion-box { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+    .completion-icon { font-size: 5rem; margin-bottom: 18px; }
+    .completion-title { color: #12613e; font-size: 2rem; margin-bottom: 10px; }
+    .completion-text { color: #566d63; line-height: 1.55; margin-bottom: 20px; }
+    footer { text-align: center; padding-top: 22px; color: #75877f; font-size: 0.72rem; }
     @media (max-width: 380px) {
-
-      .app {
-        padding: 14px;
-      }
-
-
-      .board-cell {
-        border-radius: 7px;
-      }
-
-
-      .player-token {
-        font-size: 1.35rem;
-      }
-
-
-      .cell-number {
-        font-size: 0.55rem;
-      }
-
+      .app { padding: 14px; }
+      .board-cell { border-radius: 7px; }
+      .player-token { font-size: 1.35rem; }
+      .cell-number { font-size: 0.55rem; }
     }
-
   </style>
-
 </head>
-
-
-
 <body>
-
-
 <main class="app">
-
-
-<!-- =====================================
-     SCREEN 1: SPLASH
-===================================== -->
-
-
-<section
-  id="splashScreen"
-  class="screen active"
->
-
-  <div class="top-bar">
-
-    <div class="brand">
-      LEXITREK
+  <section id="splashScreen" class="screen active">
+    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.2B</div></div>
+    <div class="hero">
+      <div class="logo-circle">🗺️</div>
+      <h1>LexiTrek</h1>
+      <p class="tagline">Vocabulary Adventure</p>
+      <p class="description">Learn new English words, conquer challenges and journey across the LexiTrek board.</p>
+      <div class="feature-row">
+        <div class="feature"><div class="feature-icon">🎲</div><div class="feature-title">PLAY</div></div>
+        <div class="feature"><div class="feature-icon">🧠</div><div class="feature-title">LEARN</div></div>
+        <div class="feature"><div class="feature-icon">🏆</div><div class="feature-title">MASTER</div></div>
+      </div>
+      <button id="startButton" class="primary-button">START ADVENTURE</button>
     </div>
+    <footer>Form One English Vocabulary Learning</footer>
+  </section>
 
-    <div class="version">
-      Prototype 0.2
+  <section id="profileScreen" class="screen">
+    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Player Setup</div></div>
+    <h2 class="section-title">Create Your Explorer</h2>
+    <p class="section-description">Choose a nickname and an avatar before beginning your vocabulary adventure.</p>
+    <div class="profile-card">
+      <label for="nickname">Explorer Nickname</label>
+      <input type="text" id="nickname" maxlength="15" placeholder="Example: WordTiger">
+      <div class="avatar-title">Choose your explorer</div>
+      <div class="avatar-grid">
+        <button class="avatar selected" data-avatar="🧑">🧑</button>
+        <button class="avatar" data-avatar="👧">👧</button>
+        <button class="avatar" data-avatar="🥷">🥷</button>
+        <button class="avatar" data-avatar="🧙">🧙</button>
+        <button class="avatar" data-avatar="🐯">🐯</button>
+        <button class="avatar" data-avatar="🦊">🦊</button>
+        <button class="avatar" data-avatar="🐼">🐼</button>
+        <button class="avatar" data-avatar="🦁">🦁</button>
+      </div>
+      <button id="saveProfileButton" class="primary-button">SAVE EXPLORER</button>
+      <button id="backButton" class="secondary-button">BACK</button>
+      <div id="profileError" class="error-message"></div>
     </div>
+  </section>
 
+  <section id="homeScreen" class="screen">
+    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Explorer Home</div></div>
+    <div class="student-header">
+      <div id="homeAvatar" class="student-avatar">🧑</div>
+      <div><div class="hello">Welcome back,</div><div id="homeNickname" class="student-name">Explorer</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div id="homeXP" class="stat-number">0</div><div class="stat-label">XP</div></div>
+      <div class="stat"><div id="homeWords" class="stat-number">0</div><div class="stat-label">Words</div></div>
+      <div class="stat"><div id="homeLevel" class="stat-number">1</div><div class="stat-label">Level</div></div>
+    </div>
+    <div class="adventure-card">
+      <h2>🌿 Adventure 1</h2>
+      <p>Journey from Square 1 to Square 30.</p>
+      <div id="homePosition" class="position-text">Current position: Square 1</div>
+      <button id="playButton" class="play-button">PLAY ADVENTURE</button>
+    </div>
+    <div class="menu-grid">
+      <button id="backpackButton" class="menu-card"><div class="menu-icon">🎒</div><div class="menu-title">Word Backpack</div></button>
+      <button id="progressButton" class="menu-card"><div class="menu-icon">📊</div><div class="menu-title">My Progress</div></button>
+    </div>
+    <button id="changeProfileButton" class="secondary-button">EDIT EXPLORER</button>
+    <div id="comingSoon" class="coming-soon"></div>
+    <footer>Learn • Play • Remember • Master</footer>
+  </section>
+
+  <section id="gameScreen" class="screen">
+    <div class="top-bar"><div class="brand">ADVENTURE 1</div><div class="version">Board 1–30</div></div>
+    <div class="game-player-bar">
+      <div class="game-player"><div id="gameAvatar" class="game-avatar">🧑</div><div><div id="gameNickname" class="game-player-name">Explorer</div><div class="hello">Vocabulary Explorer</div></div></div>
+      <div id="gamePosition" class="game-position">Square 1</div>
+    </div>
+    <div class="board-wrapper"><div id="gameBoard" class="board"></div></div>
+    <div class="dice-area">
+      <div id="diceFace" class="dice-face">⚀</div>
+      <div id="diceResult" class="dice-result">Tap the button to roll.</div>
+      <button id="rollButton" class="primary-button">🎲 ROLL DICE</button>
+      <div id="gameMessage" class="game-message">Reach Square 30 to complete your first adventure.</div>
+    </div>
+    <button id="homeButton" class="secondary-button">← BACK TO HOME</button>
+    <button id="resetBoardButton" class="danger-button">Reset board position</button>
+  </section>
+
+  <div id="vocabOverlay" class="vocab-overlay">
+    <div class="vocab-card">
+      <div class="vocab-small-title">🧠 VOCABULARY CHALLENGE</div>
+      <div id="vocabWord" class="vocab-word">WORD</div>
+      <div id="vocabQuestion" class="vocab-question">Question appears here.</div>
+      <div id="vocabOptions" class="vocab-options"></div>
+      <div id="vocabFeedback" class="vocab-feedback"></div>
+      <button id="continueAfterAnswer" class="primary-button hidden">CONTINUE</button>
+    </div>
   </div>
 
-
-  <div class="hero">
-
-
-    <div class="logo-circle">
-      🗺️
+  <section id="completionScreen" class="screen">
+    <div class="completion-box">
+      <div class="completion-icon">🏆</div>
+      <h2 class="completion-title">Adventure Complete!</h2>
+      <p id="completionText" class="completion-text">You reached Square 30.</p>
+      <button id="playAgainButton" class="primary-button">PLAY AGAIN</button>
+      <button id="completionHomeButton" class="secondary-button">RETURN HOME</button>
     </div>
-
-
-    <h1>
-      LexiTrek
-    </h1>
-
-
-    <p class="tagline">
-      Vocabulary Adventure
-    </p>
-
-
-    <p class="description">
-
-      Learn new English words,
-      conquer challenges and journey
-      across the LexiTrek board.
-
-    </p>
-
-
-    <div class="feature-row">
-
-
-      <div class="feature">
-
-        <div class="feature-icon">
-          🎲
-        </div>
-
-        <div class="feature-title">
-          PLAY
-        </div>
-
-      </div>
-
-
-      <div class="feature">
-
-        <div class="feature-icon">
-          🧠
-        </div>
-
-        <div class="feature-title">
-          LEARN
-        </div>
-
-      </div>
-
-
-      <div class="feature">
-
-        <div class="feature-icon">
-          🏆
-        </div>
-
-        <div class="feature-title">
-          MASTER
-        </div>
-
-      </div>
-
-
-    </div>
-
-
-    <button
-      id="startButton"
-      class="primary-button"
-    >
-      START ADVENTURE
-    </button>
-
-
-  </div>
-
-
-  <footer>
-    Form One English Vocabulary Learning
-  </footer>
-
-
-</section>
-
-
-
-<!-- =====================================
-     SCREEN 2: PROFILE
-===================================== -->
-
-
-<section
-  id="profileScreen"
-  class="screen"
->
-
-
-  <div class="top-bar">
-
-    <div class="brand">
-      LEXITREK
-    </div>
-
-    <div class="version">
-      Player Setup
-    </div>
-
-  </div>
-
-
-  <h2 class="section-title">
-    Create Your Explorer
-  </h2>
-
-
-  <p class="section-description">
-
-    Choose a nickname and an avatar
-    before beginning your vocabulary
-    adventure.
-
-  </p>
-
-
-  <div class="profile-card">
-
-
-    <label for="nickname">
-      Explorer Nickname
-    </label>
-
-
-    <input
-      type="text"
-      id="nickname"
-      maxlength="15"
-      placeholder="Example: WordTiger"
-    >
-
-
-    <div class="avatar-title">
-      Choose your explorer
-    </div>
-
-
-    <div class="avatar-grid">
-
-
-      <button class="avatar selected" data-avatar="🧑">
-        🧑
-      </button>
-
-      <button class="avatar" data-avatar="👧">
-        👧
-      </button>
-
-      <button class="avatar" data-avatar="🥷">
-        🥷
-      </button>
-
-      <button class="avatar" data-avatar="🧙">
-        🧙
-      </button>
-
-      <button class="avatar" data-avatar="🐯">
-        🐯
-      </button>
-
-      <button class="avatar" data-avatar="🦊">
-        🦊
-      </button>
-
-      <button class="avatar" data-avatar="🐼">
-        🐼
-      </button>
-
-      <button class="avatar" data-avatar="🦁">
-        🦁
-      </button>
-
-
-    </div>
-
-
-    <button
-      id="saveProfileButton"
-      class="primary-button"
-    >
-      SAVE EXPLORER
-    </button>
-
-
-    <button
-      id="backButton"
-      class="secondary-button"
-    >
-      BACK
-    </button>
-
-
-    <div
-      id="profileError"
-      class="error-message"
-    ></div>
-
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =====================================
-     SCREEN 3: HOME
-===================================== -->
-
-
-<section
-  id="homeScreen"
-  class="screen"
->
-
-
-  <div class="top-bar">
-
-    <div class="brand">
-      LEXITREK
-    </div>
-
-    <div class="version">
-      Explorer Home
-    </div>
-
-  </div>
-
-
-  <div class="student-header">
-
-
-    <div
-      id="homeAvatar"
-      class="student-avatar"
-    >
-      🧑
-    </div>
-
-
-    <div>
-
-      <div class="hello">
-        Welcome back,
-      </div>
-
-      <div
-        id="homeNickname"
-        class="student-name"
-      >
-        Explorer
-      </div>
-
-    </div>
-
-
-  </div>
-
-
-
-  <div class="stats">
-
-
-    <div class="stat">
-
-      <div
-        id="homeXP"
-        class="stat-number"
-      >
-        0
-      </div>
-
-      <div class="stat-label">
-        XP
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div
-        id="homeWords"
-        class="stat-number"
-      >
-        0
-      </div>
-
-      <div class="stat-label">
-        Words
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div
-        id="homeLevel"
-        class="stat-number"
-      >
-        1
-      </div>
-
-      <div class="stat-label">
-        Level
-      </div>
-
-    </div>
-
-
-  </div>
-
-
-
-  <div class="adventure-card">
-
-
-    <h2>
-      🌿 Adventure 1
-    </h2>
-
-
-    <p>
-      Journey from Square 1 to Square 30.
-    </p>
-
-
-    <div
-      id="homePosition"
-      class="position-text"
-    >
-      Current position: Square 1
-    </div>
-
-
-    <button
-      id="playButton"
-      class="play-button"
-    >
-      PLAY ADVENTURE
-    </button>
-
-
-  </div>
-
-
-
-  <div class="menu-grid">
-
-
-    <button
-      id="backpackButton"
-      class="menu-card"
-    >
-
-      <div class="menu-icon">
-        🎒
-      </div>
-
-      <div class="menu-title">
-        Word Backpack
-      </div>
-
-    </button>
-
-
-    <button
-      id="progressButton"
-      class="menu-card"
-    >
-
-      <div class="menu-icon">
-        📊
-      </div>
-
-      <div class="menu-title">
-        My Progress
-      </div>
-
-    </button>
-
-
-  </div>
-
-
-  <button
-    id="changeProfileButton"
-    class="secondary-button"
-  >
-    EDIT EXPLORER
-  </button>
-
-
-  <div
-    id="comingSoon"
-    class="coming-soon"
-  ></div>
-
-
-  <footer>
-    Learn • Play • Remember • Master
-  </footer>
-
-
-</section>
-
-
-
-<!-- =====================================
-     SCREEN 4: GAME
-===================================== -->
-
-
-<section
-  id="gameScreen"
-  class="screen"
->
-
-
-  <div class="top-bar">
-
-    <div class="brand">
-      ADVENTURE 1
-    </div>
-
-    <div class="version">
-      Board 1–30
-    </div>
-
-  </div>
-
-
-
-  <div class="game-player-bar">
-
-
-    <div class="game-player">
-
-
-      <div
-        id="gameAvatar"
-        class="game-avatar"
-      >
-        🧑
-      </div>
-
-
-      <div>
-
-        <div
-          id="gameNickname"
-          class="game-player-name"
-        >
-          Explorer
-        </div>
-
-        <div class="hello">
-          Vocabulary Explorer
-        </div>
-
-      </div>
-
-
-    </div>
-
-
-    <div
-      id="gamePosition"
-      class="game-position"
-    >
-      Square 1
-    </div>
-
-
-  </div>
-
-
-
-  <div class="board-wrapper">
-
-    <div
-      id="gameBoard"
-      class="board"
-    ></div>
-
-  </div>
-
-
-
-  <div class="dice-area">
-
-
-    <div
-      id="diceFace"
-      class="dice-face"
-    >
-      ⚀
-    </div>
-
-
-    <div
-      id="diceResult"
-      class="dice-result"
-    >
-      Tap the button to roll.
-    </div>
-
-
-    <button
-      id="rollButton"
-      class="primary-button"
-    >
-      🎲 ROLL DICE
-    </button>
-
-
-    <div
-      id="gameMessage"
-      class="game-message"
-    >
-      Reach Square 30 to complete your first adventure.
-    </div>
-
-
-  </div>
-
-
-
-  <button
-    id="homeButton"
-    class="secondary-button"
-  >
-    ← BACK TO HOME
-  </button>
-
-
-  <button
-    id="resetBoardButton"
-    class="danger-button"
-  >
-    Reset board position
-  </button>
-
-
-</section>
-
-
-
-<!-- =====================================
-     VOCABULARY CHALLENGE OVERLAY
-===================================== -->
-
-
-<div
-  id="vocabOverlay"
-  class="vocab-overlay"
->
-
-
-  <div class="vocab-card">
-
-
-    <div class="vocab-small-title">
-      🧠 VOCABULARY CHALLENGE
-    </div>
-
-
-    <div
-      id="vocabWord"
-      class="vocab-word"
-    >
-      WORD
-    </div>
-
-
-    <div
-      id="vocabQuestion"
-      class="vocab-question"
-    >
-      Question appears here.
-    </div>
-
-
-    <div
-      id="vocabOptions"
-      class="vocab-options"
-    ></div>
-
-
-    <div
-      id="vocabFeedback"
-      class="vocab-feedback"
-    ></div>
-
-
-    <button
-      id="continueAfterAnswer"
-      class="primary-button hidden"
-    >
-      CONTINUE
-    </button>
-
-
-  </div>
-
-
-</div>
-
-
-
-<!-- =====================================
-     SCREEN 5: COMPLETION
-===================================== -->
-
-
-<section
-  id="completionScreen"
-  class="screen"
->
-
-
-  <div class="completion-box">
-
-
-    <div class="completion-icon">
-      🏆
-    </div>
-
-
-    <h2 class="completion-title">
-      Adventure Complete!
-    </h2>
-
-
-    <p
-      id="completionText"
-      class="completion-text"
-    >
-      You reached Square 30.
-    </p>
-
-
-    <button
-      id="playAgainButton"
-      class="primary-button"
-    >
-      PLAY AGAIN
-    </button>
-
-
-    <button
-      id="completionHomeButton"
-      class="secondary-button"
-    >
-      RETURN HOME
-    </button>
-
-
-  </div>
-
-
-</section>
-
-
+  </section>
 </main>
 
-
-
-<!-- =================================================
-     IMPORTANT:
-     vocabulary.js MUST load BEFORE the main JavaScript.
-================================================= -->
-
-
 <script src="vocabulary.js"></script>
-
-
-
 <script>
-
-
-/* =========================================
-   SCREEN ELEMENTS
-========================================= */
-
-
-const splashScreen =
-  document.getElementById("splashScreen");
-
-
-const profileScreen =
-  document.getElementById("profileScreen");
-
-
-const homeScreen =
-  document.getElementById("homeScreen");
-
-
-const gameScreen =
-  document.getElementById("gameScreen");
-
-
-const completionScreen =
-  document.getElementById("completionScreen");
-
-
-const allScreens = [
-
-  splashScreen,
-  profileScreen,
-  homeScreen,
-  gameScreen,
-  completionScreen
-
-];
-
-
-
-/* =========================================
-   BUTTONS
-========================================= */
-
-
-const startButton =
-  document.getElementById("startButton");
-
-
-const saveProfileButton =
-  document.getElementById("saveProfileButton");
-
-
-const backButton =
-  document.getElementById("backButton");
-
-
-const playButton =
-  document.getElementById("playButton");
-
-
-const backpackButton =
-  document.getElementById("backpackButton");
-
-
-const progressButton =
-  document.getElementById("progressButton");
-
-
-const changeProfileButton =
-  document.getElementById("changeProfileButton");
-
-
-const rollButton =
-  document.getElementById("rollButton");
-
-
-const homeButton =
-  document.getElementById("homeButton");
-
-
-const resetBoardButton =
-  document.getElementById("resetBoardButton");
-
-
-const playAgainButton =
-  document.getElementById("playAgainButton");
-
-
-const completionHomeButton =
-  document.getElementById("completionHomeButton");
-
-
-
-/* =========================================
-   PROFILE ELEMENTS
-========================================= */
-
-
-const nicknameInput =
-  document.getElementById("nickname");
-
-
-const profileError =
-  document.getElementById("profileError");
-
-
-const homeNickname =
-  document.getElementById("homeNickname");
-
-
-const homeAvatar =
-  document.getElementById("homeAvatar");
-
-
-const homeXP =
-  document.getElementById("homeXP");
-
-
-const homeWords =
-  document.getElementById("homeWords");
-
-
-const homeLevel =
-  document.getElementById("homeLevel");
-
-
-const homePosition =
-  document.getElementById("homePosition");
-
-
-const comingSoon =
-  document.getElementById("comingSoon");
-
-
-
-/* =========================================
-   GAME ELEMENTS
-========================================= */
-
-
-const gameBoard =
-  document.getElementById("gameBoard");
-
-
-const gameAvatar =
-  document.getElementById("gameAvatar");
-
-
-const gameNickname =
-  document.getElementById("gameNickname");
-
-
-const gamePosition =
-  document.getElementById("gamePosition");
-
-
-const diceFace =
-  document.getElementById("diceFace");
-
-
-const diceResult =
-  document.getElementById("diceResult");
-
-
-const gameMessage =
-  document.getElementById("gameMessage");
-
-
-const completionText =
-  document.getElementById("completionText");
-
-
-
-/* =========================================
-   VOCABULARY ELEMENTS
-========================================= */
-
-
-const vocabOverlay =
-  document.getElementById("vocabOverlay");
-
-
-const vocabWord =
-  document.getElementById("vocabWord");
-
-
-const vocabQuestion =
-  document.getElementById("vocabQuestion");
-
-
-const vocabOptions =
-  document.getElementById("vocabOptions");
-
-
-const vocabFeedback =
-  document.getElementById("vocabFeedback");
-
-
-const continueAfterAnswer =
-  document.getElementById("continueAfterAnswer");
-
-
-
-/* =========================================
-   APP VARIABLES
-========================================= */
-
-
-let selectedAvatar = "🧑";
-
-
-let isMoving = false;
-
-
-let pendingDiceRoll = 0;
-
-
-let currentVocabulary = null;
-
-
-let earnedMovement = 0;
-
-
-let answerLocked = false;
-
-
-const diceFaces = {
-
-  1: "⚀",
-  2: "⚁",
-  3: "⚂",
-  4: "⚃",
-  5: "⚄",
-  6: "⚅"
-
-};
-
-
-
-/* =========================================
-   PROFILE NORMALISATION
-========================================= */
-
-
-function normaliseProfile(profile) {
-
-
-  return {
-
-    nickname:
-      profile.nickname || "Explorer",
-
-    avatar:
-      profile.avatar || "🧑",
-
-    xp:
-      Number(profile.xp) || 0,
-
-    wordsLearned:
-      Number(profile.wordsLearned) || 0,
-
-    level:
-      Number(profile.level) || 1,
-
-    currentPosition:
-      Number(profile.currentPosition) || 1,
-
-    completedGames:
-      Number(profile.completedGames) || 0,
-
-    learnedWordIds:
-      Array.isArray(profile.learnedWordIds)
-        ? profile.learnedWordIds
-        : [],
-    wordProgress:
-existingProfile
-
-    ? existingProfile.wordProgress
-
-    : {}
-
-  };
-
-}
-
-
-
-/* =========================================
-   LOCAL STORAGE
-========================================= */
-
-
-function getProfile() {
-
-
-  const saved =
-    localStorage.getItem(
-      "lexitrekProfile"
-    );
-
-
-  if (!saved) {
-
-    return null;
-
-  }
-
-
-  try {
-
-
-    const parsed =
-      JSON.parse(saved);
-
-
-    return normaliseProfile(
-      parsed
-    );
-
-
-  }
-
-
-  catch (error) {
-
-
-    console.error(
-      "Could not read LexiTrek profile:",
-      error
-    );
-
-
-    return null;
-
-  }
-
-}
-
-
-
-function saveProfile(profile) {
-
-
-  const safeProfile =
-    normaliseProfile(profile);
-
-
-  localStorage.setItem(
-
-    "lexitrekProfile",
-
-    JSON.stringify(
-      safeProfile
-    )
-
-  );
-
-}
-
-
-
-/* =========================================
-   SCREEN NAVIGATION
-========================================= */
-
-
-function showScreen(screen) {
-
-
-  allScreens.forEach(
-    function (item) {
-
-      item.classList.remove(
-        "active"
-      );
-
-    }
-  );
-
-
-  screen.classList.add(
-    "active"
-  );
-
-
-  window.scrollTo(
-    0,
-    0
-  );
-
-}
-
-
-
-/* =========================================
-   START APP
-========================================= */
-
-
-startButton.addEventListener(
-  "click",
-  function () {
-
-
-    const profile =
-      getProfile();
-
-
-    if (profile) {
-
-      loadHome(
-        profile
-      );
-
-    }
-
-
-    else {
-
-      showScreen(
-        profileScreen
-      );
-
-    }
-
-  }
-);
-
-
-
-/* =========================================
-   AVATAR SELECTION
-========================================= */
-
-
-const avatars =
-  document.querySelectorAll(
-    ".avatar"
-  );
-
-
-avatars.forEach(
-  function (avatarButton) {
-
-
-    avatarButton.addEventListener(
-      "click",
-      function () {
-
-
-        avatars.forEach(
-          function (button) {
-
-            button.classList.remove(
-              "selected"
-            );
-
-          }
-        );
-
-
-        avatarButton.classList.add(
-          "selected"
-        );
-
-
-        selectedAvatar =
-          avatarButton.dataset.avatar;
-
-      }
-    );
-
-  }
-);
-
-
-
-/* =========================================
-   SAVE / UPDATE PROFILE
-========================================= */
-
-
-saveProfileButton.addEventListener(
-  "click",
-  function () {
-
-
-    const nickname =
-      nicknameInput.value.trim();
-
-
-    if (
-      nickname.length < 2
-    ) {
-
-
-      profileError.textContent =
-
-        "Please enter a nickname with at least 2 characters.";
-
-
-      return;
-
-    }
-
-
-    profileError.textContent =
-      "";
-
-
-    const existingProfile =
-      getProfile();
-
-
-    const profile = {
-
-
-      nickname:
-        nickname,
-
-
-      avatar:
-        selectedAvatar,
-
-
-      xp:
-        existingProfile
-          ? existingProfile.xp
-          : 0,
-
-
-      wordsLearned:
-        existingProfile
-          ? existingProfile.wordsLearned
-          : 0,
-
-
-      level:
-        existingProfile
-          ? existingProfile.level
-          : 1,
-
-
-      currentPosition:
-        existingProfile
-          ? existingProfile.currentPosition
-          : 1,
-
-
-      completedGames:
-        existingProfile
-          ? existingProfile.completedGames
-          : 0,
-
-
-      learnedWordIds:
-        existingProfile
-          ? existingProfile.learnedWordIds
-          : []
-
-    };
-
-
-    saveProfile(
-      profile
-    );
-
-
-    loadHome(
-      profile
-    );
-
-  }
-);
-
-
-
-/* =========================================
-   LOAD HOME
-========================================= */
-
-
-function loadHome(profile) {
-
-
-  profile =
-    normaliseProfile(
-      profile
-    );
-
-
-  homeNickname.textContent =
-    profile.nickname;
-
-
-  homeAvatar.textContent =
-    profile.avatar;
-
-
-  homeXP.textContent =
-    profile.xp;
-
-
-  homeWords.textContent =
-    profile.wordsLearned;
-
-
-  homeLevel.textContent =
-    profile.level;
-
-
-  homePosition.textContent =
-
-    "Current position: Square " +
-    profile.currentPosition;
-
-
-  if (
-    profile.currentPosition >= 30
-  ) {
-
-
-    playButton.textContent =
-      "VIEW COMPLETION";
-
-  }
-
-
-  else if (
-    profile.currentPosition > 1
-  ) {
-
-
-    playButton.textContent =
-      "CONTINUE ADVENTURE";
-
-  }
-
-
-  else {
-
-
-    playButton.textContent =
-      "PLAY ADVENTURE";
-
-  }
-
-
-  comingSoon.textContent =
-    "";
-
-
-  showScreen(
-    homeScreen
-  );
-
-}
-
-
-
-/* =========================================
-   PROFILE NAVIGATION
-========================================= */
-
-
-backButton.addEventListener(
-  "click",
-  function () {
-
-
-    showScreen(
-      splashScreen
-    );
-
-  }
-);
-
-
-
-changeProfileButton.addEventListener(
-  "click",
-  function () {
-
-
-    const profile =
-      getProfile();
-
-
-    if (
-      profile
-    ) {
-
-
-      nicknameInput.value =
-        profile.nickname;
-
-
-      selectedAvatar =
-        profile.avatar;
-
-
-      avatars.forEach(
-        function (button) {
-
-
-          button.classList.remove(
-            "selected"
-          );
-
-
-          if (
-            button.dataset.avatar ===
-            selectedAvatar
-          ) {
-
-
-            button.classList.add(
-              "selected"
-            );
-
-          }
-
-        }
-      );
-
-    }
-
-
-    showScreen(
-      profileScreen
-    );
-
-  }
-);
-
-
-
-/* =========================================
-   BUILD BOARD
-========================================= */
-
-
-function buildBoard() {
-
-
-  gameBoard.innerHTML =
-    "";
-
-
-  for (
-    let row = 4;
-    row >= 0;
-    row--
-  ) {
-
-
-    const firstNumber =
-      row * 6 + 1;
-
-
-    const numbers =
-      [];
-
-
-    for (
-      let i = 0;
-      i < 6;
-      i++
-    ) {
-
-
-      numbers.push(
-        firstNumber + i
-      );
-
-    }
-
-
-    if (
-      row % 2 === 1
-    ) {
-
-
-      numbers.reverse();
-
-    }
-
-
-    numbers.forEach(
-      function (number) {
-
-
-        const cell =
-          document.createElement(
-            "div"
-          );
-
-
-        cell.className =
-          "board-cell";
-
-
-        cell.dataset.square =
-          String(number);
-
-
-        if (
-          number === 1
-        ) {
-
-
-          cell.classList.add(
-            "start-cell"
-          );
-
-        }
-
-
-        if (
-          number === 30
-        ) {
-
-
-          cell.classList.add(
-            "finish-cell"
-          );
-
-        }
-
-
-        const numberLabel =
-          document.createElement(
-            "span"
-          );
-
-
-        numberLabel.className =
-          "cell-number";
-
-
-        numberLabel.textContent =
-          number;
-
-
-        cell.appendChild(
-          numberLabel
-        );
-
-
-        if (
-          number === 1 ||
-          number === 30
-        ) {
-
-
-          const cellLabel =
-            document.createElement(
-              "span"
-            );
-
-
-          cellLabel.className =
-            "cell-label";
-
-
-          cellLabel.textContent =
-
-            number === 1
-              ? "START"
-              : "FINISH";
-
-
-          cell.appendChild(
-            cellLabel
-          );
-
-        }
-
-
-        gameBoard.appendChild(
-          cell
-        );
-
-      }
-    );
-
-  }
-
-}
-
-
-
-/* =========================================
-   PLAYER TOKEN
-========================================= */
-
-
-function placePlayerToken(
-  position,
-  avatar
-) {
-
-
-  const oldToken =
-    document.querySelector(
-      ".player-token"
-    );
-
-
-  if (
-    oldToken
-  ) {
-
-
-    oldToken.remove();
-
-  }
-
-
-  const cell =
-    document.querySelector(
-
-      '[data-square="' +
-      position +
-      '"]'
-
-    );
-
-
-  if (
-    !cell
-  ) {
-
-
-    console.error(
-      "Board square not found:",
-      position
-    );
-
-
-    return;
-
-  }
-
-
-  const token =
-    document.createElement(
-      "div"
-    );
-
-
-  token.className =
-    "player-token";
-
-
-  token.textContent =
-    avatar;
-
-
-  cell.appendChild(
-    token
-  );
-
-
-  gamePosition.textContent =
-
-    "Square " +
-    position;
-
-}
-
-
-
-/* =========================================
-   OPEN GAME
-========================================= */
-
-
-playButton.addEventListener(
-  "click",
-  function () {
-
-
-    const profile =
-      getProfile();
-
-
-    if (
-      !profile
-    ) {
-
-
-      showScreen(
-        profileScreen
-      );
-
-
-      return;
-
-    }
-
-
-    if (
-      profile.currentPosition >= 30
-    ) {
-
-
-      showCompletion(
-        profile
-      );
-
-
-      return;
-
-    }
-
-
-    openGame(
-      profile
-    );
-
-  }
-);
-
-
-
-function openGame(profile) {
-
-
-  profile =
-    normaliseProfile(
-      profile
-    );
-
-
-  buildBoard();
-
-
-  gameAvatar.textContent =
-    profile.avatar;
-
-
-  gameNickname.textContent =
-    profile.nickname;
-
-
-  placePlayerToken(
-
-    profile.currentPosition,
-
-    profile.avatar
-
-  );
-
-
-  diceFace.textContent =
-    "⚀";
-
-
-  diceResult.textContent =
-    "Tap the button to roll.";
-
-
-  gameMessage.textContent =
-
-    "Roll the dice, answer the vocabulary challenge and earn your movement.";
-
-
-  pendingDiceRoll =
-    0;
-
-
-  earnedMovement =
-    0;
-
-
-  currentVocabulary =
-    null;
-
-
-  answerLocked =
-    false;
-
-
-  isMoving =
-    false;
-
-
-  rollButton.disabled =
-    false;
-
-
-  showScreen(
-    gameScreen
-  );
-
-}
-
-
-
-/* =========================================
-   DICE ROLL
-========================================= */
-
-
-rollButton.addEventListener(
-  "click",
-  async function () {
-
-
-    if (
-      isMoving
-    ) {
-
-
-      return;
-
-    }
-
-
-    const profile =
-      getProfile();
-
-
-    if (
-      !profile
-    ) {
-
-
-      return;
-
-    }
-
-
-    if (
-      profile.currentPosition >= 30
-    ) {
-
-
-      showCompletion(
-        profile
-      );
-
-
-      return;
-
-    }
-
-
-    isMoving =
-      true;
-
-
-    rollButton.disabled =
-      true;
-
-
-    gameMessage.textContent =
-      "Rolling the dice...";
-
-
-    for (
-      let i = 0;
-      i < 7;
-      i++
-    ) {
-
-
-      const temporaryRoll =
-
-        Math.floor(
-          Math.random() * 6
-        ) + 1;
-
-
-      diceFace.textContent =
-        diceFaces[
-          temporaryRoll
-        ];
-
-
-      await sleep(
-        80
-      );
-
-    }
-
-
-    const roll =
-
-      Math.floor(
-        Math.random() * 6
-      ) + 1;
-
-
-    pendingDiceRoll =
-      roll;
-
-
-    diceFace.textContent =
-      diceFaces[
-        roll
-      ];
-
-
-    diceResult.textContent =
-
-      "You rolled " +
-      roll +
-      "!";
-
-
-    gameMessage.textContent =
-
-      "Answer the vocabulary challenge to earn your " +
-      roll +
-      (
-        roll === 1
-          ? " step."
-          : " steps."
-      );
-
-
-    await sleep(
-      350
-    );
-
-
-    showVocabularyChallenge();
-
-  }
-);
-
-
-
-/* =========================================
-   VOCABULARY ENGINE
-========================================= */
-
-
-function showVocabularyChallenge() {
-
-
-  if (
-    typeof vocabularyBank ===
-    "undefined"
-  ) {
-
-
-    console.error(
-      "vocabulary.js did not load."
-    );
-
-
-    gameMessage.textContent =
-      "Vocabulary bank could not be loaded.";
-
-
-    isMoving = false;
-
-    rollButton.disabled = false;
-
-
-    return;
-
-  }
-
-
-  const profile =
-    getProfile();
-
-
-  if (!profile) {
-
-    return;
-
-  }
-
-
-  /*
-    Choose a word intelligently.
-
-    Words with low mastery receive
-    more chances to appear.
-  */
-
-
-  currentVocabulary =
-    chooseVocabularyByMastery(
-      profile
-    );
-
-
-  const progress =
-    getWordProgress(
-      profile,
-      currentVocabulary.id
-    );
-
-
-  /*
-    Question selection depends
-    partly on current mastery.
-  */
-
-
-  const selectedQuestion =
-    chooseQuestionForWord(
-
-      currentVocabulary,
-      progress.mastery
-
-    );
-
-
-  currentVocabulary.currentQuestion =
-    selectedQuestion;
-
-
-  answerLocked =
-    false;
-
-
-  vocabWord.textContent =
-    currentVocabulary.word;
-
-
-  vocabQuestion.textContent =
-    selectedQuestion.question;
-
-
-  vocabFeedback.textContent =
-    "";
-
-
-  vocabFeedback.className =
-    "vocab-feedback";
-
-
-  vocabOptions.innerHTML =
-    "";
-
-
-  continueAfterAnswer.classList.add(
-    "hidden"
-  );
-
-
-  continueAfterAnswer.disabled =
-    false;
-
-
-  const shuffledOptions =
-
-    shuffleArray(
-      [...selectedQuestion.options]
-    );
-
-
-  shuffledOptions.forEach(
-    function (optionText) {
-
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-
-      button.type =
-        "button";
-
-
-      button.className =
-        "vocab-option";
-
-
-      button.textContent =
-        optionText;
-
-
-      button.addEventListener(
-        "click",
-        function () {
-
-
-          checkVocabularyAnswer(
-
-            button,
-            optionText
-
-          );
-
-        }
-      );
-
-
-      vocabOptions.appendChild(
-        button
-      );
-
-    }
-  );
-
-
-  vocabOverlay.classList.add(
-    "active"
-  );
-
-}
-/* =========================================
-   CHOOSE WORD BY MASTERY
-========================================= */
-
-
-function chooseVocabularyByMastery(
-  profile
-) {
-
-
-  const weightedWords =
-    [];
-
-
-  vocabularyBank.forEach(
-    function (word) {
-
-
-      const progress =
-        getWordProgress(
-          profile,
-          word.id
-        );
-
-
-      /*
-        Lower mastery =
-        greater probability of appearing.
-      */
-
-
-      let weight =
-        6 - progress.mastery;
-
-
-      if (
-        weight < 1
-      ) {
-
-        weight = 1;
-
-      }
-
-
-      for (
-        let i = 0;
-        i < weight;
-        i++
-      ) {
-
-
-        weightedWords.push(
-          word
-        );
-
-      }
-
-    }
-  );
-
-
-  const randomIndex =
-
-    Math.floor(
-      Math.random() *
-      weightedWords.length
-    );
-
-
-  return weightedWords[
-    randomIndex
-  ];
-
-}
-/* =========================================
-   GET WORD PROGRESS
-========================================= */
-
-
-function getWordProgress(
-  profile,
-  wordId
-) {
-
-
-  if (
-    !profile.wordProgress[
-      wordId
-    ]
-  ) {
-
-
-    profile.wordProgress[
-      wordId
-    ] = {
-
-      mastery: 0,
-
-      correct: 0,
-
-      incorrect: 0,
-
-      encounters: 0,
-
-      lastQuestionType: null
-
-    };
-
-  }
-
-
-  return profile.wordProgress[
-    wordId
-  ];
-
-}
-
-/* =========================================
-   CHOOSE QUESTION TYPE
-========================================= */
-
-
-function chooseQuestionForWord(
-  vocabulary,
-  mastery
-) {
-
-
-  const questions =
-    vocabulary.questions;
-
-
-  /*
-    NEW learners normally start
-    with meaning recognition.
-  */
-
-
-  if (
-    mastery <= 1
-  ) {
-
-
-    const meaningQuestion =
-      questions.find(
-        function (question) {
-
-          return (
-            question.type ===
-            "meaning"
-          );
-
-        }
-      );
-
-
-    if (
-      meaningQuestion
-    ) {
-
-      return meaningQuestion;
-
-    }
-
-  }
-
-
-  /*
-    Developing learners receive
-    context questions more often.
-  */
-
-
-  if (
-    mastery === 2 ||
-    mastery === 3
-  ) {
-
-
-    const contextQuestion =
-      questions.find(
-        function (question) {
-
-          return (
-            question.type ===
-            "context"
-          );
-
-        }
-      );
-
-
-    if (
-      contextQuestion
-    ) {
-
-      return contextQuestion;
-
-    }
-
-  }
-
-
-  /*
-    Higher mastery uses a random
-    question to encourage retrieval.
-  */
-
-
-  const randomIndex =
-
-    Math.floor(
-      Math.random() *
-      questions.length
-    );
-
-
-  return questions[
-    randomIndex
-  ];
-
-}
-  
-
-  if (
-    typeof vocabularyBank ===
-    "undefined"
-  ) {
-
-
-    console.error(
-      "vocabulary.js did not load."
-    );
-
-
-    gameMessage.textContent =
-
-      "Vocabulary bank could not be loaded. Check vocabulary.js.";
-
-
-    isMoving =
-      false;
-
-
-    rollButton.disabled =
-      false;
-
-
-    return;
-
-  }
-
-
-  if (
-    !Array.isArray(
-      vocabularyBank
-    ) ||
-    vocabularyBank.length === 0
-  ) {
-
-
-    gameMessage.textContent =
-
-      "The vocabulary bank is empty.";
-
-
-    isMoving =
-      false;
-
-
-    rollButton.disabled =
-      false;
-
-
-    return;
-
-  }
-
-
-  const randomIndex =
-
-    Math.floor(
-      Math.random() *
-      vocabularyBank.length
-    );
-
-
-  currentVocabulary =
-    vocabularyBank[
-      randomIndex
-    ];
-
-
-  answerLocked =
-    false;
-
-
-  vocabWord.textContent =
-    currentVocabulary.word;
-
-
-  vocabQuestion.textContent =
-    currentVocabulary.question;
-
-
-  vocabFeedback.textContent =
-    "";
-
-
-  vocabFeedback.className =
-    "vocab-feedback";
-
-
-  vocabOptions.innerHTML =
-    "";
-
-
-  continueAfterAnswer.classList.add(
-    "hidden"
-  );
-
-
-  continueAfterAnswer.disabled =
-    false;
-
-
-  const shuffledOptions =
-
-    shuffleArray(
-      [
-        ...currentVocabulary.options
-      ]
-    );
-
-
-  shuffledOptions.forEach(
-    function (optionText) {
-
-
-      const button =
-        document.createElement(
-          "button"
-        );
-
-
-      button.type =
-        "button";
-
-
-      button.className =
-        "vocab-option";
-
-
-      button.textContent =
-        optionText;
-
-
-      button.addEventListener(
-        "click",
-        function () {
-
-
-          checkVocabularyAnswer(
-
-            button,
-
-            optionText
-
-          );
-
-        }
-      );
-
-
-      vocabOptions.appendChild(
-        button
-      );
-
-    }
-  );
-
-
-  vocabOverlay.classList.add(
-    "active"
-  );
-
-}
-
-
-
-/* =========================================
-   CHECK VOCABULARY ANSWER
-========================================= */
-
-
-function checkVocabularyAnswer(
-  selectedButton,
-  selectedAnswer
-) {
-
-
-  if (
-    answerLocked
-  ) {
-
-    return;
-
-  }
-
-
-  answerLocked =
-    true;
-
-
-  const question =
-    currentVocabulary.currentQuestion;
-
-
-  const optionButtons =
-
-    document.querySelectorAll(
-      ".vocab-option"
-    );
-
-
-  optionButtons.forEach(
-    function (button) {
-
-      button.disabled =
-        true;
-
-    }
-  );
-
-
-  const isCorrect =
-
-    selectedAnswer ===
-    question.answer;
-
-
-  /*
-    Record the learning result
-    BEFORE displaying feedback.
-  */
-
-
-  const masteryResult =
-
-    recordVocabularyResult(
-
-      currentVocabulary,
-
-      question.type,
-
-      isCorrect
-
-    );
-
-
-
-  if (
-    isCorrect
-  ) {
-
-
-    selectedButton.classList.add(
-      "correct"
-    );
-
-
-    earnedMovement =
-      pendingDiceRoll;
-
-
-    vocabFeedback.className =
-
-      "vocab-feedback correct-feedback";
-
-
-    vocabFeedback.innerHTML =
-
-      "✅ <strong>Correct!</strong><br><br>" +
-
-      "<strong>" +
-      currentVocabulary.word +
-      "</strong> means " +
-      currentVocabulary.meaning +
-      ".<br><br>" +
-
-      "<strong>Example:</strong> " +
-      currentVocabulary.example +
-      "<br><br>" +
-
-      "🧠 Mastery: <strong>" +
-      masteryResult.label +
-      "</strong> (" +
-      masteryResult.mastery +
-      "/5)<br><br>" +
-
-      "🎲 You earned all " +
-      pendingDiceRoll +
-      (
-        pendingDiceRoll === 1
-          ? " step!"
-          : " steps!"
-      );
-
-  }
-
-
-  else {
-
-
-    selectedButton.classList.add(
-      "wrong"
-    );
-
-
-    optionButtons.forEach(
-      function (button) {
-
-
-        if (
-          button.textContent ===
-          question.answer
-        ) {
-
-
-          button.classList.add(
-            "correct"
-          );
-
-        }
-
-      }
-    );
-
-
-    earnedMovement =
-      1;
-
-
-    vocabFeedback.className =
-
-      "vocab-feedback wrong-feedback";
-
-
-    vocabFeedback.innerHTML =
-
-      "❌ <strong>Not quite.</strong><br><br>" +
-
-      "The correct answer is <strong>" +
-      question.answer +
-      "</strong>.<br><br>" +
-
-      "<strong>" +
-      currentVocabulary.word +
-      "</strong> means " +
-      currentVocabulary.meaning +
-      ".<br><br>" +
-
-      "<strong>BM support:</strong> " +
-      currentVocabulary.bm +
-      "<br><br>" +
-
-      "<strong>Example:</strong> " +
-      currentVocabulary.example +
-      "<br><br>" +
-
-      "🧠 Mastery: <strong>" +
-      masteryResult.label +
-      "</strong> (" +
-      masteryResult.mastery +
-      "/5)<br><br>" +
-
-      "You still earn 1 step.";
-
-  }
-
-
-  continueAfterAnswer.classList.remove(
-    "hidden"
-  );
-
-}
-  
-  selectedButton,
-  selectedAnswer
-) {
-
-
-  if (
-    answerLocked
-  ) {
-
-
-    return;
-
-  }
-
-
-  answerLocked =
-    true;
-
-
-  const optionButtons =
-
-    document.querySelectorAll(
-      ".vocab-option"
-    );
-
-
-  optionButtons.forEach(
-    function (button) {
-
-
-      button.disabled =
-        true;
-
-    }
-  );
-
-
-  const isCorrect =
-
-    selectedAnswer ===
-    currentVocabulary.answer;
-
-
-  if (
-    isCorrect
-  ) {
-
-
-    selectedButton.classList.add(
-      "correct"
-    );
-
-
-    earnedMovement =
-      pendingDiceRoll;
-
-
-    vocabFeedback.className =
-
-      "vocab-feedback correct-feedback";
-
-
-    vocabFeedback.innerHTML =
-
-      "✅ <strong>Correct!</strong><br><br>" +
-
-      "<strong>" +
-      currentVocabulary.word +
-      "</strong> means " +
-      currentVocabulary.meaning +
-      ".<br><br>" +
-
-      "<strong>Example:</strong> " +
-      currentVocabulary.example +
-      "<br><br>" +
-
-      "🎲 You earned all " +
-      pendingDiceRoll +
-      (
-        pendingDiceRoll === 1
-          ? " step!"
-          : " steps!"
-      );
-
-
-    updateVocabularySuccess(
-      currentVocabulary
-    );
-
-  }
-
-
-  else {
-
-
-    selectedButton.classList.add(
-      "wrong"
-    );
-
-
-    optionButtons.forEach(
-      function (button) {
-
-
-        if (
-          button.textContent ===
-          currentVocabulary.answer
-        ) {
-
-
-          button.classList.add(
-            "correct"
-          );
-
-        }
-
-      }
-    );
-
-
-    earnedMovement =
-      1;
-
-
-    vocabFeedback.className =
-
-      "vocab-feedback wrong-feedback";
-
-
-    vocabFeedback.innerHTML =
-
-      "❌ <strong>Not quite.</strong><br><br>" +
-
-      "<strong>" +
-      currentVocabulary.word +
-      "</strong> means " +
-      currentVocabulary.meaning +
-      ".<br><br>" +
-
-      "<strong>BM support:</strong> " +
-      currentVocabulary.bm +
-      "<br><br>" +
-
-      "<strong>Example:</strong> " +
-      currentVocabulary.example +
-      "<br><br>" +
-
-      "You still earn 1 step. Keep learning!";
-
-  }
-
-
-  continueAfterAnswer.classList.remove(
-    "hidden"
-  );
-
-}
-
-
-
-/* =========================================
-   CONTINUE AFTER ANSWER
-========================================= */
-
-
-continueAfterAnswer.addEventListener(
-  "click",
-  async function () {
-
-
-    continueAfterAnswer.disabled =
-      true;
-
-
-    vocabOverlay.classList.remove(
-      "active"
-    );
-
-
-    await movePlayerByEarnedSteps();
-
-  }
-);
-
-
-
-/* =========================================
-   MOVE PLAYER
-========================================= */
-
-
-async function movePlayerByEarnedSteps() {
-
-
-  const profile =
-    getProfile();
-
-
-  if (
-    !profile
-  ) {
-
-
-    isMoving =
-      false;
-
-
-    return;
-
-  }
-
-
-  let targetPosition =
-
-    profile.currentPosition +
-    earnedMovement;
-
-
-  if (
-    targetPosition > 30
-  ) {
-
-
-    targetPosition =
-      30;
-
-  }
-
-
-  gameMessage.textContent =
-
-    "Moving " +
-    earnedMovement +
-    (
-      earnedMovement === 1
-        ? " step..."
-        : " steps..."
-    );
-
-
-  while (
-    profile.currentPosition <
-    targetPosition
-  ) {
-
-
-    profile.currentPosition++;
-
-
-    placePlayerToken(
-
-      profile.currentPosition,
-
-      profile.avatar
-
-    );
-
-
-    await sleep(
-      280
-    );
-
-  }
-
-
-  saveProfile(
-    profile
-  );
-
-
-  if (
-    profile.currentPosition === 30
-  ) {
-
-
-    gameMessage.textContent =
-
-      "🏆 You reached Square 30!";
-
-
-    await sleep(
-      700
-    );
-
-
-    completeAdventure(
-      profile
-    );
-
-
-    return;
-
-  }
-
-
-  gameMessage.textContent =
-
-    "You are now on Square " +
-    profile.currentPosition +
-    ".";
-
-
-  diceResult.textContent =
-
-    "Vocabulary challenge completed.";
-
-
-  pendingDiceRoll =
-    0;
-
-
-  earnedMovement =
-    0;
-
-
-  currentVocabulary =
-    null;
-
-
-  answerLocked =
-    false;
-
-
-  isMoving =
-    false;
-
-
-  rollButton.disabled =
-    false;
-
-
-  continueAfterAnswer.disabled =
-    false;
-
-}
-
-
-
-/* =========================================
-   VOCABULARY SUCCESS
-========================================= */
-
-
-/* =========================================
-   RECORD VOCABULARY RESULT
-========================================= */
-
-
-function recordVocabularyResult(
-  vocabulary,
-  questionType,
-  isCorrect
-) {
-
-
-  const profile =
-    getProfile();
-
-
-  if (!profile) {
-
-
+  const splashScreen = document.getElementById("splashScreen");
+  const profileScreen = document.getElementById("profileScreen");
+  const homeScreen = document.getElementById("homeScreen");
+  const gameScreen = document.getElementById("gameScreen");
+  const completionScreen = document.getElementById("completionScreen");
+  const allScreens = [splashScreen, profileScreen, homeScreen, gameScreen, completionScreen];
+
+  const startButton = document.getElementById("startButton");
+  const saveProfileButton = document.getElementById("saveProfileButton");
+  const backButton = document.getElementById("backButton");
+  const playButton = document.getElementById("playButton");
+  const backpackButton = document.getElementById("backpackButton");
+  const progressButton = document.getElementById("progressButton");
+  const changeProfileButton = document.getElementById("changeProfileButton");
+  const rollButton = document.getElementById("rollButton");
+  const homeButton = document.getElementById("homeButton");
+  const resetBoardButton = document.getElementById("resetBoardButton");
+  const playAgainButton = document.getElementById("playAgainButton");
+  const completionHomeButton = document.getElementById("completionHomeButton");
+
+  const nicknameInput = document.getElementById("nickname");
+  const profileError = document.getElementById("profileError");
+  const homeNickname = document.getElementById("homeNickname");
+  const homeAvatar = document.getElementById("homeAvatar");
+  const homeXP = document.getElementById("homeXP");
+  const homeWords = document.getElementById("homeWords");
+  const homeLevel = document.getElementById("homeLevel");
+  const homePosition = document.getElementById("homePosition");
+  const comingSoon = document.getElementById("comingSoon");
+
+  const gameBoard = document.getElementById("gameBoard");
+  const gameAvatar = document.getElementById("gameAvatar");
+  const gameNickname = document.getElementById("gameNickname");
+  const gamePosition = document.getElementById("gamePosition");
+  const diceFace = document.getElementById("diceFace");
+  const diceResult = document.getElementById("diceResult");
+  const gameMessage = document.getElementById("gameMessage");
+  const completionText = document.getElementById("completionText");
+
+  const vocabOverlay = document.getElementById("vocabOverlay");
+  const vocabWord = document.getElementById("vocabWord");
+  const vocabQuestion = document.getElementById("vocabQuestion");
+  const vocabOptions = document.getElementById("vocabOptions");
+  const vocabFeedback = document.getElementById("vocabFeedback");
+  const continueAfterAnswer = document.getElementById("continueAfterAnswer");
+
+  let selectedAvatar = "🧑";
+  let isMoving = false;
+  let pendingDiceRoll = 0;
+  let currentVocabulary = null;
+  let currentQuestion = null;
+  let earnedMovement = 0;
+  let answerLocked = false;
+
+  const diceFaces = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
+
+  function normaliseProfile(profile = {}) {
     return {
-
-      mastery: 0,
-      label: "New"
-
+      nickname: profile.nickname || "Explorer",
+      avatar: profile.avatar || "🧑",
+      xp: Number(profile.xp) || 0,
+      wordsLearned: Number(profile.wordsLearned) || 0,
+      level: Number(profile.level) || 1,
+      currentPosition: Math.min(30, Math.max(1, Number(profile.currentPosition) || 1)),
+      completedGames: Number(profile.completedGames) || 0,
+      learnedWordIds: Array.isArray(profile.learnedWordIds) ? profile.learnedWordIds : [],
+      wordProgress: profile.wordProgress && typeof profile.wordProgress === "object" && !Array.isArray(profile.wordProgress)
+        ? profile.wordProgress
+        : {}
     };
-
   }
 
-
-  const progress =
-    getWordProgress(
-
-      profile,
-      vocabulary.id
-
-    );
-
-
-  progress.encounters++;
-
-
-  progress.lastQuestionType =
-    questionType;
-
-
-  if (
-    isCorrect
-  ) {
-
-
-    progress.correct++;
-
-
-    /*
-      One mastery point is earned
-      for a correct retrieval.
-    */
-
-
-    progress.mastery++;
-
-
-    if (
-      progress.mastery > 5
-    ) {
-
-      progress.mastery = 5;
-
+  function getProfile() {
+    const saved = localStorage.getItem("lexitrekProfile");
+    if (!saved) return null;
+    try { return normaliseProfile(JSON.parse(saved)); }
+    catch (error) {
+      console.error("Could not read LexiTrek profile:", error);
+      return null;
     }
-
-
-    /*
-      XP reward for correct answer.
-    */
-
-
-    profile.xp += 10;
-
   }
 
-
-  else {
-
-
-    progress.incorrect++;
-
-
-    /*
-      Wrong answers do not completely
-      erase learning.
-
-      Only mastery above 1 can decline.
-    */
-
-
-    if (
-      progress.mastery > 1
-    ) {
-
-      progress.mastery--;
-
-    }
-
+  function saveProfile(profile) {
+    localStorage.setItem("lexitrekProfile", JSON.stringify(normaliseProfile(profile)));
   }
 
-
-  /*
-    Count words that have genuinely
-    been encountered.
-  */
-
-
-  if (
-    !profile.learnedWordIds.includes(
-      vocabulary.id
-    )
-  ) {
-
-
-    profile.learnedWordIds.push(
-      vocabulary.id
-    );
-
+  function showScreen(screen) {
+    allScreens.forEach(item => item.classList.remove("active"));
+    screen.classList.add("active");
+    window.scrollTo(0,0);
   }
 
-
-  profile.wordsLearned =
-    profile.learnedWordIds.length;
-
-
-  profile.wordProgress[
-    vocabulary.id
-  ] = progress;
-
-
-  saveProfile(
-    profile
-  );
-
-
-  return {
-
-    mastery:
-      progress.mastery,
-
-    label:
-      getMasteryLabel(
-        progress.mastery
-      )
-
-  };
-
-}
-  /* =========================================
-   MASTERY LABEL
-========================================= */
-
-
-function getMasteryLabel(
-  mastery
-) {
-
-
-  switch (
-    mastery
-  ) {
-
-
-    case 0:
-
-      return "New";
-
-
-    case 1:
-
-      return "Encountered";
-
-
-    case 2:
-
-      return "Learning";
-
-
-    case 3:
-
-      return "Developing";
-
-
-    case 4:
-
-      return "Almost Mastered";
-
-
-    case 5:
-
-      return "Mastered";
-
-
-    default:
-
-      return "New";
-
-  }
-
-}
-  
-  vocabulary
-) {
-
-
-  const profile =
-    getProfile();
-
-
-  if (
-    !profile
-  ) {
-
-
-    return;
-
-  }
-
-
-  if (
-    !profile.learnedWordIds.includes(
-      vocabulary.id
-    )
-  ) {
-
-
-    profile.learnedWordIds.push(
-      vocabulary.id
-    );
-
-
-    profile.wordsLearned =
-      profile.learnedWordIds.length;
-
-  }
-
-
-  profile.xp =
-    profile.xp + 10;
-
-
-  saveProfile(
-    profile
-  );
-
-}
-
-
-
-/* =========================================
-   DELAY
-========================================= */
-
-
-function sleep(milliseconds) {
-
-
-  return new Promise(
-    function (resolve) {
-
-
-      setTimeout(
-        resolve,
-        milliseconds
-      );
-
-    }
-  );
-
-}
-
-
-
-/* =========================================
-   COMPLETE ADVENTURE
-========================================= */
-
-
-function completeAdventure(profile) {
-
-
-  profile.currentPosition =
-    30;
-
-
-  profile.completedGames =
-    profile.completedGames + 1;
-
-
-  saveProfile(
-    profile
-  );
-
-
-  pendingDiceRoll =
-    0;
-
-
-  earnedMovement =
-    0;
-
-
-  currentVocabulary =
-    null;
-
-
-  answerLocked =
-    false;
-
-
-  isMoving =
-    false;
-
-
-  showCompletion(
-    profile
-  );
-
-}
-
-
-
-function showCompletion(profile) {
-
-
-  completionText.textContent =
-
-    profile.nickname +
-    ", you reached Square 30 and completed your first LexiTrek journey!";
-
-
-  showScreen(
-    completionScreen
-  );
-
-}
-
-
-
-/* =========================================
-   PLAY AGAIN
-========================================= */
-
-
-playAgainButton.addEventListener(
-  "click",
-  function () {
-
-
-    const profile =
-      getProfile();
-
-
-    if (
-      !profile
-    ) {
-
-
+  startButton.addEventListener("click", () => {
+    const profile = getProfile();
+    profile ? loadHome(profile) : showScreen(profileScreen);
+  });
+
+  const avatars = document.querySelectorAll(".avatar");
+  avatars.forEach(avatarButton => {
+    avatarButton.addEventListener("click", () => {
+      avatars.forEach(button => button.classList.remove("selected"));
+      avatarButton.classList.add("selected");
+      selectedAvatar = avatarButton.dataset.avatar;
+    });
+  });
+
+  saveProfileButton.addEventListener("click", () => {
+    const nickname = nicknameInput.value.trim();
+    if (nickname.length < 2) {
+      profileError.textContent = "Please enter a nickname with at least 2 characters.";
       return;
-
     }
+    profileError.textContent = "";
+    const existing = getProfile();
+    const profile = normaliseProfile({
+      ...(existing || {}),
+      nickname,
+      avatar: selectedAvatar
+    });
+    saveProfile(profile);
+    loadHome(profile);
+  });
 
-
-    profile.currentPosition =
-      1;
-
-
-    saveProfile(
-      profile
-    );
-
-
-    openGame(
-      profile
-    );
-
+  function loadHome(profile) {
+    profile = normaliseProfile(profile);
+    homeNickname.textContent = profile.nickname;
+    homeAvatar.textContent = profile.avatar;
+    homeXP.textContent = profile.xp;
+    homeWords.textContent = profile.wordsLearned;
+    homeLevel.textContent = profile.level;
+    homePosition.textContent = "Current position: Square " + profile.currentPosition;
+    playButton.textContent = profile.currentPosition >= 30
+      ? "VIEW COMPLETION"
+      : profile.currentPosition > 1
+        ? "CONTINUE ADVENTURE"
+        : "PLAY ADVENTURE";
+    comingSoon.textContent = "";
+    showScreen(homeScreen);
   }
-);
 
+  backButton.addEventListener("click", () => showScreen(splashScreen));
 
+  changeProfileButton.addEventListener("click", () => {
+    const profile = getProfile();
+    if (profile) {
+      nicknameInput.value = profile.nickname;
+      selectedAvatar = profile.avatar;
+      avatars.forEach(button => {
+        button.classList.toggle("selected", button.dataset.avatar === selectedAvatar);
+      });
+    }
+    showScreen(profileScreen);
+  });
 
-/* =========================================
-   RETURN HOME
-========================================= */
+  function buildBoard() {
+    gameBoard.innerHTML = "";
+    for (let row = 4; row >= 0; row--) {
+      const firstNumber = row * 6 + 1;
+      const numbers = [];
+      for (let i = 0; i < 6; i++) numbers.push(firstNumber + i);
+      if (row % 2 === 1) numbers.reverse();
+      numbers.forEach(number => {
+        const cell = document.createElement("div");
+        cell.className = "board-cell";
+        cell.dataset.square = String(number);
+        if (number === 1) cell.classList.add("start-cell");
+        if (number === 30) cell.classList.add("finish-cell");
 
+        const numberLabel = document.createElement("span");
+        numberLabel.className = "cell-number";
+        numberLabel.textContent = number;
+        cell.appendChild(numberLabel);
 
-homeButton.addEventListener(
-  "click",
-  function () {
+        if (number === 1 || number === 30) {
+          const label = document.createElement("span");
+          label.className = "cell-label";
+          label.textContent = number === 1 ? "START" : "FINISH";
+          cell.appendChild(label);
+        }
+        gameBoard.appendChild(cell);
+      });
+    }
+  }
 
-
-    if (
-      isMoving &&
-      vocabOverlay.classList.contains(
-        "active"
-      )
-    ) {
-
-
+  function placePlayerToken(position, avatar) {
+    const oldToken = document.querySelector(".player-token");
+    if (oldToken) oldToken.remove();
+    const cell = document.querySelector('[data-square="' + position + '"]');
+    if (!cell) {
+      console.error("Board square not found:", position);
       return;
-
     }
-
-
-    const profile =
-      getProfile();
-
-
-    if (
-      profile
-    ) {
-
-
-      loadHome(
-        profile
-      );
-
-    }
-
+    const token = document.createElement("div");
+    token.className = "player-token";
+    token.textContent = avatar;
+    cell.appendChild(token);
+    gamePosition.textContent = "Square " + position;
   }
-);
 
+  playButton.addEventListener("click", () => {
+    const profile = getProfile();
+    if (!profile) return showScreen(profileScreen);
+    if (profile.currentPosition >= 30) return showCompletion(profile);
+    openGame(profile);
+  });
 
+  function openGame(profile) {
+    profile = normaliseProfile(profile);
+    buildBoard();
+    gameAvatar.textContent = profile.avatar;
+    gameNickname.textContent = profile.nickname;
+    placePlayerToken(profile.currentPosition, profile.avatar);
+    diceFace.textContent = "⚀";
+    diceResult.textContent = "Tap the button to roll.";
+    gameMessage.textContent = "Roll the dice, answer the vocabulary challenge and earn your movement.";
+    pendingDiceRoll = 0;
+    earnedMovement = 0;
+    currentVocabulary = null;
+    currentQuestion = null;
+    answerLocked = false;
+    isMoving = false;
+    rollButton.disabled = false;
+    showScreen(gameScreen);
+  }
 
-completionHomeButton.addEventListener(
-  "click",
-  function () {
+  rollButton.addEventListener("click", async () => {
+    if (isMoving) return;
+    const profile = getProfile();
+    if (!profile) return;
+    if (profile.currentPosition >= 30) return showCompletion(profile);
 
+    isMoving = true;
+    rollButton.disabled = true;
+    gameMessage.textContent = "Rolling the dice...";
 
-    const profile =
-      getProfile();
-
-
-    if (
-      profile
-    ) {
-
-
-      loadHome(
-        profile
-      );
-
+    for (let i = 0; i < 7; i++) {
+      const temporaryRoll = Math.floor(Math.random() * 6) + 1;
+      diceFace.textContent = diceFaces[temporaryRoll];
+      await sleep(80);
     }
 
+    pendingDiceRoll = Math.floor(Math.random() * 6) + 1;
+    diceFace.textContent = diceFaces[pendingDiceRoll];
+    diceResult.textContent = "You rolled " + pendingDiceRoll + "!";
+    gameMessage.textContent = "Answer the vocabulary challenge to earn your " + pendingDiceRoll + (pendingDiceRoll === 1 ? " step." : " steps.");
+    await sleep(350);
+    showVocabularyChallenge();
+  });
+
+  function ensureVocabularyBank() {
+    return typeof vocabularyBank !== "undefined" && Array.isArray(vocabularyBank) && vocabularyBank.length > 0;
   }
-);
 
-
-
-/* =========================================
-   RESET BOARD
-========================================= */
-
-
-resetBoardButton.addEventListener(
-  "click",
-  function () {
-
-
-    const confirmed =
-      confirm(
-        "Reset your board position to Square 1?"
-      );
-
-
-    if (
-      !confirmed
-    ) {
-
-
+  function showVocabularyChallenge() {
+    if (!ensureVocabularyBank()) {
+      console.error("vocabulary.js did not load or vocabularyBank is empty.");
+      gameMessage.textContent = "Vocabulary bank could not be loaded. Check vocabulary.js.";
+      isMoving = false;
+      rollButton.disabled = false;
       return;
-
     }
 
+    const profile = getProfile();
+    if (!profile) return;
 
-    const profile =
-      getProfile();
+    currentVocabulary = chooseVocabularyByMastery(profile);
+    const progress = getWordProgress(profile, currentVocabulary.id);
+    currentQuestion = chooseQuestionForWord(currentVocabulary, progress.mastery);
 
-
-    if (
-      !profile
-    ) {
-
-
+    if (!currentQuestion) {
+      console.error("No valid question found for:", currentVocabulary);
+      gameMessage.textContent = "This word has no valid questions in vocabulary.js.";
+      isMoving = false;
+      rollButton.disabled = false;
       return;
-
     }
 
+    answerLocked = false;
+    vocabWord.textContent = currentVocabulary.word;
+    vocabQuestion.textContent = currentQuestion.question;
+    vocabFeedback.textContent = "";
+    vocabFeedback.className = "vocab-feedback";
+    vocabOptions.innerHTML = "";
+    continueAfterAnswer.classList.add("hidden");
+    continueAfterAnswer.disabled = false;
 
-    profile.currentPosition =
-      1;
+    const shuffledOptions = shuffleArray([...currentQuestion.options]);
+    shuffledOptions.forEach(optionText => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "vocab-option";
+      button.textContent = optionText;
+      button.addEventListener("click", () => checkVocabularyAnswer(button, optionText));
+      vocabOptions.appendChild(button);
+    });
 
-
-    saveProfile(
-      profile
-    );
-
-
-    openGame(
-      profile
-    );
-
-  }
-);
-
-
-
-/* =========================================
-   TEMPORARY MENU BUTTONS
-========================================= */
-
-
-backpackButton.addEventListener(
-  "click",
-  function () {
-
-
-    comingSoon.textContent =
-
-      "🎒 Word Backpack will be added after the vocabulary mastery system.";
-
-  }
-);
-
-
-
-progressButton.addEventListener(
-  "click",
-  function () {
-
-
-    comingSoon.textContent =
-
-      "📊 Learning progress will be added after vocabulary mastery tracking.";
-
-  }
-);
-
-
-
-/* =========================================
-   SHUFFLE ARRAY
-========================================= */
-
-
-function shuffleArray(array) {
-
-
-  for (
-    let i = array.length - 1;
-    i > 0;
-    i--
-  ) {
-
-
-    const j =
-
-      Math.floor(
-        Math.random() *
-        (i + 1)
-      );
-
-
-    [
-      array[i],
-      array[j]
-    ] = [
-      array[j],
-      array[i]
-    ];
-
+    vocabOverlay.classList.add("active");
   }
 
+  function chooseVocabularyByMastery(profile) {
+    const weightedWords = [];
+    vocabularyBank.forEach(word => {
+      const progress = getWordProgress(profile, word.id);
+      const weight = Math.max(1, 6 - progress.mastery);
+      for (let i = 0; i < weight; i++) weightedWords.push(word);
+    });
+    return weightedWords[Math.floor(Math.random() * weightedWords.length)];
+  }
 
-  return array;
+  function getWordProgress(profile, wordId) {
+    if (!profile.wordProgress[wordId]) {
+      profile.wordProgress[wordId] = {
+        mastery: 0,
+        correct: 0,
+        incorrect: 0,
+        encounters: 0,
+        lastQuestionType: null
+      };
+    }
+    return profile.wordProgress[wordId];
+  }
 
-}
+  function chooseQuestionForWord(vocabulary, mastery) {
+    const questions = Array.isArray(vocabulary.questions) ? vocabulary.questions : [];
+    if (!questions.length) return null;
 
+    if (mastery <= 1) {
+      const meaning = questions.find(q => q.type === "meaning");
+      if (meaning) return meaning;
+    }
 
+    if (mastery === 2 || mastery === 3) {
+      const context = questions.find(q => q.type === "context");
+      if (context) return context;
+    }
+
+    return questions[Math.floor(Math.random() * questions.length)];
+  }
+
+  function checkVocabularyAnswer(selectedButton, selectedAnswer) {
+    if (answerLocked || !currentVocabulary || !currentQuestion) return;
+    answerLocked = true;
+
+    const optionButtons = document.querySelectorAll(".vocab-option");
+    optionButtons.forEach(button => button.disabled = true);
+
+    const isCorrect = selectedAnswer === currentQuestion.answer;
+    const masteryResult = recordVocabularyResult(currentVocabulary, currentQuestion.type, isCorrect);
+
+    if (isCorrect) {
+      selectedButton.classList.add("correct");
+      earnedMovement = pendingDiceRoll;
+      vocabFeedback.className = "vocab-feedback correct-feedback";
+      vocabFeedback.innerHTML =
+        "✅ <strong>Correct!</strong><br><br>" +
+        "<strong>" + currentVocabulary.word + "</strong> means " + currentVocabulary.meaning + ".<br><br>" +
+        "<strong>Example:</strong> " + currentVocabulary.example + "<br><br>" +
+        "🧠 Mastery: <strong>" + masteryResult.label + "</strong> (" + masteryResult.mastery + "/5)<br><br>" +
+        "🎲 You earned all " + pendingDiceRoll + (pendingDiceRoll === 1 ? " step!" : " steps!");
+    } else {
+      selectedButton.classList.add("wrong");
+      optionButtons.forEach(button => {
+        if (button.textContent === currentQuestion.answer) button.classList.add("correct");
+      });
+      earnedMovement = 1;
+      vocabFeedback.className = "vocab-feedback wrong-feedback";
+      vocabFeedback.innerHTML =
+        "❌ <strong>Not quite.</strong><br><br>" +
+        "The correct answer is <strong>" + currentQuestion.answer + "</strong>.<br><br>" +
+        "<strong>" + currentVocabulary.word + "</strong> means " + currentVocabulary.meaning + ".<br><br>" +
+        "<strong>BM support:</strong> " + (currentVocabulary.bm || "—") + "<br><br>" +
+        "<strong>Example:</strong> " + currentVocabulary.example + "<br><br>" +
+        "🧠 Mastery: <strong>" + masteryResult.label + "</strong> (" + masteryResult.mastery + "/5)<br><br>" +
+        "You still earn 1 step.";
+    }
+
+    continueAfterAnswer.classList.remove("hidden");
+  }
+
+  function recordVocabularyResult(vocabulary, questionType, isCorrect) {
+    const profile = getProfile();
+    if (!profile) return { mastery: 0, label: "New" };
+
+    const progress = getWordProgress(profile, vocabulary.id);
+    progress.encounters += 1;
+    progress.lastQuestionType = questionType;
+
+    if (isCorrect) {
+      progress.correct += 1;
+      progress.mastery = Math.min(5, progress.mastery + 1);
+      profile.xp += 10;
+    } else {
+      progress.incorrect += 1;
+      if (progress.mastery > 1) progress.mastery -= 1;
+    }
+
+    if (!profile.learnedWordIds.includes(vocabulary.id)) {
+      profile.learnedWordIds.push(vocabulary.id);
+    }
+    profile.wordsLearned = profile.learnedWordIds.length;
+    profile.wordProgress[vocabulary.id] = progress;
+    saveProfile(profile);
+
+    return { mastery: progress.mastery, label: getMasteryLabel(progress.mastery) };
+  }
+
+  function getMasteryLabel(mastery) {
+    switch (mastery) {
+      case 0: return "New";
+      case 1: return "Encountered";
+      case 2: return "Learning";
+      case 3: return "Developing";
+      case 4: return "Almost Mastered";
+      case 5: return "Mastered";
+      default: return "New";
+    }
+  }
+
+  continueAfterAnswer.addEventListener("click", async () => {
+    continueAfterAnswer.disabled = true;
+    vocabOverlay.classList.remove("active");
+    await movePlayerByEarnedSteps();
+  });
+
+  async function movePlayerByEarnedSteps() {
+    const profile = getProfile();
+    if (!profile) {
+      isMoving = false;
+      return;
+    }
+
+    const targetPosition = Math.min(30, profile.currentPosition + earnedMovement);
+    gameMessage.textContent = "Moving " + earnedMovement + (earnedMovement === 1 ? " step..." : " steps...");
+
+    while (profile.currentPosition < targetPosition) {
+      profile.currentPosition += 1;
+      placePlayerToken(profile.currentPosition, profile.avatar);
+      await sleep(280);
+    }
+
+    saveProfile(profile);
+
+    if (profile.currentPosition === 30) {
+      gameMessage.textContent = "🏆 You reached Square 30!";
+      await sleep(700);
+      completeAdventure(profile);
+      return;
+    }
+
+    gameMessage.textContent = "You are now on Square " + profile.currentPosition + ".";
+    diceResult.textContent = "Vocabulary challenge completed.";
+    pendingDiceRoll = 0;
+    earnedMovement = 0;
+    currentVocabulary = null;
+    currentQuestion = null;
+    answerLocked = false;
+    isMoving = false;
+    rollButton.disabled = false;
+    continueAfterAnswer.disabled = false;
+  }
+
+  function sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  }
+
+  function completeAdventure(profile) {
+    profile.currentPosition = 30;
+    profile.completedGames += 1;
+    saveProfile(profile);
+    pendingDiceRoll = 0;
+    earnedMovement = 0;
+    currentVocabulary = null;
+    currentQuestion = null;
+    answerLocked = false;
+    isMoving = false;
+    showCompletion(profile);
+  }
+
+  function showCompletion(profile) {
+    completionText.textContent = profile.nickname + ", you reached Square 30 and completed your first LexiTrek journey!";
+    showScreen(completionScreen);
+  }
+
+  playAgainButton.addEventListener("click", () => {
+    const profile = getProfile();
+    if (!profile) return;
+    profile.currentPosition = 1;
+    saveProfile(profile);
+    openGame(profile);
+  });
+
+  homeButton.addEventListener("click", () => {
+    if (vocabOverlay.classList.contains("active")) return;
+    const profile = getProfile();
+    if (profile) loadHome(profile);
+  });
+
+  completionHomeButton.addEventListener("click", () => {
+    const profile = getProfile();
+    if (profile) loadHome(profile);
+  });
+
+  resetBoardButton.addEventListener("click", () => {
+    const confirmed = confirm("Reset your board position to Square 1?");
+    if (!confirmed) return;
+    const profile = getProfile();
+    if (!profile) return;
+    profile.currentPosition = 1;
+    saveProfile(profile);
+    openGame(profile);
+  });
+
+  backpackButton.addEventListener("click", () => {
+    comingSoon.textContent = "🎒 Word Backpack will be added after the vocabulary mastery system.";
+  });
+
+  progressButton.addEventListener("click", () => {
+    comingSoon.textContent = "📊 Learning progress will be added after vocabulary mastery tracking.";
+  });
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 </script>
-
-
 </body>
-
 </html>
