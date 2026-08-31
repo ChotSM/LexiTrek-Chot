@@ -2112,7 +2112,13 @@ function normaliseProfile(profile) {
     learnedWordIds:
       Array.isArray(profile.learnedWordIds)
         ? profile.learnedWordIds
-        : []
+        : [],
+    wordProgress:
+existingProfile
+
+    ? existingProfile.wordProgress
+
+    : {}
 
   };
 
@@ -3088,6 +3094,397 @@ function showVocabularyChallenge() {
 
 
     gameMessage.textContent =
+      "Vocabulary bank could not be loaded.";
+
+
+    isMoving = false;
+
+    rollButton.disabled = false;
+
+
+    return;
+
+  }
+
+
+  const profile =
+    getProfile();
+
+
+  if (!profile) {
+
+    return;
+
+  }
+
+
+  /*
+    Choose a word intelligently.
+
+    Words with low mastery receive
+    more chances to appear.
+  */
+
+
+  currentVocabulary =
+    chooseVocabularyByMastery(
+      profile
+    );
+
+
+  const progress =
+    getWordProgress(
+      profile,
+      currentVocabulary.id
+    );
+
+
+  /*
+    Question selection depends
+    partly on current mastery.
+  */
+
+
+  const selectedQuestion =
+    chooseQuestionForWord(
+
+      currentVocabulary,
+      progress.mastery
+
+    );
+
+
+  currentVocabulary.currentQuestion =
+    selectedQuestion;
+
+
+  answerLocked =
+    false;
+
+
+  vocabWord.textContent =
+    currentVocabulary.word;
+
+
+  vocabQuestion.textContent =
+    selectedQuestion.question;
+
+
+  vocabFeedback.textContent =
+    "";
+
+
+  vocabFeedback.className =
+    "vocab-feedback";
+
+
+  vocabOptions.innerHTML =
+    "";
+
+
+  continueAfterAnswer.classList.add(
+    "hidden"
+  );
+
+
+  continueAfterAnswer.disabled =
+    false;
+
+
+  const shuffledOptions =
+
+    shuffleArray(
+      [...selectedQuestion.options]
+    );
+
+
+  shuffledOptions.forEach(
+    function (optionText) {
+
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type =
+        "button";
+
+
+      button.className =
+        "vocab-option";
+
+
+      button.textContent =
+        optionText;
+
+
+      button.addEventListener(
+        "click",
+        function () {
+
+
+          checkVocabularyAnswer(
+
+            button,
+            optionText
+
+          );
+
+        }
+      );
+
+
+      vocabOptions.appendChild(
+        button
+      );
+
+    }
+  );
+
+
+  vocabOverlay.classList.add(
+    "active"
+  );
+
+}
+/* =========================================
+   CHOOSE WORD BY MASTERY
+========================================= */
+
+
+function chooseVocabularyByMastery(
+  profile
+) {
+
+
+  const weightedWords =
+    [];
+
+
+  vocabularyBank.forEach(
+    function (word) {
+
+
+      const progress =
+        getWordProgress(
+          profile,
+          word.id
+        );
+
+
+      /*
+        Lower mastery =
+        greater probability of appearing.
+      */
+
+
+      let weight =
+        6 - progress.mastery;
+
+
+      if (
+        weight < 1
+      ) {
+
+        weight = 1;
+
+      }
+
+
+      for (
+        let i = 0;
+        i < weight;
+        i++
+      ) {
+
+
+        weightedWords.push(
+          word
+        );
+
+      }
+
+    }
+  );
+
+
+  const randomIndex =
+
+    Math.floor(
+      Math.random() *
+      weightedWords.length
+    );
+
+
+  return weightedWords[
+    randomIndex
+  ];
+
+}
+/* =========================================
+   GET WORD PROGRESS
+========================================= */
+
+
+function getWordProgress(
+  profile,
+  wordId
+) {
+
+
+  if (
+    !profile.wordProgress[
+      wordId
+    ]
+  ) {
+
+
+    profile.wordProgress[
+      wordId
+    ] = {
+
+      mastery: 0,
+
+      correct: 0,
+
+      incorrect: 0,
+
+      encounters: 0,
+
+      lastQuestionType: null
+
+    };
+
+  }
+
+
+  return profile.wordProgress[
+    wordId
+  ];
+
+}
+
+/* =========================================
+   CHOOSE QUESTION TYPE
+========================================= */
+
+
+function chooseQuestionForWord(
+  vocabulary,
+  mastery
+) {
+
+
+  const questions =
+    vocabulary.questions;
+
+
+  /*
+    NEW learners normally start
+    with meaning recognition.
+  */
+
+
+  if (
+    mastery <= 1
+  ) {
+
+
+    const meaningQuestion =
+      questions.find(
+        function (question) {
+
+          return (
+            question.type ===
+            "meaning"
+          );
+
+        }
+      );
+
+
+    if (
+      meaningQuestion
+    ) {
+
+      return meaningQuestion;
+
+    }
+
+  }
+
+
+  /*
+    Developing learners receive
+    context questions more often.
+  */
+
+
+  if (
+    mastery === 2 ||
+    mastery === 3
+  ) {
+
+
+    const contextQuestion =
+      questions.find(
+        function (question) {
+
+          return (
+            question.type ===
+            "context"
+          );
+
+        }
+      );
+
+
+    if (
+      contextQuestion
+    ) {
+
+      return contextQuestion;
+
+    }
+
+  }
+
+
+  /*
+    Higher mastery uses a random
+    question to encourage retrieval.
+  */
+
+
+  const randomIndex =
+
+    Math.floor(
+      Math.random() *
+      questions.length
+    );
+
+
+  return questions[
+    randomIndex
+  ];
+
+}
+  
+
+  if (
+    typeof vocabularyBank ===
+    "undefined"
+  ) {
+
+
+    console.error(
+      "vocabulary.js did not load."
+    );
+
+
+    gameMessage.textContent =
 
       "Vocabulary bank could not be loaded. Check vocabulary.js.";
 
@@ -3248,6 +3645,197 @@ function showVocabularyChallenge() {
 
 
 function checkVocabularyAnswer(
+  selectedButton,
+  selectedAnswer
+) {
+
+
+  if (
+    answerLocked
+  ) {
+
+    return;
+
+  }
+
+
+  answerLocked =
+    true;
+
+
+  const question =
+    currentVocabulary.currentQuestion;
+
+
+  const optionButtons =
+
+    document.querySelectorAll(
+      ".vocab-option"
+    );
+
+
+  optionButtons.forEach(
+    function (button) {
+
+      button.disabled =
+        true;
+
+    }
+  );
+
+
+  const isCorrect =
+
+    selectedAnswer ===
+    question.answer;
+
+
+  /*
+    Record the learning result
+    BEFORE displaying feedback.
+  */
+
+
+  const masteryResult =
+
+    recordVocabularyResult(
+
+      currentVocabulary,
+
+      question.type,
+
+      isCorrect
+
+    );
+
+
+
+  if (
+    isCorrect
+  ) {
+
+
+    selectedButton.classList.add(
+      "correct"
+    );
+
+
+    earnedMovement =
+      pendingDiceRoll;
+
+
+    vocabFeedback.className =
+
+      "vocab-feedback correct-feedback";
+
+
+    vocabFeedback.innerHTML =
+
+      "✅ <strong>Correct!</strong><br><br>" +
+
+      "<strong>" +
+      currentVocabulary.word +
+      "</strong> means " +
+      currentVocabulary.meaning +
+      ".<br><br>" +
+
+      "<strong>Example:</strong> " +
+      currentVocabulary.example +
+      "<br><br>" +
+
+      "🧠 Mastery: <strong>" +
+      masteryResult.label +
+      "</strong> (" +
+      masteryResult.mastery +
+      "/5)<br><br>" +
+
+      "🎲 You earned all " +
+      pendingDiceRoll +
+      (
+        pendingDiceRoll === 1
+          ? " step!"
+          : " steps!"
+      );
+
+  }
+
+
+  else {
+
+
+    selectedButton.classList.add(
+      "wrong"
+    );
+
+
+    optionButtons.forEach(
+      function (button) {
+
+
+        if (
+          button.textContent ===
+          question.answer
+        ) {
+
+
+          button.classList.add(
+            "correct"
+          );
+
+        }
+
+      }
+    );
+
+
+    earnedMovement =
+      1;
+
+
+    vocabFeedback.className =
+
+      "vocab-feedback wrong-feedback";
+
+
+    vocabFeedback.innerHTML =
+
+      "❌ <strong>Not quite.</strong><br><br>" +
+
+      "The correct answer is <strong>" +
+      question.answer +
+      "</strong>.<br><br>" +
+
+      "<strong>" +
+      currentVocabulary.word +
+      "</strong> means " +
+      currentVocabulary.meaning +
+      ".<br><br>" +
+
+      "<strong>BM support:</strong> " +
+      currentVocabulary.bm +
+      "<br><br>" +
+
+      "<strong>Example:</strong> " +
+      currentVocabulary.example +
+      "<br><br>" +
+
+      "🧠 Mastery: <strong>" +
+      masteryResult.label +
+      "</strong> (" +
+      masteryResult.mastery +
+      "/5)<br><br>" +
+
+      "You still earn 1 step.";
+
+  }
+
+
+  continueAfterAnswer.classList.remove(
+    "hidden"
+  );
+
+}
+  
   selectedButton,
   selectedAnswer
 ) {
@@ -3591,7 +4179,212 @@ async function movePlayerByEarnedSteps() {
 ========================================= */
 
 
-function updateVocabularySuccess(
+/* =========================================
+   RECORD VOCABULARY RESULT
+========================================= */
+
+
+function recordVocabularyResult(
+  vocabulary,
+  questionType,
+  isCorrect
+) {
+
+
+  const profile =
+    getProfile();
+
+
+  if (!profile) {
+
+
+    return {
+
+      mastery: 0,
+      label: "New"
+
+    };
+
+  }
+
+
+  const progress =
+    getWordProgress(
+
+      profile,
+      vocabulary.id
+
+    );
+
+
+  progress.encounters++;
+
+
+  progress.lastQuestionType =
+    questionType;
+
+
+  if (
+    isCorrect
+  ) {
+
+
+    progress.correct++;
+
+
+    /*
+      One mastery point is earned
+      for a correct retrieval.
+    */
+
+
+    progress.mastery++;
+
+
+    if (
+      progress.mastery > 5
+    ) {
+
+      progress.mastery = 5;
+
+    }
+
+
+    /*
+      XP reward for correct answer.
+    */
+
+
+    profile.xp += 10;
+
+  }
+
+
+  else {
+
+
+    progress.incorrect++;
+
+
+    /*
+      Wrong answers do not completely
+      erase learning.
+
+      Only mastery above 1 can decline.
+    */
+
+
+    if (
+      progress.mastery > 1
+    ) {
+
+      progress.mastery--;
+
+    }
+
+  }
+
+
+  /*
+    Count words that have genuinely
+    been encountered.
+  */
+
+
+  if (
+    !profile.learnedWordIds.includes(
+      vocabulary.id
+    )
+  ) {
+
+
+    profile.learnedWordIds.push(
+      vocabulary.id
+    );
+
+  }
+
+
+  profile.wordsLearned =
+    profile.learnedWordIds.length;
+
+
+  profile.wordProgress[
+    vocabulary.id
+  ] = progress;
+
+
+  saveProfile(
+    profile
+  );
+
+
+  return {
+
+    mastery:
+      progress.mastery,
+
+    label:
+      getMasteryLabel(
+        progress.mastery
+      )
+
+  };
+
+}
+  /* =========================================
+   MASTERY LABEL
+========================================= */
+
+
+function getMasteryLabel(
+  mastery
+) {
+
+
+  switch (
+    mastery
+  ) {
+
+
+    case 0:
+
+      return "New";
+
+
+    case 1:
+
+      return "Encountered";
+
+
+    case 2:
+
+      return "Learning";
+
+
+    case 3:
+
+      return "Developing";
+
+
+    case 4:
+
+      return "Almost Mastered";
+
+
+    case 5:
+
+      return "Mastered";
+
+
+    default:
+
+      return "New";
+
+  }
+
+}
+  
   vocabulary
 ) {
 
