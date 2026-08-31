@@ -12,6 +12,7 @@
   <title>LexiTrek</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -20,290 +21,1469 @@
 
     body {
       font-family: Arial, Helvetica, sans-serif;
+
       background:
         linear-gradient(
           180deg,
           #dff7e5 0%,
-          #f7fff9 45%,
-          #e6f3ff 100%
+          #f7fff9 50%,
+          #e7f3ff 100%
         );
 
-      min-height: 100vh;
       color: #17352a;
+
+      min-height: 100vh;
     }
+
 
     .app {
       width: 100%;
       max-width: 480px;
+
       min-height: 100vh;
+
       margin: auto;
       padding: 24px;
+
       display: flex;
       flex-direction: column;
     }
+
+
+    .screen {
+      display: none;
+      flex: 1;
+    }
+
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+    }
+
 
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32px;
+
+      margin-bottom: 30px;
     }
 
+
     .brand {
-      font-size: 1rem;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 1px;
+      color: #12613e;
     }
+
 
     .version {
       background: white;
+
       padding: 7px 12px;
+
       border-radius: 20px;
+
       font-size: 0.75rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+
+      box-shadow:
+        0 4px 15px rgba(0,0,0,0.07);
     }
+
+
+    /* SPLASH SCREEN */
 
     .hero {
       flex: 1;
+
       display: flex;
       flex-direction: column;
+
       justify-content: center;
+
       text-align: center;
     }
 
+
     .logo-circle {
-      width: 105px;
-      height: 105px;
-      margin: 0 auto 22px;
+      width: 110px;
+      height: 110px;
+
+      margin:
+        0 auto
+        22px;
 
       border-radius: 50%;
 
       display: flex;
-      justify-content: center;
-      align-items: center;
 
-      font-size: 3.2rem;
+      align-items: center;
+      justify-content: center;
 
       background: white;
 
+      font-size: 3.3rem;
+
       box-shadow:
-        0 12px 30px rgba(22, 90, 60, 0.16);
+        0 12px 30px
+        rgba(22,90,60,0.16);
     }
+
 
     h1 {
       font-size: 2.8rem;
-      line-height: 1;
-      margin-bottom: 10px;
-      color: #12613e;
-    }
 
-    .tagline {
-      font-size: 1.15rem;
-      font-weight: 600;
+      color: #12613e;
+
       margin-bottom: 8px;
     }
 
-    .description {
-      max-width: 330px;
-      margin: 0 auto 30px;
-      line-height: 1.55;
-      color: #52675f;
+
+    .tagline {
+      font-size: 1.15rem;
+
+      font-weight: 700;
+
+      margin-bottom: 10px;
     }
+
+
+    .description {
+      color: #52675f;
+
+      line-height: 1.55;
+
+      max-width: 330px;
+
+      margin:
+        0 auto
+        30px;
+    }
+
 
     .feature-row {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
       gap: 10px;
+
       margin-bottom: 34px;
     }
 
+
     .feature {
-      background: rgba(255,255,255,0.85);
-      border-radius: 18px;
+      background:
+        rgba(255,255,255,0.9);
+
       padding: 15px 8px;
 
-      box-shadow:
-        0 6px 18px rgba(0,0,0,0.06);
-    }
-
-    .feature-icon {
-      font-size: 1.7rem;
-      margin-bottom: 7px;
-    }
-
-    .feature-title {
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
-    .start-button {
-      width: 100%;
-      border: none;
-      padding: 18px 22px;
-
       border-radius: 18px;
 
+      box-shadow:
+        0 6px 18px
+        rgba(0,0,0,0.06);
+    }
+
+
+    .feature-icon {
+      font-size: 1.8rem;
+
+      margin-bottom: 6px;
+    }
+
+
+    .feature-title {
+      font-size: 0.8rem;
+
+      font-weight: 700;
+    }
+
+
+    /* BUTTONS */
+
+    .primary-button {
+      width: 100%;
+
+      border: none;
+
       background: #137548;
+
       color: white;
 
-      font-size: 1.05rem;
-      font-weight: 700;
+      padding: 17px 20px;
+
+      border-radius: 17px;
+
+      font-size: 1rem;
+
+      font-weight: 800;
 
       cursor: pointer;
 
       box-shadow:
-        0 10px 22px rgba(19,117,72,0.24);
+        0 10px 22px
+        rgba(19,117,72,0.23);
 
-      transition:
-        transform 0.15s ease,
-        background 0.15s ease;
+      margin-top: 12px;
     }
 
-    .start-button:active {
+
+    .primary-button:active {
       transform: scale(0.98);
     }
 
-    .status {
-      margin-top: 18px;
-      min-height: 24px;
-      font-size: 0.9rem;
-      font-weight: 600;
+
+    .secondary-button {
+      width: 100%;
+
+      border: 2px solid #137548;
+
+      background: white;
+
+      color: #137548;
+
+      padding: 15px 20px;
+
+      border-radius: 17px;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      margin-top: 12px;
+    }
+
+
+    /* PROFILE */
+
+    .section-title {
+      font-size: 1.8rem;
+
+      color: #12613e;
+
+      margin-bottom: 8px;
+    }
+
+
+    .section-description {
+      color: #60736b;
+
+      line-height: 1.5;
+
+      margin-bottom: 28px;
+    }
+
+
+    .profile-card {
+      background: white;
+
+      border-radius: 24px;
+
+      padding: 24px;
+
+      box-shadow:
+        0 10px 30px
+        rgba(0,0,0,0.08);
+    }
+
+
+    label {
+      display: block;
+
+      font-weight: 700;
+
+      margin-bottom: 9px;
+    }
+
+
+    input {
+      width: 100%;
+
+      padding: 15px;
+
+      border-radius: 14px;
+
+      border:
+        2px solid #d9e5df;
+
+      font-size: 1rem;
+
+      outline: none;
+
+      margin-bottom: 25px;
+    }
+
+
+    input:focus {
+      border-color: #137548;
+    }
+
+
+    .avatar-title {
+      font-weight: 700;
+
+      margin-bottom: 12px;
+    }
+
+
+    .avatar-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 10px;
+
+      margin-bottom: 18px;
+    }
+
+
+    .avatar {
+      background: #f3f8f5;
+
+      border:
+        3px solid transparent;
+
+      border-radius: 18px;
+
+      padding: 12px 4px;
+
+      font-size: 2rem;
+
+      text-align: center;
+
+      cursor: pointer;
+    }
+
+
+    .avatar.selected {
+      background: #e3f5e9;
+
+      border-color: #137548;
+    }
+
+
+    .error-message {
+      min-height: 22px;
+
+      color: #b3261e;
+
+      font-size: 0.85rem;
+
+      font-weight: 700;
+
+      margin-top: 8px;
+    }
+
+
+    /* HOME */
+
+    .student-header {
+      display: flex;
+
+      align-items: center;
+
+      gap: 15px;
+
+      background: white;
+
+      padding: 18px;
+
+      border-radius: 22px;
+
+      margin-bottom: 20px;
+
+      box-shadow:
+        0 8px 24px
+        rgba(0,0,0,0.07);
+    }
+
+
+    .student-avatar {
+      width: 64px;
+      height: 64px;
+
+      border-radius: 50%;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+      font-size: 2rem;
+
+      background: #e4f6ea;
+    }
+
+
+    .hello {
+      font-size: 0.8rem;
+
+      color: #667970;
+
+      margin-bottom: 3px;
+    }
+
+
+    .student-name {
+      font-size: 1.35rem;
+
+      font-weight: 800;
+
       color: #12613e;
     }
 
+
+    .stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 10px;
+
+      margin-bottom: 22px;
+    }
+
+
+    .stat {
+      background: white;
+
+      padding: 15px 7px;
+
+      text-align: center;
+
+      border-radius: 18px;
+
+      box-shadow:
+        0 5px 16px
+        rgba(0,0,0,0.05);
+    }
+
+
+    .stat-number {
+      font-size: 1.15rem;
+
+      font-weight: 800;
+
+      color: #137548;
+
+      margin-bottom: 4px;
+    }
+
+
+    .stat-label {
+      font-size: 0.72rem;
+
+      color: #667970;
+    }
+
+
+    .adventure-card {
+      background:
+        linear-gradient(
+          135deg,
+          #137548,
+          #0c5635
+        );
+
+      color: white;
+
+      border-radius: 24px;
+
+      padding: 24px;
+
+      margin-bottom: 20px;
+
+      box-shadow:
+        0 12px 30px
+        rgba(19,117,72,0.22);
+    }
+
+
+    .adventure-card h2 {
+      margin-bottom: 8px;
+    }
+
+
+    .adventure-card p {
+      line-height: 1.5;
+
+      opacity: 0.9;
+
+      margin-bottom: 18px;
+    }
+
+
+    .play-button {
+      width: 100%;
+
+      border: none;
+
+      background: white;
+
+      color: #12613e;
+
+      padding: 15px;
+
+      border-radius: 15px;
+
+      font-weight: 800;
+
+      cursor: pointer;
+    }
+
+
+    .menu-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(2, 1fr);
+
+      gap: 12px;
+
+      margin-bottom: 20px;
+    }
+
+
+    .menu-card {
+      background: white;
+
+      border: none;
+
+      border-radius: 20px;
+
+      padding: 20px 10px;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 7px 20px
+        rgba(0,0,0,0.06);
+    }
+
+
+    .menu-icon {
+      font-size: 2rem;
+
+      margin-bottom: 8px;
+    }
+
+
+    .menu-title {
+      font-weight: 700;
+
+      color: #17352a;
+    }
+
+
+    .coming-soon {
+      margin-top: 12px;
+
+      text-align: center;
+
+      min-height: 24px;
+
+      color: #137548;
+
+      font-size: 0.85rem;
+
+      font-weight: 700;
+    }
+
+
     footer {
       text-align: center;
+
+      padding-top: 24px;
+
+      color: #75877f;
+
       font-size: 0.72rem;
-      color: #71837c;
-      padding-top: 25px;
     }
+
   </style>
 </head>
 
+
 <body>
 
-  <main class="app">
+<main class="app">
 
-    <div class="top-bar">
 
-      <div class="brand">
-        LEXITREK
+<!-- ============================= -->
+<!-- SCREEN 1: SPLASH -->
+<!-- ============================= -->
+
+<section
+  id="splashScreen"
+  class="screen active"
+>
+
+  <div class="top-bar">
+
+    <div class="brand">
+      LEXITREK
+    </div>
+
+    <div class="version">
+      Prototype 0.1
+    </div>
+
+  </div>
+
+
+  <div class="hero">
+
+    <div class="logo-circle">
+      🗺️
+    </div>
+
+    <h1>
+      LexiTrek
+    </h1>
+
+    <p class="tagline">
+      Vocabulary Adventure
+    </p>
+
+    <p class="description">
+
+      Learn new English words,
+      conquer challenges and journey
+      across the LexiTrek board.
+
+    </p>
+
+
+    <div class="feature-row">
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          🎲
+        </div>
+
+        <div class="feature-title">
+          PLAY
+        </div>
+
       </div>
 
-      <div class="version">
-        Prototype 0.1
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          🧠
+        </div>
+
+        <div class="feature-title">
+          LEARN
+        </div>
+
+      </div>
+
+
+      <div class="feature">
+
+        <div class="feature-icon">
+          🏆
+        </div>
+
+        <div class="feature-title">
+          MASTER
+        </div>
+
       </div>
 
     </div>
 
 
-    <section class="hero">
+    <button
+      id="startButton"
+      class="primary-button"
+    >
+      START ADVENTURE
+    </button>
 
-      <div class="logo-circle">
-        🗺️
-      </div>
-
-      <h1>
-        LexiTrek
-      </h1>
-
-      <p class="tagline">
-        Vocabulary Adventure
-      </p>
-
-      <p class="description">
-        Learn new English words,
-        conquer challenges and journey
-        across the LexiTrek board.
-      </p>
+  </div>
 
 
-      <div class="feature-row">
+  <footer>
+    Form One English Vocabulary Learning
+  </footer>
 
-        <div class="feature">
-
-          <div class="feature-icon">
-            🎲
-          </div>
-
-          <div class="feature-title">
-            Play
-          </div>
-
-        </div>
+</section>
 
 
-        <div class="feature">
 
-          <div class="feature-icon">
-            🧠
-          </div>
+<!-- ============================= -->
+<!-- SCREEN 2: CREATE PLAYER -->
+<!-- ============================= -->
 
-          <div class="feature-title">
-            Learn
-          </div>
+<section
+  id="profileScreen"
+  class="screen"
+>
 
-        </div>
+  <div class="top-bar">
+
+    <div class="brand">
+      LEXITREK
+    </div>
+
+    <div class="version">
+      Player Setup
+    </div>
+
+  </div>
 
 
-        <div class="feature">
+  <h2 class="section-title">
+    Create Your Explorer
+  </h2>
 
-          <div class="feature-icon">
-            🏆
-          </div>
 
-          <div class="feature-title">
-            Master
-          </div>
+  <p class="section-description">
 
-        </div>
+    Choose a nickname and an avatar
+    before beginning your vocabulary
+    adventure.
 
-      </div>
+  </p>
 
+
+  <div class="profile-card">
+
+
+    <label for="nickname">
+      Explorer Nickname
+    </label>
+
+
+    <input
+      type="text"
+      id="nickname"
+      maxlength="15"
+      placeholder="Example: WordTiger"
+    >
+
+
+    <div class="avatar-title">
+      Choose your explorer
+    </div>
+
+
+    <div class="avatar-grid">
 
       <button
-        class="start-button"
-        id="startButton"
+        class="avatar selected"
+        data-avatar="🧑"
       >
-        START ADVENTURE
+        🧑
       </button>
 
+      <button
+        class="avatar"
+        data-avatar="👧"
+      >
+        👧
+      </button>
+
+      <button
+        class="avatar"
+        data-avatar="🥷"
+      >
+        🥷
+      </button>
+
+      <button
+        class="avatar"
+        data-avatar="🧙"
+      >
+        🧙
+      </button>
+
+      <button
+        class="avatar"
+        data-avatar="🐯"
+      >
+        🐯
+      </button>
+
+      <button
+        class="avatar"
+        data-avatar="🦊"
+      >
+        🦊
+      </button>
+
+      <button
+        class="avatar"
+        data-avatar="🐼"
+      >
+        🐼
+      </button>
+
+      <button
+        class="avatar"
+        data-avatar="🦁"
+      >
+        🦁
+      </button>
+
+    </div>
+
+
+    <button
+      id="saveProfileButton"
+      class="primary-button"
+    >
+      CREATE EXPLORER
+    </button>
+
+
+    <button
+      id="backButton"
+      class="secondary-button"
+    >
+      BACK
+    </button>
+
+
+    <div
+      id="profileError"
+      class="error-message"
+    ></div>
+
+
+  </div>
+
+</section>
+
+
+
+<!-- ============================= -->
+<!-- SCREEN 3: HOME -->
+<!-- ============================= -->
+
+<section
+  id="homeScreen"
+  class="screen"
+>
+
+  <div class="top-bar">
+
+    <div class="brand">
+      LEXITREK
+    </div>
+
+    <div class="version">
+      Explorer Home
+    </div>
+
+  </div>
+
+
+  <div class="student-header">
+
+    <div
+      id="homeAvatar"
+      class="student-avatar"
+    >
+      🧑
+    </div>
+
+
+    <div>
+
+      <div class="hello">
+        Welcome back,
+      </div>
 
       <div
-        class="status"
-        id="statusMessage"
-      ></div>
+        id="homeNickname"
+        class="student-name"
+      >
+        Explorer
+      </div>
 
-    </section>
+    </div>
 
-
-    <footer>
-      Designed for Form One English Vocabulary Learning
-    </footer>
-
-  </main>
+  </div>
 
 
-  <script>
 
-    const startButton =
-      document.getElementById("startButton");
+  <div class="stats">
 
-    const statusMessage =
-      document.getElementById("statusMessage");
+    <div class="stat">
+
+      <div class="stat-number">
+        0
+      </div>
+
+      <div class="stat-label">
+        XP
+      </div>
+
+    </div>
 
 
-    startButton.addEventListener(
+    <div class="stat">
+
+      <div class="stat-number">
+        0
+      </div>
+
+      <div class="stat-label">
+        Words
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="stat-number">
+        1
+      </div>
+
+      <div class="stat-label">
+        Level
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="adventure-card">
+
+    <h2>
+      🌿 Adventure 1
+    </h2>
+
+    <p>
+      Your first LexiTrek vocabulary
+      journey is ready to begin.
+    </p>
+
+
+    <button
+      id="playButton"
+      class="play-button"
+    >
+      PLAY ADVENTURE
+    </button>
+
+  </div>
+
+
+
+  <div class="menu-grid">
+
+
+    <button
+      id="backpackButton"
+      class="menu-card"
+    >
+
+      <div class="menu-icon">
+        🎒
+      </div>
+
+      <div class="menu-title">
+        Word Backpack
+      </div>
+
+    </button>
+
+
+
+    <button
+      id="progressButton"
+      class="menu-card"
+    >
+
+      <div class="menu-icon">
+        📊
+      </div>
+
+      <div class="menu-title">
+        My Progress
+      </div>
+
+    </button>
+
+
+  </div>
+
+
+
+  <button
+    id="changeProfileButton"
+    class="secondary-button"
+  >
+    CHANGE EXPLORER
+  </button>
+
+
+  <div
+    id="comingSoon"
+    class="coming-soon"
+  ></div>
+
+
+  <footer>
+    Learn • Play • Remember • Master
+  </footer>
+
+
+</section>
+
+
+</main>
+
+
+
+<script>
+
+
+/* =========================================
+   GET IMPORTANT SCREEN ELEMENTS
+========================================= */
+
+
+const splashScreen =
+  document.getElementById(
+    "splashScreen"
+  );
+
+
+const profileScreen =
+  document.getElementById(
+    "profileScreen"
+  );
+
+
+const homeScreen =
+  document.getElementById(
+    "homeScreen"
+  );
+
+
+
+/* =========================================
+   GET BUTTONS
+========================================= */
+
+
+const startButton =
+  document.getElementById(
+    "startButton"
+  );
+
+
+const saveProfileButton =
+  document.getElementById(
+    "saveProfileButton"
+  );
+
+
+const backButton =
+  document.getElementById(
+    "backButton"
+  );
+
+
+const playButton =
+  document.getElementById(
+    "playButton"
+  );
+
+
+const backpackButton =
+  document.getElementById(
+    "backpackButton"
+  );
+
+
+const progressButton =
+  document.getElementById(
+    "progressButton"
+  );
+
+
+const changeProfileButton =
+  document.getElementById(
+    "changeProfileButton"
+  );
+
+
+
+/* =========================================
+   PROFILE VARIABLES
+========================================= */
+
+
+const nicknameInput =
+  document.getElementById(
+    "nickname"
+  );
+
+
+const profileError =
+  document.getElementById(
+    "profileError"
+  );
+
+
+const homeNickname =
+  document.getElementById(
+    "homeNickname"
+  );
+
+
+const homeAvatar =
+  document.getElementById(
+    "homeAvatar"
+  );
+
+
+const comingSoon =
+  document.getElementById(
+    "comingSoon"
+  );
+
+
+
+let selectedAvatar = "🧑";
+
+
+
+/* =========================================
+   SCREEN NAVIGATION
+========================================= */
+
+
+function showScreen(screen) {
+
+  splashScreen.classList.remove(
+    "active"
+  );
+
+  profileScreen.classList.remove(
+    "active"
+  );
+
+  homeScreen.classList.remove(
+    "active"
+  );
+
+
+  screen.classList.add(
+    "active"
+  );
+
+}
+
+
+
+/* =========================================
+   START BUTTON
+========================================= */
+
+
+startButton.addEventListener(
+  "click",
+  function () {
+
+    const savedProfile =
+      localStorage.getItem(
+        "lexitrekProfile"
+      );
+
+
+    if (savedProfile) {
+
+      const profile =
+        JSON.parse(savedProfile);
+
+
+      loadHome(profile);
+
+    }
+
+    else {
+
+      showScreen(
+        profileScreen
+      );
+
+    }
+
+  }
+);
+
+
+
+/* =========================================
+   AVATAR SELECTION
+========================================= */
+
+
+const avatars =
+  document.querySelectorAll(
+    ".avatar"
+  );
+
+
+avatars.forEach(
+  function (avatarButton) {
+
+    avatarButton.addEventListener(
       "click",
       function () {
 
-        statusMessage.textContent =
-          "LexiTrek is ready for your adventure!";
+
+        avatars.forEach(
+          function (button) {
+
+            button.classList.remove(
+              "selected"
+            );
+
+          }
+        );
+
+
+        avatarButton.classList.add(
+          "selected"
+        );
+
+
+        selectedAvatar =
+          avatarButton.dataset.avatar;
 
       }
     );
 
-  </script>
+  }
+);
+
+
+
+/* =========================================
+   CREATE PROFILE
+========================================= */
+
+
+saveProfileButton.addEventListener(
+  "click",
+  function () {
+
+
+    const nickname =
+      nicknameInput.value.trim();
+
+
+    if (nickname.length < 2) {
+
+      profileError.textContent =
+        "Please enter a nickname with at least 2 characters.";
+
+      return;
+
+    }
+
+
+    profileError.textContent = "";
+
+
+    const profile = {
+
+      nickname: nickname,
+
+      avatar: selectedAvatar,
+
+      xp: 0,
+
+      wordsLearned: 0,
+
+      level: 1
+
+    };
+
+
+    localStorage.setItem(
+
+      "lexitrekProfile",
+
+      JSON.stringify(profile)
+
+    );
+
+
+    loadHome(profile);
+
+  }
+);
+
+
+
+/* =========================================
+   LOAD HOME
+========================================= */
+
+
+function loadHome(profile) {
+
+
+  homeNickname.textContent =
+    profile.nickname;
+
+
+  homeAvatar.textContent =
+    profile.avatar;
+
+
+  showScreen(
+    homeScreen
+  );
+
+}
+
+
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+
+backButton.addEventListener(
+  "click",
+  function () {
+
+    showScreen(
+      splashScreen
+    );
+
+  }
+);
+
+
+
+/* =========================================
+   CHANGE PROFILE
+========================================= */
+
+
+changeProfileButton.addEventListener(
+  "click",
+  function () {
+
+
+    const savedProfile =
+      localStorage.getItem(
+        "lexitrekProfile"
+      );
+
+
+    if (savedProfile) {
+
+      const profile =
+        JSON.parse(
+          savedProfile
+        );
+
+
+      nicknameInput.value =
+        profile.nickname;
+
+
+      selectedAvatar =
+        profile.avatar;
+
+
+      avatars.forEach(
+        function (button) {
+
+          button.classList.remove(
+            "selected"
+          );
+
+
+          if (
+            button.dataset.avatar
+            === selectedAvatar
+          ) {
+
+            button.classList.add(
+              "selected"
+            );
+
+          }
+
+        }
+      );
+
+    }
+
+
+    showScreen(
+      profileScreen
+    );
+
+  }
+);
+
+
+
+/* =========================================
+   TEMPORARY BUTTONS
+========================================= */
+
+
+playButton.addEventListener(
+  "click",
+  function () {
+
+    comingSoon.textContent =
+      "🎲 Game board coming in Prototype 0.1 Part C.";
+
+  }
+);
+
+
+backpackButton.addEventListener(
+  "click",
+  function () {
+
+    comingSoon.textContent =
+      "🎒 Word Backpack will be unlocked soon.";
+
+  }
+);
+
+
+progressButton.addEventListener(
+  "click",
+  function () {
+
+    comingSoon.textContent =
+      "📊 Progress tracking will be added later.";
+
+  }
+);
+
+
+</script>
+
 
 </body>
 
