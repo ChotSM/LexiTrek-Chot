@@ -2136,7 +2136,40 @@ const completionText =
     "completionText"
   );
 
+const vocabOverlay =
+  document.getElementById(
+    "vocabOverlay"
+  );
 
+
+const vocabWord =
+  document.getElementById(
+    "vocabWord"
+  );
+
+
+const vocabQuestion =
+  document.getElementById(
+    "vocabQuestion"
+  );
+
+
+const vocabOptions =
+  document.getElementById(
+    "vocabOptions"
+  );
+
+
+const vocabFeedback =
+  document.getElementById(
+    "vocabFeedback"
+  );
+
+
+const continueAfterAnswer =
+  document.getElementById(
+    "continueAfterAnswer"
+  );
 
 /* =========================================
    APP VARIABLES
@@ -2148,6 +2181,11 @@ let selectedAvatar = "🧑";
 
 let isMoving = false;
 
+let pendingDiceRoll = 0;
+
+let currentVocabulary = null;
+
+let earnedMovement = 0;
 
 const diceFaces = {
 
