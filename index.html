@@ -3045,7 +3045,28 @@ rollButton.addEventListener(
       roll +
       "!";
 
+pendingDiceRoll = roll;
 
+
+gameMessage.textContent =
+
+  "Answer the vocabulary challenge to earn your " +
+  roll +
+  " steps.";
+
+
+await sleep(
+  400
+);
+
+
+showVocabularyChallenge();
+
+
+isMoving = false;
+
+
+return;
     gameMessage.textContent =
 
       "Move " +
@@ -3411,6 +3432,510 @@ progressButton.addEventListener(
 );
 
 <script src="vocabulary.js"></script>
+/* =========================================
+   VOCABULARY ENGINE
+========================================= */
+
+
+function showVocabularyChallenge() {
+
+
+  const randomIndex =
+
+    Math.floor(
+      Math.random() *
+      vocabularyBank.length
+    );
+
+
+  currentVocabulary =
+    vocabularyBank[
+      randomIndex
+    ];
+
+
+  vocabWord.textContent =
+    currentVocabulary.word;
+
+
+  vocabQuestion.textContent =
+    currentVocabulary.question;
+
+
+  vocabFeedback.textContent =
+    "";
+
+
+  vocabFeedback.className =
+    "vocab-feedback";
+
+
+  continueAfterAnswer.classList.add(
+    "hidden"
+  );
+
+
+  vocabOptions.innerHTML =
+    "";
+
+
+  const shuffledOptions =
+
+    shuffleArray(
+      [...currentVocabulary.options]
+    );
+
+
+  shuffledOptions.forEach(
+    function (optionText) {
+
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.className =
+        "vocab-option";
+
+
+      button.textContent =
+        optionText;
+
+
+      button.addEventListener(
+        "click",
+        function () {
+
+
+          checkVocabularyAnswer(
+
+            button,
+            optionText
+
+          );
+
+        }
+      );
+
+
+      vocabOptions.appendChild(
+        button
+      );
+
+    }
+  );
+
+
+  vocabOverlay.classList.add(
+    "active"
+  );
+
+}
+
+
+
+/* =========================================
+   CHECK ANSWER
+========================================= */
+
+
+function checkVocabularyAnswer(
+  selectedButton,
+  selectedAnswer
+) {
+
+
+  const optionButtons =
+
+    document.querySelectorAll(
+      ".vocab-option"
+    );
+
+
+  optionButtons.forEach(
+    function (button) {
+
+      button.disabled =
+        true;
+
+    }
+  );
+
+
+
+  const isCorrect =
+
+    selectedAnswer ===
+    currentVocabulary.answer;
+
+
+
+  if (isCorrect) {
+
+
+    selectedButton.classList.add(
+      "correct"
+    );
+
+
+    earnedMovement =
+      pendingDiceRoll;
+
+
+    vocabFeedback.className =
+
+      "vocab-feedback correct-feedback";
+
+
+    vocabFeedback.innerHTML =
+
+      "✅ <strong>Correct!</strong><br><br>" +
+
+      "<strong>" +
+      currentVocabulary.word +
+      "</strong> means " +
+
+      currentVocabulary.meaning +
+      ".<br><br>" +
+
+      "Example: " +
+      currentVocabulary.example +
+      "<br><br>" +
+
+      "🎲 You earned all " +
+      pendingDiceRoll +
+      " steps!";
+
+
+    updateVocabularySuccess(
+      currentVocabulary
+    );
+
+  }
+
+
+  else {
+
+
+    selectedButton.classList.add(
+      "wrong"
+    );
+
+
+    optionButtons.forEach(
+      function (button) {
+
+
+        if (
+          button.textContent ===
+          currentVocabulary.answer
+        ) {
+
+          button.classList.add(
+            "correct"
+          );
+
+        }
+
+      }
+    );
+
+
+    earnedMovement = 1;
+
+
+    vocabFeedback.className =
+
+      "vocab-feedback wrong-feedback";
+
+
+    vocabFeedback.innerHTML =
+
+      "Not quite.<br><br>" +
+
+      "<strong>" +
+      currentVocabulary.word +
+      "</strong> means " +
+
+      currentVocabulary.meaning +
+      ".<br><br>" +
+
+      "BM support: " +
+      currentVocabulary.bm +
+      "<br><br>" +
+
+      "Example: " +
+      currentVocabulary.example +
+      "<br><br>" +
+
+      "You still earn 1 step. Keep learning!";
+
+  }
+
+
+
+  continueAfterAnswer.classList.remove(
+    "hidden"
+  );
+
+}
+
+
+
+/* =========================================
+   CONTINUE AFTER QUESTION
+========================================= */
+
+
+continueAfterAnswer.addEventListener(
+  "click",
+  async function () {
+
+
+    vocabOverlay.classList.remove(
+      "active"
+    );
+
+
+    await movePlayerByEarnedSteps();
+
+  }
+);
+
+
+
+/* =========================================
+   MOVE PLAYER AFTER VOCABULARY
+========================================= */
+
+
+async function movePlayerByEarnedSteps() {
+
+
+  const profile =
+    getProfile();
+
+
+  if (!profile) {
+
+    return;
+
+  }
+
+
+  isMoving =
+    true;
+
+
+  rollButton.disabled =
+    true;
+
+
+  let targetPosition =
+
+    profile.currentPosition +
+    earnedMovement;
+
+
+  if (
+    targetPosition > 30
+  ) {
+
+    targetPosition =
+      30;
+
+  }
+
+
+  while (
+
+    profile.currentPosition
+    <
+    targetPosition
+
+  ) {
+
+
+    profile.currentPosition++;
+
+
+    placePlayerToken(
+
+      profile.currentPosition,
+
+      profile.avatar
+
+    );
+
+
+    await sleep(
+      260
+    );
+
+  }
+
+
+  saveProfile(
+    profile
+  );
+
+
+
+  if (
+    profile.currentPosition === 30
+  ) {
+
+
+    gameMessage.textContent =
+
+      "🏆 You reached Square 30!";
+
+
+    await sleep(
+      700
+    );
+
+
+    completeAdventure(
+      profile
+    );
+
+
+    return;
+
+  }
+
+
+
+  gameMessage.textContent =
+
+    "You are now on Square " +
+    profile.currentPosition +
+    ".";
+
+
+  diceResult.textContent =
+
+    "Vocabulary challenge completed.";
+
+
+  pendingDiceRoll = 0;
+
+  earnedMovement = 0;
+
+  currentVocabulary = null;
+
+
+  isMoving =
+    false;
+
+
+  rollButton.disabled =
+    false;
+
+}
+
+
+
+/* =========================================
+   RECORD CORRECT VOCABULARY
+========================================= */
+
+
+function updateVocabularySuccess(
+  vocabulary
+) {
+
+
+  const profile =
+    getProfile();
+
+
+  if (!profile) {
+
+    return;
+
+  }
+
+
+  if (
+    !profile.learnedWordIds
+  ) {
+
+    profile.learnedWordIds = [];
+
+  }
+
+
+  if (
+    !profile.learnedWordIds.includes(
+      vocabulary.id
+    )
+  ) {
+
+
+    profile.learnedWordIds.push(
+      vocabulary.id
+    );
+
+
+    profile.wordsLearned =
+      profile.learnedWordIds.length;
+
+  }
+
+
+  profile.xp =
+    (profile.xp || 0) + 10;
+
+
+  saveProfile(
+    profile
+  );
+
+}
+
+
+
+/* =========================================
+   SHUFFLE ANSWERS
+========================================= */
+
+
+function shuffleArray(array) {
+
+
+  for (
+    let i = array.length - 1;
+    i > 0;
+    i--
+  ) {
+
+
+    const j =
+
+      Math.floor(
+        Math.random() *
+        (i + 1)
+      );
+
+
+    [
+      array[i],
+      array[j]
+    ] = [
+      array[j],
+      array[i]
+    ];
+
+  }
+
+
+  return array;
+
+}
 </script>
 
 
