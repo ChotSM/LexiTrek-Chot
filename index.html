@@ -644,7 +644,16 @@
         "❌ <strong>Not quite.</strong><br><br>" +
         "The correct answer is <strong>" + currentQuestion.answer + "</strong>.<br><br>" +
         "<strong>" + currentVocabulary.word + "</strong> means " + currentVocabulary.meaning + ".<br><br>" +
-        "<strong>BM support:</strong> " + (currentVocabulary.bm || "—") + "<br><br>" +
+        "<strong>BM support:</strong> " +
+(
+  currentVocabulary.bm &&
+  currentVocabulary.bm.trim() !== ""
+
+    ? currentVocabulary.bm
+
+    : "Terjemahan BM belum tersedia"
+) +
+"<br><br>"+
         "<strong>Example:</strong> " + currentVocabulary.example + "<br><br>" +
         "🧠 Mastery: <strong>" + masteryResult.label + "</strong> (" + masteryResult.mastery + "/5)<br><br>" +
         "You still earn 1 step.";
