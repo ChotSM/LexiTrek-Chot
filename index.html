@@ -518,6 +518,13 @@
   gameScreen,
   backpackScreen,
   completionScreen
+].filter(Boolean);
+  splashScreen,
+  profileScreen,
+  homeScreen,
+  gameScreen,
+  backpackScreen,
+  completionScreen
 ];
 
   const startButton = document.getElementById("startButton");
@@ -558,8 +565,26 @@
   const vocabOptions = document.getElementById("vocabOptions");
   const vocabFeedback = document.getElementById("vocabFeedback");
 const continueAfterAnswer = document.getElementById("continueAfterAnswer");
+/* =========================================
+   WORD BACKPACK ELEMENTS
+========================================= */
 
+const backpackEncountered =
+  document.getElementById("backpackEncountered");
 
+const backpackMastered =
+  document.getElementById("backpackMastered");
+
+const backpackList =
+  document.getElementById("backpackList");
+
+const backpackHomeButton =
+  document.getElementById("backpackHomeButton");
+let selectedAvatar = "🧑";
+let isMoving = false;
+let pendingDiceRoll = 0;
+
+  
 /* =========================================
    WORD BACKPACK ELEMENTS
 ========================================= */
@@ -619,6 +644,32 @@ let selectedAvatar = "🧑";
   }
 
   function showScreen(screen) {
+
+  if (!screen) {
+
+    console.error(
+      "LexiTrek screen could not be found."
+    );
+
+    return;
+  }
+
+
+  allScreens.forEach(
+    function(item) {
+
+      if (item) {
+        item.classList.remove("active");
+      }
+
+    }
+  );
+
+
+  screen.classList.add("active");
+
+  window.scrollTo(0, 0);
+}
     allScreens.forEach(item => item.classList.remove("active"));
     screen.classList.add("active");
     window.scrollTo(0,0);
@@ -782,7 +833,7 @@ let selectedAvatar = "🧑";
   });
 
   function ensureVocabularyBank() {
-    return typeof vocabularyBank !== "undefined" && Array.isArray(vocabularyBank) && vocabularyBank.length > 0;
+    return typeof vocabularyBank !== "undefined" && Array.isArray(window.vocabularyBank) && vocabularyBank.length > 0;
   }
 
   function showVocabularyChallenge() {
@@ -833,7 +884,7 @@ let selectedAvatar = "🧑";
 
   function chooseVocabularyByMastery(profile) {
     const weightedWords = [];
-    vocabularyBank.forEach(word => {
+    window.vocabularyBank.forEach(word => {
       const progress = getWordProgress(profile, word.id);
       const weight = Math.max(1, 6 - progress.mastery);
       for (let i = 0; i < weight; i++) weightedWords.push(word);
@@ -1062,7 +1113,6 @@ let selectedAvatar = "🧑";
   }
 );
 
-
 backpackHomeButton.addEventListener(
   "click",
   function () {
@@ -1076,13 +1126,284 @@ backpackHomeButton.addEventListener(
   }
 );
 
-
 progressButton.addEventListener("click", () => {
   comingSoon.textContent =
     "📊 Learning progress will be added after vocabulary mastery tracking.";
 });
 
+/* =========================================
+   WORD BACKPACK ENGINE
+========================================= */
 
+function openWordBackpack() {
+
+  const profile = getProfile();
+
+  if (!profile) {
+    return;
+  }
+
+
+  /* Check vocabulary database */
+
+  if (
+    !Array.isArray(window.vocabularyBank) ||
+    window.vocabularyBank.length === 0
+  ) {
+
+    console.error(
+      "Vocabulary bank is unavailable."
+    );
+
+    comingSoon.textContent =
+      "Vocabulary bank could not be loaded.";
+
+    return;
+  }
+
+
+  /* Get words the learner has encountered */
+
+  const encounteredWords =
+    window.vocabularyBank.filter(
+      function(word) {
+
+        return (
+          Array.isArray(profile.learnedWordIds) &&
+          profile.learnedWordIds.includes(word.id)
+        );
+
+      }
+    );
+
+
+  /* Sort words alphabetically */
+
+  encounteredWords.sort(
+    function(a, b) {
+
+      return a.word.localeCompare(
+        b.word
+      );
+
+    }
+  );
+
+
+  /* Count mastered words */
+
+  const masteredWords =
+    encounteredWords.filter(
+      function(word) {
+
+        const progress =
+          profile.wordProgress &&
+          profile.wordProgress[word.id]
+            ? profile.wordProgress[word.id]
+            : {
+                mastery: 0
+              };
+
+        return (
+          Number(progress.mastery) >= 5
+        );
+
+      }
+    );
+
+
+  /* Update summary */
+
+  backpackEncountered.textContent =
+    encounteredWords.length;
+
+  backpackMastered.textContent =
+    masteredWords.length;
+
+  backpackList.innerHTML =
+    "";
+
+
+  /* Empty backpack */
+
+  if (
+    encounteredWords.length === 0
+  ) {
+
+    backpackList.innerHTML =
+
+      '<div class="backpack-empty">' +
+
+      '🎒<br><br>' +
+
+      '<strong>Your backpack is empty.</strong>' +
+
+      '<br><br>' +
+
+      'Play LexiTrek and answer vocabulary challenges. ' +
+
+      'Words you encounter will appear here.' +
+
+      '</div>';
+
+
+    showScreen(
+      backpackScreen
+    );
+
+    return;
+  }
+
+
+  /* Build a card for every encountered word */
+
+  encounteredWords.forEach(
+    function(word) {
+
+      const progress =
+        profile.wordProgress &&
+        profile.wordProgress[word.id]
+          ? profile.wordProgress[word.id]
+          : {
+              mastery: 0,
+              correct: 0,
+              incorrect: 0,
+              encounters: 0
+            };
+
+
+      const mastery =
+        Math.min(
+          5,
+          Number(progress.mastery) || 0
+        );
+
+
+      const masteryPercent =
+        mastery * 20;
+
+
+      const masteryLabel =
+        getMasteryLabel(
+          mastery
+        );
+
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "backpack-word-card";
+
+
+      card.innerHTML =
+
+        '<div class="backpack-word-top">' +
+
+          '<div>' +
+
+            '<div class="backpack-word-title">' +
+              word.word +
+            '</div>' +
+
+            '<div class="backpack-word-theme">' +
+              word.theme +
+              ' • ' +
+              word.cefrLevel +
+            '</div>' +
+
+          '</div>' +
+
+          '<div class="mastery-badge">' +
+            masteryLabel +
+          '</div>' +
+
+        '</div>' +
+
+
+        '<div class="mastery-row">' +
+
+          '<span>Mastery</span>' +
+
+          '<span>' +
+            mastery +
+            '/5' +
+          '</span>' +
+
+        '</div>' +
+
+
+        '<div class="mastery-bar">' +
+
+          '<div class="mastery-fill" style="width:' +
+            masteryPercent +
+            '%"></div>' +
+
+        '</div>' +
+
+
+        '<div class="backpack-detail">' +
+
+          '<strong>BM:</strong> ' +
+
+          (
+            word.bm &&
+            word.bm.trim() !== ""
+
+              ? word.bm
+
+              : "Terjemahan BM belum tersedia"
+          ) +
+
+        '</div>' +
+
+
+        '<div class="backpack-detail">' +
+
+          '<strong>Meaning:</strong> ' +
+          word.meaning +
+
+        '</div>' +
+
+
+        '<div class="backpack-detail">' +
+
+          '<strong>Example:</strong> ' +
+          word.example +
+
+        '</div>' +
+
+
+        '<div class="backpack-stats">' +
+
+          'Encounters: ' +
+          (progress.encounters || 0) +
+
+          ' • Correct: ' +
+          (progress.correct || 0) +
+
+          ' • Incorrect: ' +
+          (progress.incorrect || 0) +
+
+        '</div>';
+
+
+      backpackList.appendChild(
+        card
+      );
+
+    }
+  );
+
+
+  showScreen(
+    backpackScreen
+  );
+
+}
 function shuffleArray(array) {
   
   /* =========================================
