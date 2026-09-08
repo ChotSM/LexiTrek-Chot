@@ -18,14 +18,14 @@
     the original workbook wording.
 */
 
-const lexitrekThemes = [
+window.lexitrekThemes = [
   { code: "PC", name: "People and Culture", total: 100, revisedA2: 70, a2High: 30 },
   { code: "ST", name: "Science & Technology", total: 100, revisedA2: 70, a2High: 30 },
   { code: "HE", name: "Health & Environment", total: 100, revisedA2: 70, a2High: 30 },
   { code: "CF", name: "Consumerism & Financial Awareness", total: 100, revisedA2: 70, a2High: 30 }
 ];
 
-const vocabularyBank = [
+window.vocabularyBank = [
   {
     "id": "PC-RA2-001",
     "themeCode": "PC",
@@ -22427,3 +22427,11 @@ const vocabularyBank = [
     ]
   }
 ];
+window.lexitrekVocabularyLoaded = true;
+
+
+console.log(
+  "LexiTrek vocabulary loaded:",
+  window.vocabularyBank.length,
+  "words"
+);
