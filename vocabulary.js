@@ -1,4 +1,31 @@
-[
+/*
+  LexiTrek Vocabulary Bank
+  Main source: LexiTrek Wordbank KP2027_Vocabulary.xlsx
+
+  Structure:
+  - 400 vocabulary items
+  - 4 themes x 100 words
+  - 280 Revised A2 + 120 A2 High
+  - 3 generated question types per item: meaning, context, recognition
+
+  Source integrity:
+  - Science & Technology, Health & Environment, and Consumerism & Financial Awareness
+    meanings/examples are taken from the uploaded workbook.
+  - People and Culture source sheet contains only Word/POS/CEFR/Theme.
+    Its meanings and Form 1 example sentences are supplementary generated fields
+    so the app can function; these are explicitly marked by meaningOrigin/exampleOrigin.
+  - CEFR labels are normalized to "Revised A2" and "A2 High"; sourceCefrLevel preserves
+    the original workbook wording.
+*/
+
+const lexitrekThemes = [
+  { code: "PC", name: "People and Culture", total: 100, revisedA2: 70, a2High: 30 },
+  { code: "ST", name: "Science & Technology", total: 100, revisedA2: 70, a2High: 30 },
+  { code: "HE", name: "Health & Environment", total: 100, revisedA2: 70, a2High: 30 },
+  { code: "CF", name: "Consumerism & Financial Awareness", total: 100, revisedA2: 70, a2High: 30 }
+];
+
+const vocabularyBank = [
   {
     "id": "PC-RA2-001",
     "themeCode": "PC",
@@ -22399,4 +22426,4 @@
       }
     ]
   }
-]
+];
