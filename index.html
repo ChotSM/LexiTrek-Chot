@@ -150,6 +150,144 @@
     .vocab-feedback.correct-feedback { color: #12613e; }
     .vocab-feedback.wrong-feedback { color: #7d332d; }
     .hidden { display: none !important; }
+
+
+/* =====================================
+   WORD BACKPACK
+===================================== */
+
+.backpack-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.backpack-summary-card {
+  background: white;
+  border-radius: 18px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.backpack-summary-number {
+  color: #137548;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+
+.backpack-summary-label {
+  color: #60736b;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.backpack-list {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.backpack-word-card {
+  background: white;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 7px 20px rgba(0,0,0,0.06);
+}
+
+.backpack-word-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.backpack-word-title {
+  color: #12613e;
+  font-size: 1.35rem;
+  font-weight: 900;
+  text-transform: capitalize;
+}
+
+.backpack-word-theme {
+  color: #697d74;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+
+.mastery-badge {
+  background: #e7f5ec;
+  color: #12613e;
+  padding: 6px 9px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.mastery-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #52675f;
+}
+
+.mastery-bar {
+  width: 100%;
+  height: 9px;
+  background: #e6eee9;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.mastery-fill {
+  height: 100%;
+  background: #137548;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.backpack-detail {
+  color: #40584e;
+  font-size: 0.86rem;
+  line-height: 1.55;
+  margin-top: 7px;
+}
+
+.backpack-detail strong {
+  color: #17352a;
+}
+
+.backpack-stats {
+  color: #75877f;
+  font-size: 0.72rem;
+  margin-top: 12px;
+}
+
+.backpack-empty {
+  background: white;
+  padding: 30px 20px;
+  text-align: center;
+  border-radius: 20px;
+  color: #60736b;
+  line-height: 1.6;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+}
+
+
+/* existing completion CSS continues here */
+
+.completion-box {
+    
     .completion-box { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
     .completion-icon { font-size: 5rem; margin-bottom: 18px; }
     .completion-title { color: #12613e; font-size: 2rem; margin-bottom: 10px; }
@@ -259,7 +397,100 @@
       <button id="continueAfterAnswer" class="primary-button hidden">CONTINUE</button>
     </div>
   </div>
+<!-- =====================================
+     WORD BACKPACK
+===================================== -->
 
+
+<section
+  id="backpackScreen"
+  class="screen"
+>
+
+
+  <div class="top-bar">
+
+    <div class="brand">
+      🎒 WORD BACKPACK
+    </div>
+
+    <div class="version">
+      My Vocabulary
+    </div>
+
+  </div>
+
+
+  <h2 class="section-title">
+    Words You Have Discovered
+  </h2>
+
+
+  <p class="section-description">
+
+    Review the vocabulary you have encountered
+    during your LexiTrek adventures.
+
+  </p>
+
+
+
+  <div class="backpack-summary-grid">
+
+
+    <div class="backpack-summary-card">
+
+      <div
+        id="backpackEncountered"
+        class="backpack-summary-number"
+      >
+        0
+      </div>
+
+      <div class="backpack-summary-label">
+        Encountered
+      </div>
+
+    </div>
+
+
+    <div class="backpack-summary-card">
+
+      <div
+        id="backpackMastered"
+        class="backpack-summary-number"
+      >
+        0
+      </div>
+
+      <div class="backpack-summary-label">
+        Mastered
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+
+  <div
+    id="backpackList"
+    class="backpack-list"
+  >
+  </div>
+
+
+
+  <button
+    id="backpackHomeButton"
+    class="secondary-button"
+  >
+    ← BACK TO HOME
+  </button>
+
+
+</section>
   <section id="completionScreen" class="screen">
     <div class="completion-box">
       <div class="completion-icon">🏆</div>
@@ -278,8 +509,16 @@
   const profileScreen = document.getElementById("profileScreen");
   const homeScreen = document.getElementById("homeScreen");
   const gameScreen = document.getElementById("gameScreen");
+  const backpackScreen = document.getElementById("backpackScreen");
   const completionScreen = document.getElementById("completionScreen");
-  const allScreens = [splashScreen, profileScreen, homeScreen, gameScreen, completionScreen];
+  const allScreens = [
+  splashScreen,
+  profileScreen,
+  homeScreen,
+  gameScreen,
+  backpackScreen,
+  completionScreen
+];
 
   const startButton = document.getElementById("startButton");
   const saveProfileButton = document.getElementById("saveProfileButton");
@@ -318,8 +557,27 @@
   const vocabQuestion = document.getElementById("vocabQuestion");
   const vocabOptions = document.getElementById("vocabOptions");
   const vocabFeedback = document.getElementById("vocabFeedback");
-  const continueAfterAnswer = document.getElementById("continueAfterAnswer");
+const continueAfterAnswer = document.getElementById("continueAfterAnswer");
 
+
+/* =========================================
+   WORD BACKPACK ELEMENTS
+========================================= */
+
+const backpackEncountered =
+  document.getElementById("backpackEncountered");
+
+const backpackMastered =
+  document.getElementById("backpackMastered");
+
+const backpackList =
+  document.getElementById("backpackList");
+
+const backpackHomeButton =
+  document.getElementById("backpackHomeButton");
+
+
+let selectedAvatar = "🧑";
   let selectedAvatar = "🧑";
   let isMoving = false;
   let pendingDiceRoll = 0;
@@ -795,13 +1053,255 @@
     openGame(profile);
   });
 
-  backpackButton.addEventListener("click", () => {
-    comingSoon.textContent = "🎒 Word Backpack will be added after the vocabulary mastery system.";
+  backpackButton.addEventListener(
+  "click",
+  function () {
+
+    openWordBackpack();
+
+  }
+);
+
+
+backpackHomeButton.addEventListener(
+  "click",
+  function () {
+
+    const profile = getProfile();
+
+    if (profile) {
+      loadHome(profile);
+    }
+
+  }
+);
+
+
+progressButton.addEventListener("click", () => {
+  comingSoon.textContent =
+    "📊 Learning progress will be added after vocabulary mastery tracking.";
+});
+
+
+function shuffleArray(array) {
+  
+  /* =========================================
+   WORD BACKPACK ENGINE
+========================================= */
+
+function openWordBackpack() {
+
+  const profile = getProfile();
+
+  if (!profile) {
+    return;
+  }
+
+  if (
+    !Array.isArray(window.vocabularyBank) ||
+    window.vocabularyBank.length === 0
+  ) {
+
+    comingSoon.textContent =
+      "Vocabulary bank could not be loaded.";
+
+    return;
+  }
+
+
+  const encounteredWords =
+    window.vocabularyBank.filter(function(word) {
+
+      return (
+        Array.isArray(profile.learnedWordIds) &&
+        profile.learnedWordIds.includes(word.id)
+      );
+
+    });
+
+
+  encounteredWords.sort(function(a, b) {
+    return a.word.localeCompare(b.word);
   });
 
-  progressButton.addEventListener("click", () => {
-    comingSoon.textContent = "📊 Learning progress will be added after vocabulary mastery tracking.";
+
+  const masteredWords =
+    encounteredWords.filter(function(word) {
+
+      const progress =
+        profile.wordProgress &&
+        profile.wordProgress[word.id]
+          ? profile.wordProgress[word.id]
+          : { mastery: 0 };
+
+      return Number(progress.mastery) >= 5;
+
+    });
+
+
+  backpackEncountered.textContent =
+    encounteredWords.length;
+
+  backpackMastered.textContent =
+    masteredWords.length;
+
+  backpackList.innerHTML = "";
+
+
+  if (encounteredWords.length === 0) {
+
+    backpackList.innerHTML =
+      '<div class="backpack-empty">' +
+      '🎒<br><br>' +
+      '<strong>Your backpack is empty.</strong>' +
+      '<br><br>' +
+      'Play LexiTrek and answer vocabulary challenges. ' +
+      'Words you encounter will appear here.' +
+      '</div>';
+
+    showScreen(backpackScreen);
+
+    return;
+  }
+
+
+  encounteredWords.forEach(function(word) {
+
+    const progress =
+      profile.wordProgress &&
+      profile.wordProgress[word.id]
+        ? profile.wordProgress[word.id]
+        : {
+            mastery: 0,
+            correct: 0,
+            incorrect: 0,
+            encounters: 0
+          };
+
+
+    const mastery =
+      Math.min(
+        5,
+        Number(progress.mastery) || 0
+      );
+
+
+    const masteryPercent =
+      mastery * 20;
+
+
+    const masteryLabel =
+      getMasteryLabel(mastery);
+
+
+    const card =
+      document.createElement("div");
+
+
+    card.className =
+      "backpack-word-card";
+
+
+    card.innerHTML =
+
+      '<div class="backpack-word-top">' +
+
+        '<div>' +
+
+          '<div class="backpack-word-title">' +
+            word.word +
+          '</div>' +
+
+          '<div class="backpack-word-theme">' +
+            word.theme +
+            ' • ' +
+            word.cefrLevel +
+          '</div>' +
+
+        '</div>' +
+
+        '<div class="mastery-badge">' +
+          masteryLabel +
+        '</div>' +
+
+      '</div>' +
+
+
+      '<div class="mastery-row">' +
+
+        '<span>Mastery</span>' +
+
+        '<span>' +
+          mastery +
+          '/5' +
+        '</span>' +
+
+      '</div>' +
+
+
+      '<div class="mastery-bar">' +
+
+        '<div class="mastery-fill" style="width:' +
+          masteryPercent +
+          '%"></div>' +
+
+      '</div>' +
+
+
+      '<div class="backpack-detail">' +
+
+        '<strong>BM:</strong> ' +
+
+        (
+          word.bm &&
+          word.bm.trim() !== ""
+
+            ? word.bm
+
+            : "Terjemahan BM belum tersedia"
+        ) +
+
+      '</div>' +
+
+
+      '<div class="backpack-detail">' +
+
+        '<strong>Meaning:</strong> ' +
+        word.meaning +
+
+      '</div>' +
+
+
+      '<div class="backpack-detail">' +
+
+        '<strong>Example:</strong> ' +
+        word.example +
+
+      '</div>' +
+
+
+      '<div class="backpack-stats">' +
+
+        'Encounters: ' +
+        (progress.encounters || 0) +
+
+        ' • Correct: ' +
+        (progress.correct || 0) +
+
+        ' • Incorrect: ' +
+        (progress.incorrect || 0) +
+
+      '</div>';
+
+
+    backpackList.appendChild(card);
+
   });
+
+
+  showScreen(backpackScreen);
+
+}
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
