@@ -321,7 +321,7 @@
   </section>
 </main>
 
-<script src="./vocabulary.js?v=400-4"></script>
+<script src="./vocabulary.js?v=400-5"></script>
 
 <script>
   const splashScreen = document.getElementById("splashScreen");
@@ -585,8 +585,24 @@
     showVocabularyChallenge();
   });
 
+  function getVocabularyBank() {
+    if (Array.isArray(window.vocabularyBank) && window.vocabularyBank.length > 0) {
+      return window.vocabularyBank;
+    }
+
+    try {
+      if (typeof vocabularyBank !== "undefined" && Array.isArray(vocabularyBank) && vocabularyBank.length > 0) {
+        return vocabularyBank;
+      }
+    } catch (error) {
+      console.warn("Could not access legacy vocabularyBank:", error);
+    }
+
+    return [];
+  }
+
   function ensureVocabularyBank() {
-    return Array.isArray(window.vocabularyBank) && window.vocabularyBank.length > 0;
+    return getVocabularyBank().length > 0;
   }
 
   function showVocabularyChallenge() {
@@ -637,7 +653,7 @@
 
   function chooseVocabularyByMastery(profile) {
     const weightedWords = [];
-    window.vocabularyBank.forEach(word => {
+    getVocabularyBank().forEach(word => {
       const progress = getWordProgress(profile, word.id);
       const weight = Math.max(1, 6 - progress.mastery);
       for (let i = 0; i < weight; i++) weightedWords.push(word);
@@ -881,13 +897,13 @@
     const profile = getProfile();
     if (!profile) return;
 
-    if (!Array.isArray(window.vocabularyBank) || window.vocabularyBank.length === 0) {
+    if (getVocabularyBank().length === 0) {
       console.error("Vocabulary bank is unavailable.");
       comingSoon.textContent = "Vocabulary bank could not be loaded.";
       return;
     }
 
-    const encounteredWords = window.vocabularyBank
+    const encounteredWords = getVocabularyBank()
       .filter(word => Array.isArray(profile.learnedWordIds) && profile.learnedWordIds.includes(word.id))
       .sort((a, b) => a.word.localeCompare(b.word));
 
