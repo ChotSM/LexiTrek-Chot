@@ -172,6 +172,52 @@
     .backpack-detail strong { color:#17352a; }
     .backpack-stats { color:#75877f; font-size:0.72rem; margin-top:12px; }
     .backpack-empty { background:white; padding:30px 20px; text-align:center; border-radius:20px; color:#60736b; line-height:1.6; box-shadow:0 6px 18px rgba(0,0,0,0.05); }
+
+
+    /* =====================================
+       MY PROGRESS
+    ===================================== */
+    .progress-summary-grid {
+      display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:20px;
+    }
+    .progress-summary-card {
+      background:white; border-radius:18px; padding:16px; text-align:center;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    }
+    .progress-summary-number {
+      color:#137548; font-size:1.55rem; font-weight:900; margin-bottom:4px;
+    }
+    .progress-summary-label { color:#60736b; font-size:0.76rem; font-weight:700; }
+    .progress-panel {
+      background:white; border-radius:20px; padding:18px; margin-bottom:14px;
+      box-shadow:0 7px 20px rgba(0,0,0,0.06);
+    }
+    .progress-panel-title { color:#12613e; font-size:1rem; font-weight:900; margin-bottom:14px; }
+    .progress-panel-subtitle { color:#667970; font-size:0.76rem; line-height:1.45; margin-top:-7px; margin-bottom:14px; }
+    .progress-line { margin-bottom:13px; }
+    .progress-line:last-child { margin-bottom:0; }
+    .progress-line-top {
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+      font-size:0.78rem; font-weight:700; color:#40584e; margin-bottom:6px;
+    }
+    .progress-line-name { min-width:0; }
+    .progress-line-value { white-space:nowrap; color:#12613e; }
+    .progress-track {
+      width:100%; height:10px; background:#e6eee9; border-radius:20px; overflow:hidden;
+    }
+    .progress-fill {
+      height:100%; background:#137548; border-radius:20px; min-width:0;
+      transition:width 0.3s ease;
+    }
+    .progress-overall-text {
+      display:flex; justify-content:space-between; gap:10px; color:#52675f;
+      font-size:0.8rem; font-weight:700; margin-bottom:8px;
+    }
+    .progress-note {
+      background:#eff8f2; color:#12613e; padding:12px 14px; border-radius:14px;
+      font-size:0.78rem; line-height:1.5; margin-bottom:14px;
+    }
+
     .completion-box { flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; }
     .completion-icon { font-size: 5rem; margin-bottom: 18px; }
     .completion-title { color: #12613e; font-size: 2rem; margin-bottom: 10px; }
@@ -188,7 +234,7 @@
 <body>
 <main class="app">
   <section id="splashScreen" class="screen active">
-    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.2B</div></div>
+    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.2C</div></div>
     <div class="hero">
       <div class="logo-circle">🗺️</div>
       <h1>LexiTrek</h1>
@@ -310,6 +356,70 @@
     <button id="backpackHomeButton" class="secondary-button">← BACK TO HOME</button>
   </section>
 
+
+  <!-- =====================================
+       MY PROGRESS
+  ===================================== -->
+  <section id="progressScreen" class="screen">
+    <div class="top-bar">
+      <div class="brand">📊 MY PROGRESS</div>
+      <div class="version">Learning Dashboard</div>
+    </div>
+
+    <h2 class="section-title">Your LexiTrek Journey</h2>
+    <p class="section-description">See how many words you have encountered, how accurately you answer, and how your mastery is developing.</p>
+
+    <div class="progress-summary-grid">
+      <div class="progress-summary-card">
+        <div id="progressXP" class="progress-summary-number">0</div>
+        <div class="progress-summary-label">XP</div>
+      </div>
+      <div class="progress-summary-card">
+        <div id="progressEncountered" class="progress-summary-number">0</div>
+        <div class="progress-summary-label">Encountered</div>
+      </div>
+      <div class="progress-summary-card">
+        <div id="progressMastered" class="progress-summary-number">0</div>
+        <div class="progress-summary-label">Mastered</div>
+      </div>
+      <div class="progress-summary-card">
+        <div id="progressAccuracy" class="progress-summary-number">0%</div>
+        <div class="progress-summary-label">Accuracy</div>
+      </div>
+    </div>
+
+    <div class="progress-panel">
+      <div class="progress-panel-title">Overall Vocabulary Progress</div>
+      <div class="progress-overall-text">
+        <span id="progressOverallWords">0 of 400 words</span>
+        <span id="progressOverallPercent">0%</span>
+      </div>
+      <div class="progress-track">
+        <div id="progressOverallFill" class="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="progress-panel">
+      <div class="progress-panel-title">Mastery Distribution</div>
+      <div class="progress-panel-subtitle">Mastery is based on repeated successful retrieval of a word.</div>
+      <div id="masteryProgressList"></div>
+    </div>
+
+    <div class="progress-panel">
+      <div class="progress-panel-title">Progress by Theme</div>
+      <div id="themeProgressList"></div>
+    </div>
+
+    <div class="progress-panel">
+      <div class="progress-panel-title">Progress by CEFR Level</div>
+      <div id="cefrProgressList"></div>
+    </div>
+
+    <div id="progressAttemptsNote" class="progress-note">Complete vocabulary challenges to build your learning record.</div>
+
+    <button id="progressHomeButton" class="secondary-button">← BACK TO HOME</button>
+  </section>
+
   <section id="completionScreen" class="screen">
     <div class="completion-box">
       <div class="completion-icon">🏆</div>
@@ -321,7 +431,7 @@
   </section>
 </main>
 
-<script src="./vocabulary.js?v=400-5"></script>
+<script src="./vocabulary.js?v=400-6"></script>
 
 <script>
   const splashScreen = document.getElementById("splashScreen");
@@ -329,8 +439,9 @@
   const homeScreen = document.getElementById("homeScreen");
   const gameScreen = document.getElementById("gameScreen");
   const backpackScreen = document.getElementById("backpackScreen");
+  const progressScreen = document.getElementById("progressScreen");
   const completionScreen = document.getElementById("completionScreen");
-  const allScreens = [splashScreen, profileScreen, homeScreen, gameScreen, backpackScreen, completionScreen].filter(Boolean);
+  const allScreens = [splashScreen, profileScreen, homeScreen, gameScreen, backpackScreen, progressScreen, completionScreen].filter(Boolean);
 
   const startButton = document.getElementById("startButton");
   const saveProfileButton = document.getElementById("saveProfileButton");
@@ -375,6 +486,19 @@
   const backpackMastered = document.getElementById("backpackMastered");
   const backpackList = document.getElementById("backpackList");
   const backpackHomeButton = document.getElementById("backpackHomeButton");
+
+  const progressXP = document.getElementById("progressXP");
+  const progressEncountered = document.getElementById("progressEncountered");
+  const progressMastered = document.getElementById("progressMastered");
+  const progressAccuracy = document.getElementById("progressAccuracy");
+  const progressOverallWords = document.getElementById("progressOverallWords");
+  const progressOverallPercent = document.getElementById("progressOverallPercent");
+  const progressOverallFill = document.getElementById("progressOverallFill");
+  const masteryProgressList = document.getElementById("masteryProgressList");
+  const themeProgressList = document.getElementById("themeProgressList");
+  const cefrProgressList = document.getElementById("cefrProgressList");
+  const progressAttemptsNote = document.getElementById("progressAttemptsNote");
+  const progressHomeButton = document.getElementById("progressHomeButton");
 
   let selectedAvatar = "🧑";
   let isMoving = false;
@@ -885,10 +1009,179 @@
   }
 
   progressButton.addEventListener("click", () => {
-    comingSoon.textContent = "📊 Learning progress will be added after vocabulary mastery tracking.";
+    openProgressDashboard();
   });
 
+  if (progressHomeButton) {
+    progressHomeButton.addEventListener("click", () => {
+      const profile = getProfile();
+      if (profile) loadHome(profile);
+    });
+  }
 
+
+
+
+  /* =========================================
+     MY PROGRESS ENGINE
+  ========================================= */
+  function openProgressDashboard() {
+    const profile = getProfile();
+    if (!profile) return;
+
+    const bank = getVocabularyBank();
+    if (bank.length === 0) {
+      console.error("Vocabulary bank is unavailable.");
+      comingSoon.textContent = "Vocabulary bank could not be loaded.";
+      return;
+    }
+
+    const learnedIds = new Set(
+      Array.isArray(profile.learnedWordIds) ? profile.learnedWordIds : []
+    );
+
+    const encounteredWords = bank.filter(word => learnedIds.has(word.id));
+    const masteredWords = encounteredWords.filter(word => {
+      const p = profile.wordProgress && profile.wordProgress[word.id]
+        ? profile.wordProgress[word.id]
+        : { mastery: 0 };
+      return Number(p.mastery) >= 5;
+    });
+
+    let totalCorrect = 0;
+    let totalIncorrect = 0;
+    encounteredWords.forEach(word => {
+      const p = profile.wordProgress && profile.wordProgress[word.id]
+        ? profile.wordProgress[word.id]
+        : {};
+      totalCorrect += Number(p.correct) || 0;
+      totalIncorrect += Number(p.incorrect) || 0;
+    });
+
+    const attempts = totalCorrect + totalIncorrect;
+    const accuracy = attempts > 0
+      ? Math.round((totalCorrect / attempts) * 100)
+      : 0;
+
+    const overallPercent = bank.length > 0
+      ? Math.round((encounteredWords.length / bank.length) * 100)
+      : 0;
+
+    progressXP.textContent = profile.xp;
+    progressEncountered.textContent = encounteredWords.length;
+    progressMastered.textContent = masteredWords.length;
+    progressAccuracy.textContent = accuracy + "%";
+    progressOverallWords.textContent = encounteredWords.length + " of " + bank.length + " words";
+    progressOverallPercent.textContent = overallPercent + "%";
+    progressOverallFill.style.width = overallPercent + "%";
+
+    progressAttemptsNote.textContent = attempts > 0
+      ? "Answer record: " + totalCorrect + " correct • " + totalIncorrect + " incorrect • " + attempts + " total attempts."
+      : "Complete vocabulary challenges to build your learning record.";
+
+    buildMasteryProgress(profile, encounteredWords, bank.length);
+    buildThemeProgress(profile, bank, learnedIds);
+    buildCefrProgress(profile, bank, learnedIds);
+
+    showScreen(progressScreen);
+  }
+
+  function makeProgressLine(name, valueText, percent) {
+    const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+    const row = document.createElement("div");
+    row.className = "progress-line";
+    row.innerHTML =
+      '<div class="progress-line-top">' +
+        '<span class="progress-line-name">' + name + '</span>' +
+        '<span class="progress-line-value">' + valueText + '</span>' +
+      '</div>' +
+      '<div class="progress-track"><div class="progress-fill" style="width:' + safePercent + '%"></div></div>';
+    return row;
+  }
+
+  function buildMasteryProgress(profile, encounteredWords, totalBankSize) {
+    masteryProgressList.innerHTML = "";
+
+    const counts = {
+      0: 0,
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0
+    };
+
+    encounteredWords.forEach(word => {
+      const p = profile.wordProgress && profile.wordProgress[word.id]
+        ? profile.wordProgress[word.id]
+        : { mastery: 0 };
+      const mastery = Math.max(0, Math.min(5, Number(p.mastery) || 0));
+      counts[mastery] += 1;
+    });
+
+    const notEncountered = Math.max(0, totalBankSize - encounteredWords.length);
+    const rows = [
+      ["Not Yet Encountered", notEncountered],
+      ["New / Needs Review", counts[0]],
+      ["Encountered", counts[1]],
+      ["Learning", counts[2]],
+      ["Developing", counts[3]],
+      ["Almost Mastered", counts[4]],
+      ["Mastered", counts[5]]
+    ];
+
+    rows.forEach(([label, count]) => {
+      const percent = totalBankSize > 0 ? (count / totalBankSize) * 100 : 0;
+      masteryProgressList.appendChild(
+        makeProgressLine(label, String(count), percent)
+      );
+    });
+  }
+
+  function buildThemeProgress(profile, bank, learnedIds) {
+    themeProgressList.innerHTML = "";
+
+    const themeOrder = Array.isArray(window.lexitrekThemes) && window.lexitrekThemes.length
+      ? window.lexitrekThemes.map(theme => ({ code: theme.code, name: theme.name }))
+      : [
+          { code: "PC", name: "People and Culture" },
+          { code: "ST", name: "Science & Technology" },
+          { code: "HE", name: "Health & Environment" },
+          { code: "CF", name: "Consumerism & Financial Awareness" }
+        ];
+
+    themeOrder.forEach(theme => {
+      const words = bank.filter(word => word.themeCode === theme.code);
+      const encountered = words.filter(word => learnedIds.has(word.id));
+      const mastered = encountered.filter(word => {
+        const p = profile.wordProgress && profile.wordProgress[word.id]
+          ? profile.wordProgress[word.id]
+          : { mastery: 0 };
+        return Number(p.mastery) >= 5;
+      });
+      const percent = words.length > 0 ? (encountered.length / words.length) * 100 : 0;
+      const value = encountered.length + "/" + words.length + " encountered • " + mastered.length + " mastered";
+      themeProgressList.appendChild(makeProgressLine(theme.name, value, percent));
+    });
+  }
+
+  function buildCefrProgress(profile, bank, learnedIds) {
+    cefrProgressList.innerHTML = "";
+
+    ["Revised A2", "A2 High"].forEach(level => {
+      const words = bank.filter(word => word.cefrLevel === level);
+      const encountered = words.filter(word => learnedIds.has(word.id));
+      const mastered = encountered.filter(word => {
+        const p = profile.wordProgress && profile.wordProgress[word.id]
+          ? profile.wordProgress[word.id]
+          : { mastery: 0 };
+        return Number(p.mastery) >= 5;
+      });
+      const percent = words.length > 0 ? (encountered.length / words.length) * 100 : 0;
+      const value = encountered.length + "/" + words.length + " encountered • " + mastered.length + " mastered";
+      cefrProgressList.appendChild(makeProgressLine(level, value, percent));
+    });
+  }
 
   /* =========================================
      WORD BACKPACK ENGINE
