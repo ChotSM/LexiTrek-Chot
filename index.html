@@ -443,6 +443,14 @@
       <div class="brand">🎒 WORD BACKPACK</div>
       <div class="version">My Vocabulary</div>
     </div>
+    <div class="student-header">
+      <div id="backpackAvatar" class="student-avatar">🧑</div>
+      <div>
+        <div class="hello">Word Backpack for</div>
+        <div id="backpackNickname" class="student-name">Explorer</div>
+      </div>
+    </div>
+
     <h2 class="section-title">Words You Have Discovered</h2>
     <p class="section-description">Review the vocabulary you have encountered during your LexiTrek adventures.</p>
 
@@ -469,6 +477,14 @@
     <div class="top-bar">
       <div class="brand">📊 MY PROGRESS</div>
       <div class="version">Learning Dashboard</div>
+    </div>
+
+    <div class="student-header">
+      <div id="progressAvatar" class="student-avatar">🧑</div>
+      <div>
+        <div class="hello">Progress for</div>
+        <div id="progressNickname" class="student-name">Explorer</div>
+      </div>
     </div>
 
     <h2 class="section-title">Your LexiTrek Journey</h2>
@@ -603,11 +619,15 @@ const allScreens = [
   const vocabFeedback = document.getElementById("vocabFeedback");
   const continueAfterAnswer = document.getElementById("continueAfterAnswer");
 
+  const backpackAvatar = document.getElementById("backpackAvatar");
+  const backpackNickname = document.getElementById("backpackNickname");
   const backpackEncountered = document.getElementById("backpackEncountered");
   const backpackMastered = document.getElementById("backpackMastered");
   const backpackList = document.getElementById("backpackList");
   const backpackHomeButton = document.getElementById("backpackHomeButton");
 
+  const progressAvatar = document.getElementById("progressAvatar");
+  const progressNickname = document.getElementById("progressNickname");
   const progressXP = document.getElementById("progressXP");
   const progressEncountered = document.getElementById("progressEncountered");
   const progressMastered = document.getElementById("progressMastered");
@@ -1885,6 +1905,9 @@ changeProfileButton.addEventListener(
     const profile = getProfile();
     if (!profile) return;
 
+    progressAvatar.textContent = profile.avatar;
+    progressNickname.textContent = profile.nickname;
+
     const bank = getVocabularyBank();
     if (bank.length === 0) {
       console.error("Vocabulary bank is unavailable.");
@@ -2045,6 +2068,9 @@ changeProfileButton.addEventListener(
   function openWordBackpack() {
     const profile = getProfile();
     if (!profile) return;
+
+    backpackAvatar.textContent = profile.avatar;
+    backpackNickname.textContent = profile.nickname;
 
     if (getVocabularyBank().length === 0) {
       console.error("Vocabulary bank is unavailable.");
