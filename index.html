@@ -229,6 +229,77 @@
       .player-token { font-size: 1.35rem; }
       .cell-number { font-size: 0.55rem; }
     }
+  /* =====================================
+   MULTIPLE EXPLORERS
+===================================== */
+
+.explorer-list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.explorer-card {
+  width: 100%;
+  border: 2px solid transparent;
+  background: white;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 7px 20px rgba(0,0,0,0.06);
+}
+
+.explorer-card:hover {
+  border-color: #137548;
+}
+
+.explorer-card.active-explorer {
+  border-color: #137548;
+  background: #f3fbf6;
+}
+
+.explorer-avatar {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e4f6ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.explorer-info {
+  flex: 1;
+}
+
+.explorer-name {
+  color: #12613e;
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+
+.explorer-meta {
+  color: #667970;
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.explorer-badge {
+  background: #137548;
+  color: white;
+  border-radius: 12px;
+  padding: 5px 8px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
   </style>
 </head>
 <body>
@@ -273,7 +344,35 @@
       <div id="profileError" class="error-message"></div>
     </div>
   </section>
+<!-- =====================================
+     EXPLORER SELECTION
+===================================== -->
 
+<section id="explorerScreen" class="screen">
+
+  <div class="top-bar">
+    <div class="brand">LEXITREK</div>
+    <div class="version">Choose Explorer</div>
+  </div>
+
+  <h2 class="section-title">Who Is Playing?</h2>
+
+  <p class="section-description">
+    Choose an explorer to continue, or create a new explorer.
+    Each explorer keeps their own XP, vocabulary and game progress.
+  </p>
+
+  <div id="explorerList" class="explorer-list"></div>
+
+  <button id="newExplorerButton" class="primary-button">
+    + CREATE NEW EXPLORER
+  </button>
+
+  <button id="explorerBackButton" class="secondary-button">
+    BACK
+  </button>
+
+</section>
   <section id="homeScreen" class="screen">
     <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Explorer Home</div></div>
     <div class="student-header">
@@ -295,7 +394,13 @@
       <button id="backpackButton" class="menu-card"><div class="menu-icon">🎒</div><div class="menu-title">Word Backpack</div></button>
       <button id="progressButton" class="menu-card"><div class="menu-icon">📊</div><div class="menu-title">My Progress</div></button>
     </div>
-    <button id="changeProfileButton" class="secondary-button">EDIT EXPLORER</button>
+   <button id="switchProfileButton" class="secondary-button">
+  SWITCH EXPLORER
+</button>
+
+<button id="changeProfileButton" class="secondary-button">
+  EDIT EXPLORER
+</button>
     <div id="comingSoon" class="coming-soon"></div>
     <footer>Learn • Play • Remember • Master</footer>
   </section>
@@ -435,14 +540,24 @@
 
 <script>
   const splashScreen = document.getElementById("splashScreen");
-  const profileScreen = document.getElementById("profileScreen");
-  const homeScreen = document.getElementById("homeScreen");
-  const gameScreen = document.getElementById("gameScreen");
-  const backpackScreen = document.getElementById("backpackScreen");
-  const progressScreen = document.getElementById("progressScreen");
-  const completionScreen = document.getElementById("completionScreen");
-  const allScreens = [splashScreen, profileScreen, homeScreen, gameScreen, backpackScreen, progressScreen, completionScreen].filter(Boolean);
+const profileScreen = document.getElementById("profileScreen");
+const explorerScreen = document.getElementById("explorerScreen");
+const homeScreen = document.getElementById("homeScreen");
+const gameScreen = document.getElementById("gameScreen");
+const backpackScreen = document.getElementById("backpackScreen");
+const progressScreen = document.getElementById("progressScreen");
+const completionScreen = document.getElementById("completionScreen");
 
+const allScreens = [
+  splashScreen,
+  profileScreen,
+  explorerScreen,
+  homeScreen,
+  gameScreen,
+  backpackScreen,
+  progressScreen,
+  completionScreen
+].filter(Boolean);
   const startButton = document.getElementById("startButton");
   const saveProfileButton = document.getElementById("saveProfileButton");
   const backButton = document.getElementById("backButton");
@@ -450,6 +565,7 @@
   const backpackButton = document.getElementById("backpackButton");
   const progressButton = document.getElementById("progressButton");
   const changeProfileButton = document.getElementById("changeProfileButton");
+  
   const rollButton = document.getElementById("rollButton");
   const homeButton = document.getElementById("homeButton");
   const resetBoardButton = document.getElementById("resetBoardButton");
@@ -510,110 +626,845 @@
 
   const diceFaces = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
 
-  function normaliseProfile(profile = {}) {
-    return {
-      nickname: profile.nickname || "Explorer",
-      avatar: profile.avatar || "🧑",
-      xp: Number(profile.xp) || 0,
-      wordsLearned: Number(profile.wordsLearned) || 0,
-      level: Number(profile.level) || 1,
-      currentPosition: Math.min(30, Math.max(1, Number(profile.currentPosition) || 1)),
-      completedGames: Number(profile.completedGames) || 0,
-      learnedWordIds: Array.isArray(profile.learnedWordIds) ? profile.learnedWordIds : [],
-      wordProgress: profile.wordProgress && typeof profile.wordProgress === "object" && !Array.isArray(profile.wordProgress)
+  /* =========================================
+   MULTIPLE EXPLORER PROFILE SYSTEM
+========================================= */
+
+const PROFILES_KEY = "lexitrekProfiles";
+const ACTIVE_PROFILE_KEY = "lexitrekActiveProfileId";
+const LEGACY_PROFILE_KEY = "lexitrekProfile";
+
+let profileMode = "create";
+
+
+function createProfileId() {
+  return (
+    "explorer-" +
+    Date.now().toString(36) +
+    "-" +
+    Math.random().toString(36).slice(2, 8)
+  );
+}
+
+
+/* =========================================
+   NORMALISE PROFILE DATA
+========================================= */
+
+function normaliseProfile(profile = {}) {
+  return {
+    id:
+      profile.id ||
+      createProfileId(),
+
+    nickname:
+      profile.nickname ||
+      "Explorer",
+
+    avatar:
+      profile.avatar ||
+      "🧑",
+
+    xp:
+      Number(profile.xp) || 0,
+
+    wordsLearned:
+      Number(profile.wordsLearned) || 0,
+
+    level:
+      Number(profile.level) || 1,
+
+    currentPosition:
+      Math.min(
+        30,
+        Math.max(
+          1,
+          Number(profile.currentPosition) || 1
+        )
+      ),
+
+    completedGames:
+      Number(profile.completedGames) || 0,
+
+    learnedWordIds:
+      Array.isArray(profile.learnedWordIds)
+        ? profile.learnedWordIds
+        : [],
+
+    wordProgress:
+      profile.wordProgress &&
+      typeof profile.wordProgress === "object" &&
+      !Array.isArray(profile.wordProgress)
         ? profile.wordProgress
         : {}
-    };
+  };
+}
+
+
+/* =========================================
+   READ ALL EXPLORERS
+========================================= */
+
+function readProfiles() {
+  const saved =
+    localStorage.getItem(PROFILES_KEY);
+
+  if (!saved) {
+    return [];
   }
 
-  function getProfile() {
-    const saved = localStorage.getItem("lexitrekProfile");
-    if (!saved) return null;
-    try { return normaliseProfile(JSON.parse(saved)); }
-    catch (error) {
-      console.error("Could not read LexiTrek profile:", error);
-      return null;
+  try {
+    const profiles =
+      JSON.parse(saved);
+
+    if (!Array.isArray(profiles)) {
+      return [];
     }
+
+    return profiles.map(profile =>
+      normaliseProfile(profile)
+    );
   }
 
-  function saveProfile(profile) {
-    localStorage.setItem("lexitrekProfile", JSON.stringify(normaliseProfile(profile)));
+  catch (error) {
+    console.error(
+      "Could not read LexiTrek explorers:",
+      error
+    );
+
+    return [];
+  }
+}
+
+
+/* =========================================
+   SAVE ALL EXPLORERS
+========================================= */
+
+function writeProfiles(profiles) {
+  localStorage.setItem(
+    PROFILES_KEY,
+    JSON.stringify(
+      profiles.map(profile =>
+        normaliseProfile(profile)
+      )
+    )
+  );
+}
+
+
+/* =========================================
+   MIGRATE EXISTING PLAYER
+========================================= */
+
+function migrateLegacyProfile() {
+  let profiles =
+    readProfiles();
+
+  if (profiles.length > 0) {
+    return profiles;
   }
 
-  function showScreen(screen) {
-    if (!screen) {
-      console.error("LexiTrek screen could not be found.");
+  const legacySaved =
+    localStorage.getItem(
+      LEGACY_PROFILE_KEY
+    );
+
+  if (!legacySaved) {
+    return [];
+  }
+
+  try {
+    const oldProfile =
+      normaliseProfile(
+        JSON.parse(legacySaved)
+      );
+
+    profiles = [oldProfile];
+
+    writeProfiles(profiles);
+
+    localStorage.setItem(
+      ACTIVE_PROFILE_KEY,
+      oldProfile.id
+    );
+
+    console.log(
+      "Existing LexiTrek explorer migrated successfully."
+    );
+
+    return profiles;
+  }
+
+  catch (error) {
+    console.error(
+      "Could not migrate old LexiTrek profile:",
+      error
+    );
+
+    return [];
+  }
+}
+
+
+function getProfiles() {
+  return migrateLegacyProfile();
+}
+
+
+/* =========================================
+   GET ACTIVE EXPLORER
+========================================= */
+
+function getProfile() {
+  const profiles =
+    getProfiles();
+
+  if (profiles.length === 0) {
+    return null;
+  }
+
+  let activeId =
+    localStorage.getItem(
+      ACTIVE_PROFILE_KEY
+    );
+
+  let profile =
+    profiles.find(
+      item => item.id === activeId
+    );
+
+  if (!profile) {
+    profile = profiles[0];
+
+    localStorage.setItem(
+      ACTIVE_PROFILE_KEY,
+      profile.id
+    );
+  }
+
+  return normaliseProfile(profile);
+}
+
+
+/* =========================================
+   SAVE ACTIVE EXPLORER
+========================================= */
+
+function saveProfile(profile) {
+  const profiles =
+    getProfiles();
+
+  const normalised =
+    normaliseProfile(profile);
+
+  const index =
+    profiles.findIndex(
+      item =>
+        item.id === normalised.id
+    );
+
+  if (index >= 0) {
+    profiles[index] =
+      normalised;
+  }
+
+  else {
+    profiles.push(
+      normalised
+    );
+  }
+
+  writeProfiles(profiles);
+
+  localStorage.setItem(
+    ACTIVE_PROFILE_KEY,
+    normalised.id
+  );
+
+  return normalised;
+}
+
+
+/* =========================================
+   ACTIVATE EXPLORER
+========================================= */
+
+function activateProfile(profileId) {
+  const profiles =
+    getProfiles();
+
+  const profile =
+    profiles.find(
+      item =>
+        item.id === profileId
+    );
+
+  if (!profile) {
+    return;
+  }
+
+  localStorage.setItem(
+    ACTIVE_PROFILE_KEY,
+    profile.id
+  );
+
+  loadHome(profile);
+}
+
+
+/* =========================================
+   SCREEN NAVIGATION
+========================================= */
+
+function showScreen(screen) {
+  if (!screen) {
+    console.error(
+      "LexiTrek screen could not be found."
+    );
+
+    return;
+  }
+
+  allScreens.forEach(item => {
+    if (item) {
+      item.classList.remove("active");
+    }
+  });
+
+  screen.classList.add("active");
+
+  window.scrollTo(0, 0);
+}
+
+
+/* =========================================
+   AVATAR SELECTION
+========================================= */
+
+avatars.forEach(avatarButton => {
+  avatarButton.addEventListener(
+    "click",
+    () => {
+      avatars.forEach(button =>
+        button.classList.remove(
+          "selected"
+        )
+      );
+
+      avatarButton.classList.add(
+        "selected"
+      );
+
+      selectedAvatar =
+        avatarButton.dataset.avatar;
+    }
+  );
+});
+
+
+function selectAvatar(avatar) {
+  selectedAvatar =
+    avatar || "🧑";
+
+  avatars.forEach(button => {
+    button.classList.toggle(
+      "selected",
+      button.dataset.avatar ===
+        selectedAvatar
+    );
+  });
+}
+
+
+/* =========================================
+   CREATE NEW EXPLORER
+========================================= */
+
+function openCreateExplorer() {
+  profileMode = "create";
+
+  nicknameInput.value = "";
+
+  profileError.textContent = "";
+
+  selectAvatar("🧑");
+
+  const title =
+    profileScreen.querySelector(
+      ".section-title"
+    );
+
+  const description =
+    profileScreen.querySelector(
+      ".section-description"
+    );
+
+  if (title) {
+    title.textContent =
+      "Create Your Explorer";
+  }
+
+  if (description) {
+    description.textContent =
+      "Choose a nickname and an avatar before beginning your vocabulary adventure.";
+  }
+
+  saveProfileButton.textContent =
+    "CREATE EXPLORER";
+
+  showScreen(profileScreen);
+}
+
+
+/* =========================================
+   EDIT CURRENT EXPLORER
+========================================= */
+
+function openEditExplorer() {
+  const profile =
+    getProfile();
+
+  if (!profile) {
+    openCreateExplorer();
+    return;
+  }
+
+  profileMode = "edit";
+
+  nicknameInput.value =
+    profile.nickname;
+
+  profileError.textContent = "";
+
+  selectAvatar(
+    profile.avatar
+  );
+
+  const title =
+    profileScreen.querySelector(
+      ".section-title"
+    );
+
+  const description =
+    profileScreen.querySelector(
+      ".section-description"
+    );
+
+  if (title) {
+    title.textContent =
+      "Edit Explorer";
+  }
+
+  if (description) {
+    description.textContent =
+      "Change this explorer's nickname or avatar. Their vocabulary and game progress will remain unchanged.";
+  }
+
+  saveProfileButton.textContent =
+    "SAVE CHANGES";
+
+  showScreen(profileScreen);
+}
+
+
+/* =========================================
+   EXPLORER CHOOSER
+========================================= */
+
+function renderExplorerChooser() {
+  const profiles =
+    getProfiles();
+
+  explorerList.innerHTML = "";
+
+  if (profiles.length === 0) {
+    const empty =
+      document.createElement("div");
+
+    empty.className =
+      "backpack-empty";
+
+    empty.textContent =
+      "No explorers have been created yet.";
+
+    explorerList.appendChild(empty);
+
+    return;
+  }
+
+  const activeId =
+    localStorage.getItem(
+      ACTIVE_PROFILE_KEY
+    );
+
+  profiles.forEach(profile => {
+    const card =
+      document.createElement(
+        "button"
+      );
+
+    card.type = "button";
+
+    card.className =
+      "explorer-card";
+
+    if (profile.id === activeId) {
+      card.classList.add(
+        "active-explorer"
+      );
+    }
+
+    const avatar =
+      document.createElement("div");
+
+    avatar.className =
+      "explorer-avatar";
+
+    avatar.textContent =
+      profile.avatar;
+
+
+    const info =
+      document.createElement("div");
+
+    info.className =
+      "explorer-info";
+
+
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "explorer-name";
+
+    name.textContent =
+      profile.nickname;
+
+
+    const meta =
+      document.createElement("div");
+
+    meta.className =
+      "explorer-meta";
+
+    meta.textContent =
+      profile.xp +
+      " XP • " +
+      profile.wordsLearned +
+      " Words • Level " +
+      profile.level +
+      " • Square " +
+      profile.currentPosition;
+
+
+    info.appendChild(name);
+    info.appendChild(meta);
+
+    card.appendChild(avatar);
+    card.appendChild(info);
+
+
+    if (profile.id === activeId) {
+      const badge =
+        document.createElement(
+          "div"
+        );
+
+      badge.className =
+        "explorer-badge";
+
+      badge.textContent =
+        "ACTIVE";
+
+      card.appendChild(badge);
+    }
+
+
+    card.addEventListener(
+      "click",
+      () => {
+        activateProfile(
+          profile.id
+        );
+      }
+    );
+
+
+    explorerList.appendChild(
+      card
+    );
+  });
+}
+
+
+/* =========================================
+   START BUTTON
+========================================= */
+
+startButton.addEventListener(
+  "click",
+  () => {
+    const profiles =
+      getProfiles();
+
+    if (profiles.length === 0) {
+      openCreateExplorer();
       return;
     }
-    allScreens.forEach(item => {
-      if (item) item.classList.remove("active");
-    });
-    screen.classList.add("active");
-    window.scrollTo(0,0);
+
+    if (profiles.length === 1) {
+      loadHome(
+        profiles[0]
+      );
+
+      return;
+    }
+
+    renderExplorerChooser();
+
+    showScreen(
+      explorerScreen
+    );
   }
+);
 
-  startButton.addEventListener("click", () => {
-    const profile = getProfile();
-    profile ? loadHome(profile) : showScreen(profileScreen);
-  });
 
-  const avatars = document.querySelectorAll(".avatar");
-  avatars.forEach(avatarButton => {
-    avatarButton.addEventListener("click", () => {
-      avatars.forEach(button => button.classList.remove("selected"));
-      avatarButton.classList.add("selected");
-      selectedAvatar = avatarButton.dataset.avatar;
-    });
-  });
+/* =========================================
+   SAVE / CREATE EXPLORER
+========================================= */
 
-  saveProfileButton.addEventListener("click", () => {
-    const nickname = nicknameInput.value.trim();
+saveProfileButton.addEventListener(
+  "click",
+  () => {
+    const nickname =
+      nicknameInput.value.trim();
+
     if (nickname.length < 2) {
-      profileError.textContent = "Please enter a nickname with at least 2 characters.";
+      profileError.textContent =
+        "Please enter a nickname with at least 2 characters.";
+
       return;
     }
-    profileError.textContent = "";
-    const existing = getProfile();
-    const profile = normaliseProfile({
-      ...(existing || {}),
-      nickname,
-      avatar: selectedAvatar
-    });
-    saveProfile(profile);
-    loadHome(profile);
-  });
 
-  function loadHome(profile) {
-    profile = normaliseProfile(profile);
-    homeNickname.textContent = profile.nickname;
-    homeAvatar.textContent = profile.avatar;
-    homeXP.textContent = profile.xp;
-    homeWords.textContent = profile.wordsLearned;
-    homeLevel.textContent = profile.level;
-    homePosition.textContent = "Current position: Square " + profile.currentPosition;
-    playButton.textContent = profile.currentPosition >= 30
+    const currentProfile =
+      getProfile();
+
+    const duplicate =
+      getProfiles().some(
+        profile => {
+          const sameName =
+            profile.nickname
+              .toLowerCase() ===
+            nickname.toLowerCase();
+
+          if (
+            profileMode === "edit" &&
+            currentProfile &&
+            profile.id ===
+              currentProfile.id
+          ) {
+            return false;
+          }
+
+          return sameName;
+        }
+      );
+
+
+    if (duplicate) {
+      profileError.textContent =
+        "That nickname is already being used. Please choose another nickname.";
+
+      return;
+    }
+
+
+    profileError.textContent = "";
+
+
+    if (
+      profileMode === "edit" &&
+      currentProfile
+    ) {
+      const updated =
+        normaliseProfile({
+          ...currentProfile,
+
+          nickname:
+            nickname,
+
+          avatar:
+            selectedAvatar
+        });
+
+      saveProfile(updated);
+
+      loadHome(updated);
+
+      return;
+    }
+
+
+    const newProfile =
+      normaliseProfile({
+        id:
+          createProfileId(),
+
+        nickname:
+          nickname,
+
+        avatar:
+          selectedAvatar,
+
+        xp:
+          0,
+
+        wordsLearned:
+          0,
+
+        level:
+          1,
+
+        currentPosition:
+          1,
+
+        completedGames:
+          0,
+
+        learnedWordIds:
+          [],
+
+        wordProgress:
+          {}
+      });
+
+
+    saveProfile(newProfile);
+
+    loadHome(newProfile);
+  }
+);
+
+
+/* =========================================
+   LOAD DASHBOARD
+========================================= */
+
+function loadHome(profile) {
+  profile =
+    normaliseProfile(profile);
+
+  homeNickname.textContent =
+    profile.nickname;
+
+  homeAvatar.textContent =
+    profile.avatar;
+
+  homeXP.textContent =
+    profile.xp;
+
+  homeWords.textContent =
+    profile.wordsLearned;
+
+  homeLevel.textContent =
+    profile.level;
+
+  homePosition.textContent =
+    "Current position: Square " +
+    profile.currentPosition;
+
+  playButton.textContent =
+    profile.currentPosition >= 30
       ? "VIEW COMPLETION"
       : profile.currentPosition > 1
         ? "CONTINUE ADVENTURE"
         : "PLAY ADVENTURE";
-    comingSoon.textContent = "";
-    showScreen(homeScreen);
-  }
 
-  backButton.addEventListener("click", () => showScreen(splashScreen));
+  comingSoon.textContent = "";
 
-  changeProfileButton.addEventListener("click", () => {
-    const profile = getProfile();
-    if (profile) {
-      nicknameInput.value = profile.nickname;
-      selectedAvatar = profile.avatar;
-      avatars.forEach(button => {
-        button.classList.toggle("selected", button.dataset.avatar === selectedAvatar);
-      });
+  showScreen(homeScreen);
+}
+
+
+/* =========================================
+   PROFILE NAVIGATION
+========================================= */
+
+backButton.addEventListener(
+  "click",
+  () => {
+    const profiles =
+      getProfiles();
+
+    if (profiles.length > 1) {
+      renderExplorerChooser();
+
+      showScreen(
+        explorerScreen
+      );
     }
-    showScreen(profileScreen);
-  });
 
+    else if (profiles.length === 1) {
+      loadHome(
+        profiles[0]
+      );
+    }
+
+    else {
+      showScreen(
+        splashScreen
+      );
+    }
+  }
+);
+
+
+switchProfileButton.addEventListener(
+  "click",
+  () => {
+    renderExplorerChooser();
+
+    showScreen(
+      explorerScreen
+    );
+  }
+);
+
+
+newExplorerButton.addEventListener(
+  "click",
+  () => {
+    openCreateExplorer();
+  }
+);
+
+
+explorerBackButton.addEventListener(
+  "click",
+  () => {
+    const profile =
+      getProfile();
+
+    if (profile) {
+      loadHome(profile);
+    }
+
+    else {
+      showScreen(
+        splashScreen
+      );
+    }
+  }
+);
+
+
+changeProfileButton.addEventListener(
+  "click",
+  () => {
+    openEditExplorer();
+  }
+);
   function buildBoard() {
     gameBoard.innerHTML = "";
     for (let row = 4; row >= 0; row--) {
