@@ -300,12 +300,88 @@
   font-weight: 800;
   white-space: nowrap;
 }
+
+/* =====================================
+   ADVENTURE PROGRESSION
+===================================== */
+.adventure-map-panel {
+  background: white;
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 7px 20px rgba(0,0,0,0.06);
+}
+.adventure-map-title {
+  color: #12613e;
+  font-size: 1rem;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+.adventure-list {
+  display: grid;
+  gap: 10px;
+}
+.adventure-select-card {
+  width: 100%;
+  border: 2px solid #dce8e1;
+  background: #f8fbf9;
+  border-radius: 16px;
+  padding: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.adventure-select-card:hover:not(:disabled) {
+  border-color: #137548;
+}
+.adventure-select-card.current {
+  border-color: #137548;
+  background: #edf8f1;
+}
+.adventure-select-card.completed {
+  border-color: #9fd1b2;
+  background: #f4fbf6;
+}
+.adventure-select-card.locked {
+  opacity: 0.58;
+  cursor: not-allowed;
+}
+.adventure-select-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+  flex-shrink: 0;
+}
+.adventure-select-info { flex: 1; min-width: 0; }
+.adventure-select-name {
+  color: #17352a;
+  font-weight: 900;
+  margin-bottom: 3px;
+}
+.adventure-select-theme {
+  color: #667970;
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+.adventure-select-status {
+  color: #137548;
+  font-size: 0.68rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
   </style>
 </head>
 <body>
 <main class="app">
   <section id="splashScreen" class="screen active">
-    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.2C</div></div>
+    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.3</div></div>
     <div class="hero">
       <div class="logo-circle">🗺️</div>
       <h1>LexiTrek</h1>
@@ -385,10 +461,15 @@
       <div class="stat"><div id="homeLevel" class="stat-number">1</div><div class="stat-label">Level</div></div>
     </div>
     <div class="adventure-card">
-      <h2>🌿 Adventure 1</h2>
-      <p>Journey from Square 1 to Square 30.</p>
+      <h2 id="homeAdventureTitle">🌿 Adventure 1</h2>
+      <p id="homeAdventureDescription">People and Culture • Journey from Square 1 to Square 30.</p>
       <div id="homePosition" class="position-text">Current position: Square 1</div>
       <button id="playButton" class="play-button">PLAY ADVENTURE</button>
+    </div>
+
+    <div class="adventure-map-panel">
+      <div class="adventure-map-title">🗺️ Adventure Map</div>
+      <div id="adventureList" class="adventure-list"></div>
     </div>
     <div class="menu-grid">
       <button id="backpackButton" class="menu-card"><div class="menu-icon">🎒</div><div class="menu-title">Word Backpack</div></button>
@@ -406,7 +487,7 @@
   </section>
 
   <section id="gameScreen" class="screen">
-    <div class="top-bar"><div class="brand">ADVENTURE 1</div><div class="version">Board 1–30</div></div>
+    <div class="top-bar"><div id="gameAdventureTitle" class="brand">ADVENTURE 1</div><div id="gameAdventureTheme" class="version">People and Culture</div></div>
     <div class="game-player-bar">
       <div class="game-player"><div id="gameAvatar" class="game-avatar">🧑</div><div><div id="gameNickname" class="game-player-name">Explorer</div><div class="hello">Vocabulary Explorer</div></div></div>
       <div id="gamePosition" class="game-position">Square 1</div>
@@ -546,7 +627,7 @@
       <div class="completion-icon">🏆</div>
       <h2 class="completion-title">Adventure Complete!</h2>
       <p id="completionText" class="completion-text">You reached Square 30.</p>
-      <button id="playAgainButton" class="primary-button">PLAY AGAIN</button>
+      <button id="playAgainButton" class="primary-button">CONTINUE JOURNEY</button>
       <button id="completionHomeButton" class="secondary-button">RETURN HOME</button>
     </div>
   </section>
@@ -601,12 +682,17 @@ const allScreens = [
   const homeWords = document.getElementById("homeWords");
   const homeLevel = document.getElementById("homeLevel");
   const homePosition = document.getElementById("homePosition");
+  const homeAdventureTitle = document.getElementById("homeAdventureTitle");
+  const homeAdventureDescription = document.getElementById("homeAdventureDescription");
+  const adventureList = document.getElementById("adventureList");
   const comingSoon = document.getElementById("comingSoon");
 
   const gameBoard = document.getElementById("gameBoard");
   const gameAvatar = document.getElementById("gameAvatar");
   const gameNickname = document.getElementById("gameNickname");
   const gamePosition = document.getElementById("gamePosition");
+  const gameAdventureTitle = document.getElementById("gameAdventureTitle");
+  const gameAdventureTheme = document.getElementById("gameAdventureTheme");
   const diceFace = document.getElementById("diceFace");
   const diceResult = document.getElementById("diceResult");
   const gameMessage = document.getElementById("gameMessage");
@@ -651,6 +737,16 @@ const allScreens = [
 
   const diceFaces = { 1: "⚀", 2: "⚁", 3: "⚂", 4: "⚃", 5: "⚄", 6: "⚅" };
 
+  const ADVENTURES = {
+    1: { id: 1, icon: "🌿", title: "Adventure 1", themeCode: "PC", themeName: "People and Culture" },
+    2: { id: 2, icon: "⚙️", title: "Adventure 2", themeCode: "ST", themeName: "Science & Technology" },
+    3: { id: 3, icon: "🌎", title: "Adventure 3", themeCode: "HE", themeName: "Health & Environment" },
+    4: { id: 4, icon: "💰", title: "Adventure 4", themeCode: "CF", themeName: "Consumerism & Financial Awareness" }
+  };
+  const TOTAL_ADVENTURES = Object.keys(ADVENTURES).length;
+  let lastCompletedAdventure = null;
+  let newlyUnlockedAdventure = null;
+
   /* =========================================
    MULTIPLE EXPLORER PROFILE SYSTEM
 ========================================= */
@@ -677,51 +773,67 @@ function createProfileId() {
 ========================================= */
 
 function normaliseProfile(profile = {}) {
+  const legacyPosition = Math.min(30, Math.max(1, Number(profile.currentPosition) || 1));
+  const hadAdventureData = profile.adventurePositions && typeof profile.adventurePositions === "object";
+
+  const adventurePositions = { 1: 1, 2: 1, 3: 1, 4: 1 };
+  if (hadAdventureData) {
+    for (let i = 1; i <= TOTAL_ADVENTURES; i++) {
+      adventurePositions[i] = Math.min(30, Math.max(1, Number(profile.adventurePositions[i]) || 1));
+    }
+  } else {
+    adventurePositions[1] = legacyPosition;
+  }
+
+  let completedAdventures = Array.isArray(profile.completedAdventures)
+    ? profile.completedAdventures.map(Number).filter(id => ADVENTURES[id])
+    : [];
+
+  let unlockedAdventures = Array.isArray(profile.unlockedAdventures)
+    ? profile.unlockedAdventures.map(Number).filter(id => ADVENTURES[id])
+    : [1];
+
+  // Migrate players who had already reached Square 30 before Adventure progression was added.
+  if (!hadAdventureData && (legacyPosition >= 30 || Number(profile.completedGames) > 0)) {
+    if (!completedAdventures.includes(1)) completedAdventures.push(1);
+    if (!unlockedAdventures.includes(2)) unlockedAdventures.push(2);
+    adventurePositions[1] = 30;
+  }
+
+  if (!unlockedAdventures.includes(1)) unlockedAdventures.push(1);
+
+  completedAdventures = [...new Set(completedAdventures)].sort((a,b) => a-b);
+  unlockedAdventures = [...new Set(unlockedAdventures)].sort((a,b) => a-b);
+
+  let currentAdventure = Number(profile.currentAdventure) || 1;
+  if (!hadAdventureData && completedAdventures.includes(1) && unlockedAdventures.includes(2)) {
+    currentAdventure = 2;
+  }
+  if (!ADVENTURES[currentAdventure] || !unlockedAdventures.includes(currentAdventure)) {
+    currentAdventure = Math.max(...unlockedAdventures);
+  }
+
+  const currentPosition = hadAdventureData
+    ? adventurePositions[currentAdventure]
+    : (currentAdventure === 1 ? legacyPosition : adventurePositions[currentAdventure]);
+
   return {
-    id:
-      profile.id ||
-      createProfileId(),
-
-    nickname:
-      profile.nickname ||
-      "Explorer",
-
-    avatar:
-      profile.avatar ||
-      "🧑",
-
-    xp:
-      Number(profile.xp) || 0,
-
-    wordsLearned:
-      Number(profile.wordsLearned) || 0,
-
-    level:
-      Number(profile.level) || 1,
-
-    currentPosition:
-      Math.min(
-        30,
-        Math.max(
-          1,
-          Number(profile.currentPosition) || 1
-        )
-      ),
-
-    completedGames:
-      Number(profile.completedGames) || 0,
-
-    learnedWordIds:
-      Array.isArray(profile.learnedWordIds)
-        ? profile.learnedWordIds
-        : [],
-
-    wordProgress:
-      profile.wordProgress &&
-      typeof profile.wordProgress === "object" &&
-      !Array.isArray(profile.wordProgress)
-        ? profile.wordProgress
-        : {}
+    id: profile.id || createProfileId(),
+    nickname: profile.nickname || "Explorer",
+    avatar: profile.avatar || "🧑",
+    xp: Number(profile.xp) || 0,
+    wordsLearned: Number(profile.wordsLearned) || 0,
+    level: Number(profile.level) || 1,
+    currentAdventure,
+    currentPosition,
+    adventurePositions,
+    unlockedAdventures,
+    completedAdventures,
+    completedGames: Math.max(Number(profile.completedGames) || 0, completedAdventures.length),
+    learnedWordIds: Array.isArray(profile.learnedWordIds) ? profile.learnedWordIds : [],
+    wordProgress: profile.wordProgress && typeof profile.wordProgress === "object" && !Array.isArray(profile.wordProgress)
+      ? profile.wordProgress
+      : {}
   };
 }
 
@@ -879,6 +991,10 @@ function getProfile() {
 function saveProfile(profile) {
   const profiles =
     getProfiles();
+
+  if (profile && profile.currentAdventure && profile.adventurePositions) {
+    profile.adventurePositions[profile.currentAdventure] = Math.min(30, Math.max(1, Number(profile.currentPosition) || 1));
+  }
 
   const normalised =
     normaliseProfile(profile);
@@ -1179,6 +1295,8 @@ function renderExplorerChooser() {
       profile.wordsLearned +
       " Words • Level " +
       profile.level +
+      " • Adventure " +
+      profile.currentAdventure +
       " • Square " +
       profile.currentPosition;
 
@@ -1351,8 +1469,20 @@ saveProfileButton.addEventListener(
         level:
           1,
 
+        currentAdventure:
+          1,
+
         currentPosition:
           1,
+
+        adventurePositions:
+          { 1: 1, 2: 1, 3: 1, 4: 1 },
+
+        unlockedAdventures:
+          [1],
+
+        completedAdventures:
+          [],
 
         completedGames:
           0,
@@ -1377,38 +1507,80 @@ saveProfileButton.addEventListener(
 ========================================= */
 
 function loadHome(profile) {
-  profile =
-    normaliseProfile(profile);
+  profile = normaliseProfile(profile);
 
-  homeNickname.textContent =
-    profile.nickname;
+  const adventure = ADVENTURES[profile.currentAdventure] || ADVENTURES[1];
+  const position = profile.adventurePositions[profile.currentAdventure] || profile.currentPosition || 1;
+  profile.currentPosition = position;
 
-  homeAvatar.textContent =
-    profile.avatar;
+  homeNickname.textContent = profile.nickname;
+  homeAvatar.textContent = profile.avatar;
+  homeXP.textContent = profile.xp;
+  homeWords.textContent = profile.wordsLearned;
+  homeLevel.textContent = profile.level;
 
-  homeXP.textContent =
-    profile.xp;
+  homeAdventureTitle.textContent = adventure.icon + " " + adventure.title;
+  homeAdventureDescription.textContent = adventure.themeName + " • Journey from Square 1 to Square 30.";
+  homePosition.textContent = "Current position: Square " + position;
 
-  homeWords.textContent =
-    profile.wordsLearned;
-
-  homeLevel.textContent =
-    profile.level;
-
-  homePosition.textContent =
-    "Current position: Square " +
-    profile.currentPosition;
-
-  playButton.textContent =
-    profile.currentPosition >= 30
-      ? "VIEW COMPLETION"
-      : profile.currentPosition > 1
-        ? "CONTINUE ADVENTURE"
-        : "PLAY ADVENTURE";
+  if (profile.completedAdventures.includes(profile.currentAdventure)) {
+    playButton.textContent = "REPLAY " + adventure.title.toUpperCase();
+  } else if (position > 1) {
+    playButton.textContent = "CONTINUE " + adventure.title.toUpperCase();
+  } else {
+    playButton.textContent = "PLAY " + adventure.title.toUpperCase();
+  }
 
   comingSoon.textContent = "";
-
+  renderAdventureMap(profile);
   showScreen(homeScreen);
+}
+
+function renderAdventureMap(profile) {
+  adventureList.innerHTML = "";
+
+  for (let id = 1; id <= TOTAL_ADVENTURES; id++) {
+    const adventure = ADVENTURES[id];
+    const unlocked = profile.unlockedAdventures.includes(id);
+    const completed = profile.completedAdventures.includes(id);
+    const current = profile.currentAdventure === id;
+    const position = profile.adventurePositions[id] || 1;
+
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "adventure-select-card";
+    if (current) card.classList.add("current");
+    if (completed) card.classList.add("completed");
+    if (!unlocked) card.classList.add("locked");
+    card.disabled = !unlocked;
+
+    const status = completed
+      ? "✓ COMPLETED"
+      : unlocked
+        ? (current ? "CURRENT • SQUARE " + position : "UNLOCKED")
+        : "🔒 LOCKED";
+
+    card.innerHTML =
+      '<div class="adventure-select-icon">' + adventure.icon + '</div>' +
+      '<div class="adventure-select-info">' +
+        '<div class="adventure-select-name">' + adventure.title + '</div>' +
+        '<div class="adventure-select-theme">' + adventure.themeName + '</div>' +
+      '</div>' +
+      '<div class="adventure-select-status">' + status + '</div>';
+
+    if (unlocked) {
+      card.addEventListener("click", () => {
+        const latest = getProfile();
+        if (!latest) return;
+        latest.currentAdventure = id;
+        latest.currentPosition = latest.adventurePositions[id] || 1;
+        saveProfile(latest);
+        loadHome(latest);
+      });
+    }
+
+    adventureList.appendChild(card);
+  }
 }
 
 
@@ -1538,19 +1710,30 @@ changeProfileButton.addEventListener(
   playButton.addEventListener("click", () => {
     const profile = getProfile();
     if (!profile) return showScreen(profileScreen);
-    if (profile.currentPosition >= 30) return showCompletion(profile);
+
+    // Completed adventures can be replayed from Square 1 without removing completion status.
+    if (profile.completedAdventures.includes(profile.currentAdventure) && profile.currentPosition >= 30) {
+      profile.currentPosition = 1;
+      profile.adventurePositions[profile.currentAdventure] = 1;
+      saveProfile(profile);
+    }
+
     openGame(profile);
   });
 
   function openGame(profile) {
     profile = normaliseProfile(profile);
+    const adventure = ADVENTURES[profile.currentAdventure] || ADVENTURES[1];
+    profile.currentPosition = profile.adventurePositions[profile.currentAdventure] || profile.currentPosition || 1;
     buildBoard();
+    gameAdventureTitle.textContent = adventure.title.toUpperCase();
+    gameAdventureTheme.textContent = adventure.themeName;
     gameAvatar.textContent = profile.avatar;
     gameNickname.textContent = profile.nickname;
     placePlayerToken(profile.currentPosition, profile.avatar);
     diceFace.textContent = "⚀";
     diceResult.textContent = "Tap the button to roll.";
-    gameMessage.textContent = "Roll the dice, answer the vocabulary challenge and earn your movement.";
+    gameMessage.textContent = "Reach Square 30 to complete " + adventure.title + ". Vocabulary challenges use the " + adventure.themeName + " theme.";
     pendingDiceRoll = 0;
     earnedMovement = 0;
     currentVocabulary = null;
@@ -1565,7 +1748,7 @@ changeProfileButton.addEventListener(
     if (isMoving) return;
     const profile = getProfile();
     if (!profile) return;
-    if (profile.currentPosition >= 30) return showCompletion(profile);
+    if (profile.currentPosition >= 30) return showCompletion(profile, profile.currentAdventure, null);
 
     isMoving = true;
     rollButton.disabled = true;
@@ -1652,8 +1835,13 @@ changeProfileButton.addEventListener(
   }
 
   function chooseVocabularyByMastery(profile) {
+    const adventure = ADVENTURES[profile.currentAdventure] || ADVENTURES[1];
+    const bank = getVocabularyBank();
+    const themedBank = bank.filter(word => word.themeCode === adventure.themeCode);
+    const sourceBank = themedBank.length > 0 ? themedBank : bank;
+
     const weightedWords = [];
-    getVocabularyBank().forEach(word => {
+    sourceBank.forEach(word => {
       const progress = getWordProgress(profile, word.id);
       const weight = Math.max(1, 6 - progress.mastery);
       for (let i = 0; i < weight; i++) weightedWords.push(word);
@@ -1827,29 +2015,91 @@ changeProfileButton.addEventListener(
   }
 
   function completeAdventure(profile) {
+    profile = normaliseProfile(profile);
+    const finishedAdventure = profile.currentAdventure;
+    const finished = ADVENTURES[finishedAdventure];
+
     profile.currentPosition = 30;
-    profile.completedGames += 1;
+    profile.adventurePositions[finishedAdventure] = 30;
+
+    if (!profile.completedAdventures.includes(finishedAdventure)) {
+      profile.completedAdventures.push(finishedAdventure);
+      profile.completedAdventures.sort((a,b) => a-b);
+    }
+    profile.completedGames = Math.max(profile.completedGames, profile.completedAdventures.length);
+
+    let nextAdventure = null;
+    if (finishedAdventure < TOTAL_ADVENTURES) {
+      nextAdventure = finishedAdventure + 1;
+      if (!profile.unlockedAdventures.includes(nextAdventure)) {
+        profile.unlockedAdventures.push(nextAdventure);
+        profile.unlockedAdventures.sort((a,b) => a-b);
+      }
+      profile.currentAdventure = nextAdventure;
+      profile.currentPosition = profile.adventurePositions[nextAdventure] || 1;
+    }
+
     saveProfile(profile);
+
+    lastCompletedAdventure = finishedAdventure;
+    newlyUnlockedAdventure = nextAdventure;
+
     pendingDiceRoll = 0;
     earnedMovement = 0;
     currentVocabulary = null;
     currentQuestion = null;
     answerLocked = false;
     isMoving = false;
-    showCompletion(profile);
+
+    showCompletion(profile, finishedAdventure, nextAdventure);
   }
 
-  function showCompletion(profile) {
-    completionText.textContent = profile.nickname + ", you reached Square 30 and completed your first LexiTrek journey!";
+  function showCompletion(profile, finishedAdventure = null, nextAdventure = null) {
+    const finishedId = finishedAdventure || lastCompletedAdventure || profile.currentAdventure;
+    const finished = ADVENTURES[finishedId] || ADVENTURES[1];
+
+    if (nextAdventure && ADVENTURES[nextAdventure]) {
+      const next = ADVENTURES[nextAdventure];
+      completionText.textContent =
+        profile.nickname + ", you completed " + finished.title + ": " + finished.themeName +
+        ". " + next.title + ": " + next.themeName + " is now unlocked!";
+      playAgainButton.textContent = "START " + next.title.toUpperCase();
+    } else if (profile.completedAdventures.length >= TOTAL_ADVENTURES) {
+      completionText.textContent =
+        profile.nickname + ", you completed " + finished.title + " and finished all LexiTrek adventures!";
+      playAgainButton.textContent = "REPLAY " + finished.title.toUpperCase();
+    } else {
+      completionText.textContent = profile.nickname + ", you completed " + finished.title + "!";
+      playAgainButton.textContent = "CONTINUE JOURNEY";
+    }
+
     showScreen(completionScreen);
   }
 
   playAgainButton.addEventListener("click", () => {
     const profile = getProfile();
     if (!profile) return;
-    profile.currentPosition = 1;
-    saveProfile(profile);
-    openGame(profile);
+
+    if (newlyUnlockedAdventure && profile.unlockedAdventures.includes(newlyUnlockedAdventure)) {
+      profile.currentAdventure = newlyUnlockedAdventure;
+      profile.currentPosition = profile.adventurePositions[newlyUnlockedAdventure] || 1;
+      saveProfile(profile);
+      newlyUnlockedAdventure = null;
+      openGame(profile);
+      return;
+    }
+
+    // If all adventures are complete, replay the last completed one.
+    if (profile.completedAdventures.length >= TOTAL_ADVENTURES && lastCompletedAdventure) {
+      profile.currentAdventure = lastCompletedAdventure;
+      profile.currentPosition = 1;
+      profile.adventurePositions[lastCompletedAdventure] = 1;
+      saveProfile(profile);
+      openGame(profile);
+      return;
+    }
+
+    loadHome(profile);
   });
 
   homeButton.addEventListener("click", () => {
@@ -1869,6 +2119,7 @@ changeProfileButton.addEventListener(
     const profile = getProfile();
     if (!profile) return;
     profile.currentPosition = 1;
+    profile.adventurePositions[profile.currentAdventure] = 1;
     saveProfile(profile);
     openGame(profile);
   });
