@@ -376,12 +376,97 @@
   font-weight: 900;
   white-space: nowrap;
 }
+
+
+/* =====================================
+   ACHIEVEMENTS & REWARDS
+===================================== */
+.achievement-panel {
+  background: white;
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 7px 20px rgba(0,0,0,0.06);
+}
+.achievement-title {
+  color: #12613e;
+  font-size: 1rem;
+  font-weight: 900;
+  margin-bottom: 5px;
+}
+.achievement-subtitle {
+  color: #667970;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.badge-card {
+  border: 2px solid #dce8e1;
+  background: #f8fbf9;
+  border-radius: 16px;
+  padding: 13px 10px;
+  text-align: center;
+}
+.badge-card.unlocked {
+  border-color: #9fd1b2;
+  background: #f1faf4;
+}
+.badge-card.master-badge {
+  grid-column: 1 / -1;
+}
+.badge-icon {
+  font-size: 2rem;
+  margin-bottom: 7px;
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+.badge-card.unlocked .badge-icon {
+  filter: none;
+  opacity: 1;
+}
+.badge-name {
+  color: #17352a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  margin-bottom: 3px;
+}
+.badge-status {
+  color: #75877f;
+  font-size: 0.66rem;
+  font-weight: 700;
+}
+.badge-card.unlocked .badge-status {
+  color: #137548;
+}
+.completion-reward {
+  display: none;
+  background: #eff8f2;
+  border: 2px solid #b9dfc6;
+  color: #12613e;
+  border-radius: 18px;
+  padding: 15px;
+  margin: 0 auto 8px;
+  width: 100%;
+  max-width: 390px;
+  line-height: 1.5;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+.completion-reward.show {
+  display: block;
+}
+
   </style>
 </head>
 <body>
 <main class="app">
   <section id="splashScreen" class="screen active">
-    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.3</div></div>
+    <div class="top-bar"><div class="brand">LEXITREK</div><div class="version">Prototype 0.4</div></div>
     <div class="hero">
       <div class="logo-circle">🗺️</div>
       <h1>LexiTrek</h1>
@@ -471,6 +556,13 @@
       <div class="adventure-map-title">🗺️ Adventure Map</div>
       <div id="adventureList" class="adventure-list"></div>
     </div>
+
+    <div class="achievement-panel">
+      <div class="achievement-title">🏅 Adventure Badges</div>
+      <div class="achievement-subtitle">Complete each themed adventure to unlock its badge. Complete all four to earn LexiTrek Master.</div>
+      <div id="badgeGrid" class="badge-grid"></div>
+    </div>
+
     <div class="menu-grid">
       <button id="backpackButton" class="menu-card"><div class="menu-icon">🎒</div><div class="menu-title">Word Backpack</div></button>
       <button id="progressButton" class="menu-card"><div class="menu-icon">📊</div><div class="menu-title">My Progress</div></button>
@@ -627,6 +719,7 @@
       <div class="completion-icon">🏆</div>
       <h2 class="completion-title">Adventure Complete!</h2>
       <p id="completionText" class="completion-text">You reached Square 30.</p>
+      <div id="completionReward" class="completion-reward"></div>
       <button id="playAgainButton" class="primary-button">CONTINUE JOURNEY</button>
       <button id="completionHomeButton" class="secondary-button">RETURN HOME</button>
     </div>
@@ -685,6 +778,7 @@ const allScreens = [
   const homeAdventureTitle = document.getElementById("homeAdventureTitle");
   const homeAdventureDescription = document.getElementById("homeAdventureDescription");
   const adventureList = document.getElementById("adventureList");
+  const badgeGrid = document.getElementById("badgeGrid");
   const comingSoon = document.getElementById("comingSoon");
 
   const gameBoard = document.getElementById("gameBoard");
@@ -697,6 +791,7 @@ const allScreens = [
   const diceResult = document.getElementById("diceResult");
   const gameMessage = document.getElementById("gameMessage");
   const completionText = document.getElementById("completionText");
+  const completionReward = document.getElementById("completionReward");
 
   const vocabOverlay = document.getElementById("vocabOverlay");
   const vocabWord = document.getElementById("vocabWord");
@@ -744,8 +839,21 @@ const allScreens = [
     4: { id: 4, icon: "💰", title: "Adventure 4", themeCode: "CF", themeName: "Consumerism & Financial Awareness" }
   };
   const TOTAL_ADVENTURES = Object.keys(ADVENTURES).length;
+
+  const ADVENTURE_BADGES = {
+    1: { icon: "🌿", name: "Culture Trailblazer" },
+    2: { icon: "⚙️", name: "Tech Pathfinder" },
+    3: { icon: "🌎", name: "Eco Guardian" },
+    4: { icon: "💰", name: "Smart Spender" }
+  };
+
+  const ADVENTURE_COMPLETION_BONUS = 50;
+  const MASTER_COMPLETION_BONUS = 100;
+
   let lastCompletedAdventure = null;
   let newlyUnlockedAdventure = null;
+  let lastCompletionWasFirst = false;
+  let lastCompletionBonus = 0;
 
   /* =========================================
    MULTIPLE EXPLORER PROFILE SYSTEM
@@ -1533,6 +1641,7 @@ function loadHome(profile) {
 
   comingSoon.textContent = "";
   renderAdventureMap(profile);
+  renderAchievements(profile);
   showScreen(homeScreen);
 }
 
@@ -1581,6 +1690,40 @@ function renderAdventureMap(profile) {
 
     adventureList.appendChild(card);
   }
+}
+
+
+function renderAchievements(profile) {
+  if (!badgeGrid) return;
+
+  badgeGrid.innerHTML = "";
+
+  for (let id = 1; id <= TOTAL_ADVENTURES; id++) {
+    const badge = ADVENTURE_BADGES[id];
+    const unlocked = profile.completedAdventures.includes(id);
+
+    const card = document.createElement("div");
+    card.className = "badge-card" + (unlocked ? " unlocked" : "");
+
+    card.innerHTML =
+      '<div class="badge-icon">' + badge.icon + '</div>' +
+      '<div class="badge-name">' + badge.name + '</div>' +
+      '<div class="badge-status">' + (unlocked ? "✓ EARNED" : "🔒 LOCKED") + '</div>';
+
+    badgeGrid.appendChild(card);
+  }
+
+  const masterUnlocked = profile.completedAdventures.length >= TOTAL_ADVENTURES;
+  const masterCard = document.createElement("div");
+  masterCard.className = "badge-card master-badge" + (masterUnlocked ? " unlocked" : "");
+  masterCard.innerHTML =
+    '<div class="badge-icon">🏆</div>' +
+    '<div class="badge-name">LexiTrek Master</div>' +
+    '<div class="badge-status">' +
+      (masterUnlocked ? "✓ ALL ADVENTURES COMPLETED" : profile.completedAdventures.length + "/" + TOTAL_ADVENTURES + " ADVENTURES COMPLETED") +
+    '</div>';
+
+  badgeGrid.appendChild(masterCard);
 }
 
 
@@ -2019,30 +2162,49 @@ changeProfileButton.addEventListener(
     const finishedAdventure = profile.currentAdventure;
     const finished = ADVENTURES[finishedAdventure];
 
+    const firstCompletion = !profile.completedAdventures.includes(finishedAdventure);
+
     profile.currentPosition = 30;
     profile.adventurePositions[finishedAdventure] = 30;
 
-    if (!profile.completedAdventures.includes(finishedAdventure)) {
+    let bonusXP = 0;
+
+    if (firstCompletion) {
       profile.completedAdventures.push(finishedAdventure);
       profile.completedAdventures.sort((a,b) => a-b);
+
+      bonusXP += ADVENTURE_COMPLETION_BONUS;
+
+      if (profile.completedAdventures.length === TOTAL_ADVENTURES) {
+        bonusXP += MASTER_COMPLETION_BONUS;
+      }
+
+      profile.xp += bonusXP;
     }
+
     profile.completedGames = Math.max(profile.completedGames, profile.completedAdventures.length);
 
     let nextAdventure = null;
     if (finishedAdventure < TOTAL_ADVENTURES) {
-      nextAdventure = finishedAdventure + 1;
-      if (!profile.unlockedAdventures.includes(nextAdventure)) {
-        profile.unlockedAdventures.push(nextAdventure);
+      const candidate = finishedAdventure + 1;
+      const wasLocked = !profile.unlockedAdventures.includes(candidate);
+
+      if (wasLocked) {
+        profile.unlockedAdventures.push(candidate);
         profile.unlockedAdventures.sort((a,b) => a-b);
       }
-      profile.currentAdventure = nextAdventure;
-      profile.currentPosition = profile.adventurePositions[nextAdventure] || 1;
+
+      nextAdventure = candidate;
+      profile.currentAdventure = candidate;
+      profile.currentPosition = profile.adventurePositions[candidate] || 1;
     }
 
     saveProfile(profile);
 
     lastCompletedAdventure = finishedAdventure;
     newlyUnlockedAdventure = nextAdventure;
+    lastCompletionWasFirst = firstCompletion;
+    lastCompletionBonus = bonusXP;
 
     pendingDiceRoll = 0;
     earnedMovement = 0;
@@ -2051,23 +2213,51 @@ changeProfileButton.addEventListener(
     answerLocked = false;
     isMoving = false;
 
-    showCompletion(profile, finishedAdventure, nextAdventure);
+    showCompletion(profile, finishedAdventure, nextAdventure, firstCompletion, bonusXP);
   }
 
-  function showCompletion(profile, finishedAdventure = null, nextAdventure = null) {
+  function showCompletion(profile, finishedAdventure = null, nextAdventure = null, firstCompletion = false, bonusXP = 0) {
     const finishedId = finishedAdventure || lastCompletedAdventure || profile.currentAdventure;
     const finished = ADVENTURES[finishedId] || ADVENTURES[1];
+    const badge = ADVENTURE_BADGES[finishedId];
 
-    if (nextAdventure && ADVENTURES[nextAdventure]) {
+    completionReward.classList.remove("show");
+    completionReward.innerHTML = "";
+
+    if (firstCompletion && badge) {
+      let rewardHTML =
+        "🏅 Badge unlocked: <strong>" + badge.name + "</strong><br>" +
+        "⭐ Adventure bonus: <strong>+" + ADVENTURE_COMPLETION_BONUS + " XP</strong>";
+
+      if (profile.completedAdventures.length >= TOTAL_ADVENTURES) {
+        rewardHTML +=
+          "<br>🏆 <strong>LexiTrek Master unlocked!</strong>" +
+          "<br>✨ Master bonus: <strong>+" + MASTER_COMPLETION_BONUS + " XP</strong>";
+      }
+
+      completionReward.innerHTML = rewardHTML;
+      completionReward.classList.add("show");
+    } else if (!firstCompletion) {
+      completionReward.innerHTML = "🔁 Replay complete. Your original badge and completion reward remain safely recorded.";
+      completionReward.classList.add("show");
+    }
+
+    if (firstCompletion && nextAdventure && ADVENTURES[nextAdventure]) {
       const next = ADVENTURES[nextAdventure];
       completionText.textContent =
         profile.nickname + ", you completed " + finished.title + ": " + finished.themeName +
         ". " + next.title + ": " + next.themeName + " is now unlocked!";
       playAgainButton.textContent = "START " + next.title.toUpperCase();
-    } else if (profile.completedAdventures.length >= TOTAL_ADVENTURES) {
+    } else if (profile.completedAdventures.length >= TOTAL_ADVENTURES && firstCompletion) {
       completionText.textContent =
         profile.nickname + ", you completed " + finished.title + " and finished all LexiTrek adventures!";
-      playAgainButton.textContent = "REPLAY " + finished.title.toUpperCase();
+      playAgainButton.textContent = "RETURN TO JOURNEY";
+    } else if (!firstCompletion) {
+      completionText.textContent =
+        profile.nickname + ", you replayed " + finished.title + ": " + finished.themeName + ".";
+      playAgainButton.textContent = nextAdventure && ADVENTURES[nextAdventure]
+        ? "GO TO " + ADVENTURES[nextAdventure].title.toUpperCase()
+        : "RETURN TO JOURNEY";
     } else {
       completionText.textContent = profile.nickname + ", you completed " + finished.title + "!";
       playAgainButton.textContent = "CONTINUE JOURNEY";
@@ -2089,13 +2279,10 @@ changeProfileButton.addEventListener(
       return;
     }
 
-    // If all adventures are complete, replay the last completed one.
-    if (profile.completedAdventures.length >= TOTAL_ADVENTURES && lastCompletedAdventure) {
-      profile.currentAdventure = lastCompletedAdventure;
-      profile.currentPosition = 1;
-      profile.adventurePositions[lastCompletedAdventure] = 1;
-      saveProfile(profile);
-      openGame(profile);
+    // After completing the full journey, return to the dashboard so the learner can see all badges.
+    if (profile.completedAdventures.length >= TOTAL_ADVENTURES) {
+      newlyUnlockedAdventure = null;
+      loadHome(profile);
       return;
     }
 
